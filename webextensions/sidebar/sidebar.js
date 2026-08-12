@@ -385,6 +385,9 @@ async function applyOwnTheme(style) {
   if (!style)
     style = configs.style;
   switch (style) {
+    case 'nova':
+      mStyleLoader.setAttribute('href', 'styles/nova/nova.css');
+      break;
     case 'proton':
       mStyleLoader.setAttribute('href', 'styles/proton/proton.css');
       break;
@@ -480,6 +483,7 @@ async function applyBrowserTheme(theme) {
     defaultColors,
     browserThemeStyle
   ].join('\n');
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_LWTHEME_APPLIED, !!theme?.colors);
 }
 
 function updateContextualIdentitiesStyle() {

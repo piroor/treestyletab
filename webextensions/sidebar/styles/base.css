@@ -501,6 +501,7 @@ tab-item,
 
 tab-item-substance {
   align-items: center;
+  anchor-scope: --tab-pill, --tab-favicon;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -640,6 +641,7 @@ tab-item {
   }
 
   tab-favicon {
+    anchor-name: --tab-favicon;
     z-index: var(--tab-favicon-z-index);
   }
 
@@ -859,6 +861,7 @@ tab-item-substance.attention tab-favicon::before {
 
 .background {
   tab-item-substance & {
+    anchor-name: --tab-pill;
     overflow: hidden; /* to crop burster*/
     z-index: var(--tab-background-z-index);
 
@@ -1213,13 +1216,14 @@ tab-closebox {
 /* contextual identity (aka Container Tab) */
 
 tab-item .contextual-identity-marker {
-  --contextual-identity-marker-width: calc(var(--favicon-size) / 8);
+  --contextual-identity-marker-size: calc(var(--favicon-size) / 8);
+  --contextual-identity-marker-width: var(--contextual-identity-marker-size); /* for backward compatibility */
   --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.15));
   bottom: var(--contextual-identity-marker-margin);
   inset-inline-end: 0;
   position: absolute;
   top: var(--contextual-identity-marker-margin);
-  width: var(--contextual-identity-marker-width);
+  width: var(--contextual-identity-marker-size);
   z-index: var(--tab-ui-z-index);
 }
 

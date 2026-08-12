@@ -540,6 +540,8 @@ export class TreeItemElement extends HTMLElement {
       this.style.setProperty('--tab-group-color', `var(--tab-group-color-${group.color})`);
       this.style.setProperty('--tab-group-color-pale', `var(--tab-group-color-${group.color}-pale)`);
       this.style.setProperty('--tab-group-color-invert', `var(--tab-group-color-${group.color}-invert)`);
+      this.style.setProperty('--tab-group-color-text', `var(--tab-group-color-${group.color}-text)`); // Nova specific
+      this.style.setProperty('--tab-group-color-hover', `var(--tab-group-color-${group.color}-hover)`); // Nova specific
     }
     if (this.$TST.group) {
       classList.toggle(Constants.kTAB_STATE_SUBTREE_COLLAPSED, group.collapsed);

@@ -174,12 +174,30 @@ export async function generateThemeDeclarations(theme) {
   else if (hasImage) {
     extraColors.push('--browser-bg-for-header-image: rgba(255, 255, 255, 0.25);');
   }
-  if (theme.colors.tab_line)
+  if (theme.colors.accentcolor || theme.colors.frame)
+    extraColors.push(`--lwt-accent-color: ${theme.colors.accentcolor || theme.colors.frame}`);
+  if (theme.colors.textcolor || theme.colors.tab_background_text)
+    extraColors.push(`--lwt-text-color: ${theme.colors.textcolor || theme.colors.tab_background_text}`);
+  if (theme.colors.toolbar_text)
+    extraColors.push(`--browser-toolbar-text-color: ${theme.colors.toolbar_text}`);
+  if (theme.colors.toolbar)
+    extraColors.push(`--browser-toolbar-background-color: ${theme.colors.toolbar}`);
+  if (theme.colors.tab_line) {
     extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
-  if (theme.colors.tab_loading)
+    extraColors.push(`--lwt-tab-line-color: ${theme.colors.tab_line}`);
+  }
+  if (theme.colors.tab_loading) {
     extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
-  if (theme.colors.tab_selected)
+    extraColors.push(`--tab-loading-fill: ${theme.colors.tab_loading}`);
+  }
+  if (theme.colors.tab_selected) {
     extraColors.push(`--browser-selected-tab-bg: ${theme.colors.tab_selected}`);
+    extraColors.push(`--tab-background-color-selected: ${theme.colors.tab_selected}`);
+  }
+  if (theme.colors.tab_text) {
+    extraColors.push(`--browser-selected-tab-text: ${theme.colors.tab_text}`);
+    extraColors.push(`--tab-selected-textcolor: ${theme.colors.tab_text}`);
+  }
   extraColors.push(generateThemeRules(theme));
   return `
     :root {

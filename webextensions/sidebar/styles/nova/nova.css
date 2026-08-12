@@ -1,0 +1,464 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+@import url("/resources/ui-color.css");
+@import url("./tokens-shared.css");
+@import url("./tokens-platform.css");
+@import url("./toolbar.css");
+@import url("./tab.tokens.css");
+
+:root {
+  --color-animation: 0s ease-out;
+  --faviconized-tab-size: 34px;
+  --tab-vertical-padding: 0.25em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
+  --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
+
+  --tab-label-mask-size: 1em;
+
+  --tab-group-color-blue: var(--tab-group-blue);
+  --tab-group-color-blue-hover: var(--tab-group-blue-hover);
+  --tab-group-color-blue-text: var(--tab-group-blue-text);
+  --tab-group-color-cyan: var(--tab-group-cyan);
+  --tab-group-color-cyan-hover: var(--tab-group-cyan-hover);
+  --tab-group-color-cyan-text: var(--tab-group-cyan-text);
+  --tab-group-color-green: var(--tab-group-green);
+  --tab-group-color-green-hover: var(--tab-group-green-hover);
+  --tab-group-color-green-text: var(--tab-group-green-text);
+  --tab-group-color-orange: var(--tab-group-orange);
+  --tab-group-color-orange-hover: var(--tab-group-orange-hover);
+  --tab-group-color-orange-text: var(--tab-group-orange-text);
+  --tab-group-color-pink: var(--tab-group-pink);
+  --tab-group-color-pink-hover: var(--tab-group-pink-hover);
+  --tab-group-color-pink-text: var(--tab-group-pink-text);
+  --tab-group-color-purple: var(--tab-group-purple);
+  --tab-group-color-purple-hover: var(--tab-group-purple-hover);
+  --tab-group-color-purple-text: var(--tab-group-purple-text);
+  --tab-group-color-red: var(--tab-group-red);
+  --tab-group-color-red-hover: var(--tab-group-red-hover);
+  --tab-group-color-red-text: var(--tab-group-red-text);
+  --tab-group-color-yellow: var(--tab-group-yellow);
+  --tab-group-color-yellow-hover: var(--tab-group-yellow-hover);
+  --tab-group-color-yellow-text: var(--tab-group-yellow-text);
+}
+
+
+
+/* root container, background */
+
+:root,
+body,
+#background {
+  background-color: var(--browser-background, var(--tabbar-bg));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+
+  :root.lwtheme-applied & {
+    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
+    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg)), var(--browser-toolbar-background-color, transparent));
+  }
+}
+:root:not(.rtl).inverted,
+:root:not(.rtl).inverted #background,
+:root.rtl.regular,
+:root.rtl.regular #background {
+  background-position: right;
+}
+
+
+/* overflow-start-indicator and overflow-end-indicator
+   ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
+.overflow-indicator {
+  height: 1.5em;
+
+  &.start {
+    background-image: linear-gradient(to top, transparent, var(--toolbox-background-color));
+    background-position: 0 -0.3em;
+    border-block-start: 0.05em solid rgba(255, 255, 255, 0.2);
+  }
+  &.end {
+    background-image: linear-gradient(to bottom, transparent, var(--toolbox-background-color));
+    background-position: 0 0.3em;
+    border-block-end: 0.05em solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+
+/* tab bar */
+
+#tabbar:not(.scrollbar-autohide) {
+  #pinned-tabs-container,
+  #normal-tabs-container {
+    scrollbar-color: var(--browser-toolbar_text-darker, var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed)))
+                     var(--theme-colors-toolbar, var(--in-content-box-background));
+  }
+}
+
+
+/* tab and tab-like items */
+
+tab-item-substance,
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-selector-anchor {
+  border: 1px solid transparent;
+  border-width: 1px 0;
+  position: relative;
+}
+
+tab-item-substance {
+  --tab-surface: transparent;
+  --tab-text: var(--toolbox-text-color);
+  --tab-text-inverted: var(--text-color-inverted);
+  --throbber-color: var(--tab-text);
+
+  /* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/browser/themes/shared/browser-shared.css#412-418 */
+  :root.lwtheme-applied & {
+    --tab-text: var(--toolbar-text-color);
+  }
+}
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
+  --tab-surface: var(--toolbar-background-color);
+  --tab-text: var(--toolbox-text-color);
+  --tab-text-inverted: var(--text-color-inverted);
+
+  /* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/browser/themes/shared/browser-shared.css#412-418 */
+  :root.lwtheme-applied & {
+    --tab-text: var(--toolbar-text-color);
+  }
+}
+tab-item:hover tab-item-substance.split-substances-container .background:not(.base),
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
+  background: var(--tab-surface);
+  color: var(--tab-text);
+  line-height: 1;
+}
+
+tab-item-substance.active,
+tab-item-substance.active:hover,
+tab-item-substance.bundled-active,
+tab-item-substance.bundled-active:hover,
+tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
+tab-item.split-view:hover tab-item-substance.split-substances-container,
+:root.mutiple-highlighted tab-item-substance.highlighted,
+:root.mutiple-highlighted tab-item-substance.highlighted:hover {
+  --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
+  --tab-text: var(--browser-selected-tab-text, var(--tab-selected-textcolor, var(--toolbox-text-color)));
+}
+
+tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized {
+  --tab-surface: color-mix(in srgb, currentColor 7%, transparent); /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tabs.css#2561 */
+}
+
+tab-item:not([type="group"]) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):not(.split-view):hover,
+tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
+tab-item.split-view:hover tab-item-substance.split-substances-container,
+.after-tabs button:hover,
+.after-tabs [role="button"]:hover,
+#subpanel-selector-anchor:hover {
+  --tab-surface: var(--tab-background-color-hover);
+}
+
+tab-item-substance {
+  border-radius: var(--tab-border-radius);
+  padding-block: var(--tab-vertical-padding);
+  padding-inline: 0.25em;
+}
+
+.after-tabs button,
+.after-tabs [role="button"] {
+  --tab-like-button-padding: 0.2em;
+  padding-block: var(--tab-like-button-padding);
+  padding-inline: 0;
+}
+
+:root.regular {
+  tab-item:not(.pinned) tab-item-substance,
+  .after-tabs button:not([data-menu-ui]),
+  .after-tabs [role="button"]:not([data-menu-ui]) {
+    padding-inline-end: 0.35em;
+  }
+}
+
+:root.inverted {
+  tab-item:not(.pinned) tab-item-substance,
+  .after-tabs button:not([data-menu-ui]),
+  .after-tabs [role="button"]:not([data-menu-ui]) {
+    padding-inline-start: 0.35em;
+  }
+}
+
+tab-item[type="group"],
+tab-item[type="group"].subtree-collapsed {
+  .caption {
+    --tab-surface: var(--tab-group-color) !important;
+    --tab-border: var(--tab-group-color) !important;
+    --tab-text: var(--tab-group-color-text) !important;
+
+    border-radius: calc(var(--tab-size) / 2);
+    height: calc(var(--tab-size) * 0.9);
+    margi-inline-start: 0.5em;
+    max-width: calc(max(var(--tab-label-width), calc(var(--tab-size) / 3.5)) +
+                    (0.25em * 2) /* margin-inline of tab-label (both side) */ +
+                    (0.5em * 2) /* padding-inline */ +
+                    2px /* border */);
+    padding-inline: 0.5em;
+
+    :root.regular & {
+      border-end-start-radius: calc(var(--tab-size) / 8);
+    }
+
+    :root.inverted & {
+      border-end-end-radius: calc(var(--tab-size) / 8);
+    }
+  }
+
+  tab-item-substance:hover .caption {
+    --tab-surface: var(--tab-group-color-hover) !important;
+    --tab-border: var(--tab-group-color-hover) !important;
+    --tab-text: var(--tab-group-color-text) !important;
+  }
+}
+
+
+/* tab background */
+
+.after-tabs button::before,
+.after-tabs [role="button"]::before,
+#subpanel-selector-anchor::before {
+  content: " ";
+  display: inline-block;
+  position: absolute;
+}
+
+tab-item-substance.active .background,
+tab-item-substance:not(.split-view-sub) .background,
+.after-tabs button:hover::before,
+.after-tabs [role="button"]:hover::before,
+#subpanel-selector-anchor:hover::before {
+  --tab-visual-padding: 0px;
+  background: var(--tab-surface);
+  border-radius: var(--tab-border-radius);
+  bottom: var(--tab-visual-padding);
+  inset-inline-start: var(--tab-visual-padding);
+  inset-inline-end: var(--tab-visual-padding);
+  top: var(--tab-visual-padding);
+}
+
+:root:not(.lwtheme-applied) tab-item-substance.active .background:not(.base) {
+  /* background: var(--tab-border-color-accent) border-box border-area, var(--tab-surface) padding-box; */
+  background: var(--tab-border-color-accent);
+}
+:root:not(.lwtheme-applied) tab-item-substance.active .background:not(.base)::before {
+  --tab-border-width: 1px;
+  --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--toolbar-background-color)));
+  background: var(--tab-surface);
+  border-radius: var(--tab-border-radius);
+  bottom: var(--tab-border-width);
+  content: " ";
+  display: block;
+  inset-inline-start: var(--tab-border-width);
+  inset-inline-end: var(--tab-border-width);
+  position: absolute;
+  top: var(--tab-border-width);
+}
+:root.lwtheme-applied tab-item-substance.active .background:not(.base) {
+  outline: var(--tab-outline);
+  outline-color: var(--browser-tab-highlighter, var(--tab-selected-outline-color));
+}
+
+tab-item-substance.split-view-sub.active .background {
+  --tab-visual-padding: 2px;
+}
+
+tab-item-substance.faviconized .background {
+  --tab-visual-padding: 1px;
+  --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.6);
+}
+
+tab-item[data-next-group-color] {
+  .background,
+  tab-item-substance:hover .background {
+    --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
+    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    border: 1px solid var(--tab-border);
+    opacity: 1 !important;
+  }
+}
+
+#subpanel-selector-anchor:hover::before,
+tab-item-substance.split-substances-container .background {
+  bottom: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: 0;
+}
+
+/* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
+:root.mutiple-highlighted tab-item-substance.highlighted {
+  .background:not(.base),
+  &:hover .background:not(.base) {
+    outline: 1px solid var(--focus-outline-color);
+    outline-offset: -1px;
+  }
+}
+:root.mutiple-highlighted tab-item-substance.highlighted.active {
+  .background:not(.base),
+  &:hover .background:not(.base) {
+    --tab-visual-padding: 1px;
+    outline-width: 2px;
+  }
+}
+
+
+.sticky-tabs-container tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active) .background.base,
+.sticky-tabs-container tab-item.split-view tab-item-substance.split-substances-container .background.base {
+  background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+  opacity: 1;
+
+  :root.lwtheme-applied & {
+    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
+    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace))), var(--browser-toolbar-background-color, transparent));
+  }
+}
+
+
+
+/* in-tab contents */
+
+tab-item {
+  * {
+    color: var(--tab-text);
+  }
+
+  tab-label {
+    margin-inline-start: 0.25em;
+    padding-block: 0.35em;
+    padding-inline: 0;
+  }
+
+  tab-favicon {
+    margin-block: 0.25em;
+  }
+
+  /* expand buttons to fill full height of tab */
+  tab-closebox,
+  &:not(.faviconized) tab-sound-button {
+    background: none transparent;
+    border: none 0 transparent;
+    margin-block: var(--in-tab-button-negative-offset);
+    margin-inline: 0;
+    padding-block: var(--in-tab-button-offset);
+    padding-inline: 0.25em;
+
+    &::before {
+      border-radius: calc(var(--tab-border-radius) - 0.3em);
+      content: "";
+      display: inline-block;
+      height: calc(var(--svg-small-icon-size) + 0.6em);
+      margin-block-start: -0.3em;
+      margin-inline-start: -0.3em;
+      width: calc(var(--svg-small-icon-size) + 0.6em);
+      position: absolute;
+    }
+
+    &:hover::before {
+      background: var(--tab-text);
+      box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.2;
+    }
+
+    &::after {
+      background-size: 80%;
+      position: relative;
+    }
+  }
+
+  tab-item-substance.active tab-closebox:hover::before {
+    background: var(--tab-text);
+  }
+
+  .burster {
+    --throbber-color: var(--tab-loading-fill);
+  }
+}
+
+/* hide active tab marker and highlighter for collapsed tree */
+.highlighter::before,
+tab-item:not(.faviconized).subtree-collapsed tab-item-substance.some-descendants-highlighted .highlighter::after,
+tab-item:not(.faviconized).subtree-collapsed tab-item-substance.all-descendants-highlighted .highlighter::after {
+  display: none;
+}
+
+/* contextual identity marker in tabs */
+
+tab-item .contextual-identity-marker {
+  --tab-context-line-block-offset: calc(((var(--tab-size) - var(--favicon-size)) / 2 - var(--contextual-identity-marker-size)) / 2);
+  border-radius: var(--border-radius-xsmall);
+  height: var(--contextual-identity-marker-size);
+  inset-inline: anchor(start) anchor(end);
+  inset-block: anchor(start) auto;
+  margin-block-start: var(--tab-context-line-block-offset);
+  margin-inline: 1.2em;
+  position: absolute;
+  position-anchor: --tab-pill;
+  width: auto;
+}
+tab-item:not(.faviconized) {
+  tab-item-substance.split-view-main .contextual-identity-marker {
+    margin-inline-start: calc(1.2em + var(--twisty-size) - var(--tab-twisty-offset));
+  }
+
+  tab-item-substance:not(.active) .contextual-identity-marker {
+    :root.regular:not(.rtl) &,
+    :root.inverted.rtl & {
+      mask-image: linear-gradient(to left, transparent, black var(--tab-label-mask-size));
+    }
+
+    :root.inverted:not(.rtl) &,
+    :root.regular.rtl & {
+      mask-image: linear-gradient(to right, transparent, black var(--tab-label-mask-size));
+    }
+  }
+}
+tab-item.faviconized .contextual-identity-marker {
+  margin-inline: calc(var(--toolbarbutton-border-radius) * 0.6 / 2);
+}
+
+.after-tabs {
+  button.newtab-action-selector-anchor::after,
+  button.contextual-identities-selector-anchor::after {
+    margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-like-button-padding));
+  }
+}
+
+/* split view separator */
+tab-item.split-view:not(.has-active-substance) .split-tab-separator {
+  border-left: 1px solid var(--tab-text);
+  height: calc(100% - (var(--tab-vertical-padding) * 2));
+  margin-block-start: var(--tab-vertical-padding);
+  margin-inline-end: -1px;
+  width: 0px;
+
+  .sticky-tabs-container & {
+    z-index: calc(var(--tab-base-z-index) + 1);
+  }
+}
