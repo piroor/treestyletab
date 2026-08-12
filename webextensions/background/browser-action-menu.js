@@ -55,6 +55,12 @@ const mItems = [
         title:    browser.i18n.getMessage('config_style_caption'),
         children: [
           {
+            title: browser.i18n.getMessage('config_style_nova'),
+            key:   'style',
+            value: 'nova',
+            type:  'radio'
+          },
+          {
             title: browser.i18n.getMessage('config_style_proton'),
             key:   'style',
             value: 'proton',

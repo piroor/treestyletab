@@ -424,6 +424,7 @@
   "config_sidebarPosition_description": { "message": "*This configuration won't change the position of the sidebar itself. You need to change the \"Move Sidebar to Right\" option of Firefox's sidebar itself manually." },
 
   "config_style_caption": { "message": "Theme" },
+  "config_style_nova": { "message": "Nova" },
   "config_style_proton": { "message": "Proton" },
   "config_style_photon": { "message": "Photon" },
   "config_style_sidebar": { "message": "Sidebar" },
