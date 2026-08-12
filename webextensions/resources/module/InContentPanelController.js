@@ -586,6 +586,7 @@ export default class InContentPanelController {
         align:      mayBeRight ? 'right' : 'left',
         rtl:        isRTL(),
         scale:      1 / window.devicePixelRatio,
+        style:      configs.style,
         // Don't call Date.now() here, because it can become larger than
         // the timestamp on mouseleave.
         timestamp,

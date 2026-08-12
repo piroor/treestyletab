@@ -81,6 +81,10 @@ export default class TabPreviewPanel extends InContentPanel {
             max-width: calc(min(100%, calc(var(--panel-width) * 2)) - (2px / var(--in-content-panel-scale)));
           }
 
+          &.style-nova {
+            padding-block-end: var(--panel-padding-block);
+          }
+
           &.blank,
           & .blank,
           &.hidden,
@@ -112,7 +116,7 @@ export default class TabPreviewPanel extends InContentPanel {
         .in-content-panel-title {
           font-size: calc(1em / var(--in-content-panel-scale));
           font-weight: bold;
-          margin: var(--panel-border-radius) var(--panel-border-radius) 0;
+          margin: var(--panel-padding-block) var(--panel-padding-inline) 0;
           max-height: 3em; /* -webkit-line-clamp looks unavailable, so this is a workaround */
           overflow: hidden;
           /* text-overflow: ellipsis; */
@@ -121,7 +125,7 @@ export default class TabPreviewPanel extends InContentPanel {
 
         .in-content-panel-url {
           font-size: calc(1em / var(--in-content-panel-scale));
-          margin: 0 var(--panel-border-radius);
+          margin: 0 var(--panel-padding-inline);
           opacity: 0.69; /* https://searchfox.org/mozilla-central/rev/234f91a9d3ebef0d514868701cfb022d5f199cb5/toolkit/themes/shared/design-system/tokens-shared.css#182 */
           overflow: hidden;
           text-overflow: ellipsis;
@@ -130,15 +134,24 @@ export default class TabPreviewPanel extends InContentPanel {
 
         .in-content-panel-extended-content {
           font-size: calc(1em / var(--in-content-panel-scale));
-          margin: var(--panel-border-radius);
+          margin: var(--panel-padding-inline) var(--panel-padding-inline);
           white-space: pre;
         }
 
         .in-content-panel-image-container {
-          border-block-start: calc(1px / var(--in-content-panel-scale)) solid var(--panel-border-color);
           margin-block-start: 0.25em;
           max-height: calc(var(--panel-width) * ${parseInt(this.BASE_PANEL_HEIGHT) / parseInt(this.BASE_PANEL_WIDTH)}); /* use relative value instead of 140px */
           overflow: hidden;
+
+          .in-content-panel.has-image & {
+            border-block-start: calc(1px / var(--in-content-panel-scale)) solid var(--panel-border-color);
+          }
+
+          .in-content-panel.has-image.style-nova & {
+            border: calc(1px / var(--in-content-panel-scale)) solid var(--panel-border-color);
+            border-radius: calc(var(--panel-padding-inline) * 0.6);
+            margin: 0.25em calc(var(--panel-padding-inline) * 0.6) calc(var(--panel-padding-inline) * 0.6 - var(--panel-padding-block));
+          }
         }
 
         .in-content-panel-image {
@@ -159,7 +172,7 @@ export default class TabPreviewPanel extends InContentPanel {
           ul,
           ul ul {
             margin-block: 0;
-            margin-inline: 1em 0;
+            margin-inline: var(--panel-padding-inline) 0;
             padding: 0;
             list-style: none;
           }
@@ -284,6 +297,10 @@ export default class TabPreviewPanel extends InContentPanel {
          previewURL != previewImage.src)) {
       previewImage.classList.add('loading');
       previewImage.src = previewURL || this.DATA_URI_BLANK_PNG;
+      this.panel.classList.toggle('has-image', !!previewURL);
+    }
+    else {
+      this.panel.classList.remove('has-image');
     }
 
     if (tooltipHtml) {

@@ -36,6 +36,8 @@ export default class InContentPanel {
         --base-panel-width: ${this.BASE_PANEL_WIDTH};
         --max-panel-width: 100%;
         --max-32bit-integer: 2147483647;
+        --border-radius-xsmall: 4px;
+        --border-radius-xlarge: 24px;
         background: transparent;
         border: 0 none;
         bottom: auto;
@@ -56,10 +58,17 @@ export default class InContentPanel {
 
           --panel-background: Menu;
           --panel-color: MenuText;
-          --panel-padding-block: calc(4px / var(--in-content-panel-scale));
-          --panel-padding: var(--panel-padding-block) 0;
-          --panel-border-radius: calc(4px / var(--in-content-panel-scale));
+          --panel-padding-block: var(--panel-border-radius);
+          --panel-padding-inline: var(--panel-border-radius);
+          --panel-padding: var(--panel-padding-block) var(--panel-padding-inline);
+          --panel-border-radius: calc(var(--border-radius-xsmall) / var(--in-content-panel-scale));
           --panel-border-color: ThreeDShadow;
+
+          &.style-nova {
+            --panel-padding-block: calc(var(--border-radius-xlarge) * 0.25 / var(--in-content-panel-scale));
+            --panel-padding-inline: calc(var(--border-radius-xlarge) * 0.75 / var(--in-content-panel-scale));
+            --panel-border-radius: calc(var(--border-radius-xlarge) / var(--in-content-panel-scale));
+          }
 
           --panel-shadow-margin: 0px;
           --panel-shadow: 0px 0px var(--panel-shadow-margin) hsla(0,0%,0%,.2);
@@ -73,6 +82,7 @@ export default class InContentPanel {
           ${this.isLinux ? '' : '/*'}
             --panel-border-radius: calc(8px / var(--in-content-panel-scale));
             --panel-padding-block: calc(3px / var(--in-content-panel-scale));
+            --panel-padding-inline: calc(3px / var(--in-content-panel-scale));
 
             @media (prefers-contrast) {
               --panel-border-color: color-mix(in srgb, currentColor 60%, transparent);
@@ -82,7 +92,7 @@ export default class InContentPanel {
 
           /*@media (-moz-platform: linux) or (-moz-platform: windows) {*/
           ${this.isLinux || this.isWindows ? '' : '/*'}
-            --panel-shadow-margin: calc(4px / var(--in-content-panel-scale));
+            --panel-shadow-margin: var(--panel-border-radius);
           ${this.isLinux || this.isWindows ? '' : '*/'}
           /*}*/
 
@@ -346,7 +356,7 @@ export default class InContentPanel {
   onCompleteUpdate() {} // this can be overridden by subclasses
   onShown() {} // this can be overridden by subclasses
 
-  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, logging, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
+  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, style, logging, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
     this.root.classList.toggle('in-sidebar', this.inSidebar);
 
     if (!this.panel)
@@ -355,10 +365,11 @@ export default class InContentPanel {
     const startAt = this.lastStartedAt = Date.now();
 
     if (logging)
-      console.log(`${this.type} updateUI `, { panel: this.panel, targetId, anchorTabRect, offsetTop, align, rtl, scale, widthInOuterWorld, fixedOffsetTop });
+      console.log(`${this.type} updateUI `, { panel: this.panel, targetId, anchorTabRect, offsetTop, align, rtl, scale, style, widthInOuterWorld, fixedOffsetTop });
 
     this.panel.classList.add('updating');
-    this.panel.classList.toggle('animation', animation);
+    this.panel.classList.add('updating');
+    this.panel.classList.add('style-nova', style == 'nova');
 
     if (backgroundColor) {
       this.panel.style.setProperty('--panel-background', backgroundColor);
