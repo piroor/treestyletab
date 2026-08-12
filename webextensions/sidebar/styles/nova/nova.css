@@ -15,6 +15,8 @@
   --tab-vertical-padding: 0.25em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
   --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
 
+  --tab-label-mask-size: 1em;
+
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-hover: var(--tab-group-blue-hover);
   --tab-group-color-blue-text: var(--tab-group-blue-text);
@@ -378,13 +380,36 @@ tab-item:not(.faviconized).subtree-collapsed tab-item-substance.all-descendants-
 /* contextual identity marker in tabs */
 
 tab-item .contextual-identity-marker {
-  :root.regular & {
-    inset-inline-end: var(--tab-highlighter-size);
+  --tab-context-line-block-offset: calc(((var(--tab-size) - var(--favicon-size)) / 2 - var(--contextual-identity-marker-size)) / 2);
+  border-radius: var(--border-radius-xsmall);
+  height: var(--contextual-identity-marker-size);
+  inset-inline: anchor(start) anchor(end);
+  inset-block: anchor(start) auto;
+  margin-block-start: var(--tab-context-line-block-offset);
+  margin-inline: 1.2em;
+  position: absolute;
+  position-anchor: --tab-pill;
+  width: auto;
+}
+tab-item:not(.faviconized) {
+  tab-item-substance.split-view-main .contextual-identity-marker {
+    margin-inline-start: calc(1.2em + var(--twisty-size) - var(--tab-twisty-offset));
   }
 
-  :root.inverted & {
-    inset-inline-start: var(--tab-highlighter-size);
+  tab-item-substance:not(.active) .contextual-identity-marker {
+    :root.regular:not(.rtl) &,
+    :root.inverted.rtl & {
+      mask-image: linear-gradient(to left, transparent, black var(--tab-label-mask-size));
+    }
+
+    :root.inverted:not(.rtl) &,
+    :root.regular.rtl & {
+      mask-image: linear-gradient(to right, transparent, black var(--tab-label-mask-size));
+    }
   }
+}
+tab-item.faviconized .contextual-identity-marker {
+  margin-inline: calc(var(--toolbarbutton-border-radius) * 0.6 / 2);
 }
 
 .after-tabs {
