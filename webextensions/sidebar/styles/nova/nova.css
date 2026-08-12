@@ -191,7 +191,6 @@ tab-item[type="group"].subtree-collapsed {
     --tab-text: var(--tab-group-color-text) !important;
 
     border-radius: calc(var(--tab-size) / 2);
-    border-end-start-radius: calc(var(--tab-size) / 8);
     height: calc(var(--tab-size) * 0.9);
     margi-inline-start: 0.5em;
     max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size))) +
@@ -199,6 +198,14 @@ tab-item[type="group"].subtree-collapsed {
                     calc(0.5em * 2) /* padding-inline */ +
                     2px /* border */);
     padding-inline: 0.5em;
+
+    :root.regular & {
+      border-end-start-radius: calc(var(--tab-size) / 8);
+    }
+
+    :root.inverted & {
+      border-end-end-radius: calc(var(--tab-size) / 8);
+    }
   }
 
   tab-item-substance:hover .caption {
