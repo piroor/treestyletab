@@ -446,7 +446,7 @@ tab-item:not(.faviconized) {
   }
 }
 tab-item.faviconized .contextual-identity-marker {
-  margin-inline: calc(var(--toolbarbutton-border-radius) * 0.6 / 2);
+  margin-inline: calc(var(--toolbarbutton-border-radius) * 0.65 / 2);
 }
 
 .after-tabs {
