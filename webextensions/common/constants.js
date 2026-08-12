@@ -286,6 +286,7 @@ export const kTABBAR_STATE_FAVICONIZE_PINNED_TABS = 'faviconize-pinned-tabs';
 export const kTABBAR_STATE_TAB_DRAGGING           = 'tab-dragging';
 export const kTABBAR_STATE_LINK_DRAGGING          = 'link-dragging';
 export const kTABBAR_STATE_READY_TO_PIN_DRAGGED_TABS = 'ready-to-pin-dragged-tabs';
+export const kTABBAR_STATE_LWTHEME_APPLIED        = 'lwtheme-applied';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';

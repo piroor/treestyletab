@@ -180,6 +180,8 @@ export async function generateThemeDeclarations(theme) {
     extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
   if (theme.colors.tab_selected)
     extraColors.push(`--browser-selected-tab-bg: ${theme.colors.tab_selected}`);
+  if (theme.colors.tab_text)
+    extraColors.push(`--browser-selected-tab-text: ${theme.colors.tab_text}`);
   extraColors.push(generateThemeRules(theme));
   return `
     :root {

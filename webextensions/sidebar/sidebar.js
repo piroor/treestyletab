@@ -483,6 +483,7 @@ async function applyBrowserTheme(theme) {
     defaultColors,
     browserThemeStyle
   ].join('\n');
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_LWTHEME_APPLIED, !!theme?.colors);
 }
 
 function updateContextualIdentitiesStyle() {

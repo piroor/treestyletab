@@ -1,0 +1,43 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/toolkit/themes/shared/design-system/src/toolbar.css */
+
+@layer tokens-foundation {
+  /* These tokens are declared inside of tokens-foundation layer so that the
+   * tokens-browser-theme layer can override them with design-system colors
+   * on platforms where the native theme is not active (e.g. macOS). */
+  :root {
+    @media not (prefers-contrast) {
+      @media (prefers-color-scheme: light) {
+        --toolbar-background-color: var(--color-white);
+      }
+    }
+  }
+}
+
+:root {
+  /*@media (forced-colors) {*/
+    &/*[lwtheme]*/.lwtheme-applied {
+      --toolbarbutton-outline-color: currentColor;
+    }
+  /*}*/
+
+  &/*[lwtheme]*/.lwtheme-applied {
+    --toolbar-background-color: var(--color-white-alpha-40);
+    --toolbar-text-color: var(--lwt-text-color, inherit);
+
+    --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
+    --toolbarbutton-icon-fill-attention-text-light: var(--color-gray-20);
+    --toolbarbutton-icon-fill-attention-text-dark: var(--color-gray-90);
+    --toolbarbutton-icon-fill-attention-text: light-dark(
+      var(--toolbarbutton-icon-fill-attention-text-light),
+      var(--toolbarbutton-icon-fill-attention-text-dark)
+    );
+
+    --toolbox-background-color: var(--lwt-accent-color);
+    --toolbox-background-color-inactive: var(--lwt-accent-color-inactive, var(--lwt-accent-color));
+    --toolbox-text-color: var(--lwt-text-color, currentColor);
+    --toolbox-text-color-inactive: var(--lwt-text-color, currentColor);
+  }
+}

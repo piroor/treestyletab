@@ -212,7 +212,7 @@
 
 @layer tokens-browser-theme-nova {
   /*@media not ((forced-colors) or (-moz-native-theme)) {*/
-    :root/*:is([theme-in-app], :not([lwtheme]))*/ {
+    :root/*:is([theme-in-app], :not([lwtheme]))*/:not(.lwtheme-applied) {
       /** button **/
       /* TODO Bug 1821203 - Gray use needs to be consolidated */
       --button-background-color: transparent;
