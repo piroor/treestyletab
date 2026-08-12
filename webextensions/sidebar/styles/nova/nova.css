@@ -242,7 +242,7 @@ tab-item[type="group"].subtree-collapsed {
 }
 
 tab-item-substance.active .background,
-tab-item-substance:not(.split-view-sub) .background,
+tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
