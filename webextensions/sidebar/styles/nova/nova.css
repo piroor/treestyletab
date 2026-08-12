@@ -275,6 +275,7 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 :root.lwtheme-applied tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
   outline: var(--tab-outline);
   outline-color: var(--browser-tab-highlighter, var(--tab-selected-outline-color));
+  outline-offset: var(--tab-outline-offset);
 }
 
 tab-item-substance.split-view-sub:is(.active, .bundled-active) .background {
@@ -308,11 +309,12 @@ tab-item-substance.split-substances-container .background {
 :root.mutiple-highlighted tab-item-substance.highlighted {
   .background:not(.base),
   &:hover .background:not(.base) {
-    outline: 1px solid var(--focus-outline-color);
-    outline-offset: -1px;
+    outline: var(--tab-outline);
+    outline-color: var(--focus-outline-color);
+    outline-offset: var(--tab-outline-offset);
   }
 }
-:root.mutiple-highlighted tab-item-substance.highlighted.active {
+:root.mutiple-highlighted tab-item-substance.highlighted:is(.active, .bundled-active) {
   .background:not(.base),
   &:hover .background:not(.base) {
     --tab-visual-padding: 1px;
