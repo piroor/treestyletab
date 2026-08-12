@@ -13,7 +13,7 @@
 :root {
   --color-animation: 0s ease-out;
   --faviconized-tab-size: 34px;
-  --tab-vertical-padding: 0.25em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
+  --tab-vertical-padding: 0.45em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
   --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
 
   --tab-label-mask-size: 1em;
