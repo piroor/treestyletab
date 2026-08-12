@@ -56,6 +56,11 @@ body,
   background-position: var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
+
+  :root.lwtheme-applied & {
+    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
+    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg)), var(--browser-toolbar-background-color, transparent));
+  }
 }
 :root:not(.rtl).inverted,
 :root:not(.rtl).inverted #background,
@@ -110,6 +115,11 @@ tab-item-substance {
   --tab-text: var(--toolbox-text-color);
   --tab-text-inverted: var(--text-color-inverted);
   --throbber-color: var(--tab-text);
+
+  /* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/browser/themes/shared/browser-shared.css#412-418 */
+  :root.lwtheme-applied & {
+    --tab-text: var(--toolbar-text-color);
+  }
 }
 .after-tabs button,
 .after-tabs [role="button"],
@@ -118,6 +128,11 @@ tab-item-substance {
   --tab-surface: var(--toolbar-background-color);
   --tab-text: var(--toolbox-text-color);
   --tab-text-inverted: var(--text-color-inverted);
+
+  /* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/browser/themes/shared/browser-shared.css#412-418 */
+  :root.lwtheme-applied & {
+    --tab-text: var(--toolbar-text-color);
+  }
 }
 tab-item:hover tab-item-substance.split-substances-container .background:not(.base),
 .after-tabs button,
@@ -314,6 +329,11 @@ tab-item-substance.split-substances-container .background {
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
   opacity: 1;
+
+  :root.lwtheme-applied & {
+    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
+    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace))), var(--browser-toolbar-background-color, transparent));
+  }
 }
 
 

@@ -25,7 +25,7 @@
 
   &/*[lwtheme]*/.lwtheme-applied {
     --toolbar-background-color: var(--color-white-alpha-40);
-    --toolbar-text-color: var(--lwt-text-color, inherit);
+    --toolbar-text-color: var(--browser-toolbar-text-color /* TST specific: use the value defined by the theme loaded as an inline stylesheet prior to this static sheet! */, var(--lwt-text-color, inherit));
 
     --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
     --toolbarbutton-icon-fill-attention-text-light: var(--color-gray-20);
