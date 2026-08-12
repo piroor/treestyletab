@@ -18,6 +18,10 @@
 
   --tab-label-mask-size: 1em;
 
+  --tab-surface-regular: var(--toolbar-background-color);
+  --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
+  --tab-surface-hover: var(--tab-background-color-hover);
+
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-hover: var(--tab-group-blue-hover);
   --tab-group-color-blue-text: var(--tab-group-blue-text);
@@ -125,7 +129,7 @@ tab-item-substance {
 .after-tabs [role="button"],
 #subpanel-container,
 #dummy-tab-color-box {
-  --tab-surface: var(--toolbar-background-color);
+  --tab-surface: var(--tab-surface-regular);
   --tab-text: var(--toolbox-text-color);
   --tab-text-inverted: var(--text-color-inverted);
 
@@ -152,7 +156,7 @@ tab-item.split-view.has-active-substance tab-item-substance.split-substances-con
 tab-item.split-view:hover tab-item-substance.split-substances-container,
 :root.mutiple-highlighted tab-item-substance.highlighted,
 :root.mutiple-highlighted tab-item-substance.highlighted:hover {
-  --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
+  --tab-surface: var(--tab-surface-active);
   --tab-text: var(--browser-selected-tab-text, var(--tab-selected-textcolor, var(--toolbox-text-color)));
 }
 
@@ -166,7 +170,7 @@ tab-item.split-view:hover tab-item-substance.split-substances-container,
 .after-tabs button:hover,
 .after-tabs [role="button"]:hover,
 #subpanel-selector-anchor:hover {
-  --tab-surface: var(--tab-background-color-hover);
+  --tab-surface: var(--tab-surface-hover);
 }
 
 tab-item-substance {
