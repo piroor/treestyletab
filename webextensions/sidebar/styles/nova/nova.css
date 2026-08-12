@@ -241,7 +241,7 @@ tab-item[type="group"].subtree-collapsed {
   position: absolute;
 }
 
-tab-item-substance.active .background,
+tab-item-substance:is(.active, .bundled-active) .background,
 tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
@@ -255,11 +255,11 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
   top: var(--tab-visual-padding);
 }
 
-:root:not(.lwtheme-applied) tab-item-substance.active .background:not(.base) {
+:root:not(.lwtheme-applied) tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
   /* background: var(--tab-border-color-accent) border-box border-area, var(--tab-surface) padding-box; */
   background: var(--tab-border-color-accent);
 }
-:root:not(.lwtheme-applied) tab-item-substance.active .background:not(.base)::before {
+:root:not(.lwtheme-applied) tab-item-substance:is(.active, .bundled-active) .background:not(.base)::before {
   --tab-border-width: 1px;
   --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--toolbar-background-color)));
   background: var(--tab-surface);
@@ -272,12 +272,12 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
   position: absolute;
   top: var(--tab-border-width);
 }
-:root.lwtheme-applied tab-item-substance.active .background:not(.base) {
+:root.lwtheme-applied tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
   outline: var(--tab-outline);
   outline-color: var(--browser-tab-highlighter, var(--tab-selected-outline-color));
 }
 
-tab-item-substance.split-view-sub.active .background {
+tab-item-substance.split-view-sub:is(.active, .bundled-active) .background {
   --tab-visual-padding: 2px;
 }
 
