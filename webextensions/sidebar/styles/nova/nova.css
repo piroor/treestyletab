@@ -289,8 +289,8 @@ tab-item-substance.split-substances-container .background {
 :root.mutiple-highlighted tab-item-substance.highlighted.active {
   .background:not(.base),
   &:hover .background:not(.base) {
+    --tab-visual-padding: 1px;
     outline-width: 2px;
-    outline-offset: -2px;
   }
 }
 
