@@ -330,6 +330,9 @@ export default class TabPreviewPanel extends InContentPanel {
       this.root.classList.add('extended');
     }
 
+    const contextualIdentityElement = this.panel.querySelector('.in-content-panel-contextual-identity');
+    contextualIdentityElement.classList.toggle('hidden', !contextualIdentity);
+
     if (typeof title == 'string' ||
         typeof url == 'string') {
       const titleElement = this.panel.querySelector('.in-content-panel-title');
@@ -339,16 +342,11 @@ export default class TabPreviewPanel extends InContentPanel {
       urlElement.textContent = url;
       urlElement.classList.toggle('blank', !url);
 
-      const contextualIdentityElement = this.panel.querySelector('.in-content-panel-contextual-identity');
       const contextualIdentityLabelElement = contextualIdentityElement.querySelector('.label');
       const contextualIdentityIconElement = contextualIdentityElement.querySelector('.icon');
       if (contextualIdentity) {
         contextualIdentityLabelElement.textContent = contextualIdentity.name;
         contextualIdentityIconElement.src = /^[^:]+:\/\//.test(contextualIdentity.iconUrl) ? contextualIdentity.iconUrl : browser.runtime.getURL(contextualIdentity.iconUrl);
-        contextualIdentityElement.classList.remove('hidden');
-      }
-      else {
-        contextualIdentityElement.classList.add('hidden');
       }
 
       this.panel.classList.remove('extended');
