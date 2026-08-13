@@ -1,6 +1,10 @@
 # 更新履歴
 
  - trunk/HEAD
+   * 単独のタブからリンクをコピーできなくなっていたのを修正
+   * タブグループのコンテキストメニューからの「グループ内のリンクをコピー」操作に対応
+   * `en`ロケール内の誤記を修正（by [scrypt-kitty](https://github.com/scrypt-kitty), ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)) Thanks!）
+   * [`sk`ロケール追加（by rraddatch, thanks!)](github.com/piroor/treestyletab/pull/3946)
  - 4.3.6 (2026.7.15)
    * 高解像度ディスプレイにおいてダイアログの文字サイズが小さくなる不具合を修正
  - 4.3.5 (2026.7.3)
