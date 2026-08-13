@@ -146,7 +146,23 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
             .in-content-panel-contents-inner-box {
               --panel-padding: var(--space-medium);
-              padding: var(--space-small) var(--panel-padding) var(--panel-padding);
+            }
+
+            &:not(.tab-group-editor-mode-create) {
+              .panel-header,
+              .tab-group-editor-name > label > span {
+                position: absolute;
+                overflow: hidden;
+                clip-path: inset(50%);
+                width: 0;
+                height: 0;
+                min-height: 0;
+                pointer-events: none;
+              }
+
+              .tab-group-default-header-separator {
+                display: none;
+              }
             }
           }
 
@@ -490,7 +506,16 @@ export default class TabGroupMenuPanel extends InContentPanel {
               accesskey=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_cancel_accesskey)}
              >${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_cancel_label)}</button>
     `;
-    const title = this.style == 'nova' ? '' : `
+    const nameField = `
+      <div class="panel-body tab-group-editor-name">
+        <label>
+          <span class="label-text">${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_name_label)}</span>
+          <input class="in-content-panel-title-field" type="text"
+                 placeholder=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_name_field_placeholder)}/>
+        </label>
+      </div>
+    `;
+    return `
       <div class="tab-group-default-header">
         <div class="panel-header">
           <h1 class="tab-group-editor-title-create tab-group-create-mode-only"
@@ -499,22 +524,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
              >${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_title_edit)}</h1>
         </div>
       </div>
-      <hr/>
-    `;
-    const nameFieldLabel = this.style == 'nova' ? '' : `
-      <span class="label-text">${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_name_label)}</span>
-    `;
-    const nameField = `
-      <div class="panel-body tab-group-editor-name">
-        <label>
-          ${nameFieldLabel}
-          <input class="in-content-panel-title-field" type="text"
-                 placeholder=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_name_field_placeholder)}/>
-        </label>
-      </div>
-    `;
-    return `
-      ${title}
+      <hr class="tab-group-default-header-separator"/>
       ${this.style == 'nova' ? '' : nameField}
       <div class="tab-group-main">
         <div class="panel-body tab-group-editor-swatches" role="radiogroup"
