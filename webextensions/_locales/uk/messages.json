@@ -111,6 +111,7 @@
     },
     "hash": "f7d2172e715235f06bcb735d83461315"
   },
+  "tabbar_newTabButton_label":   { "message": "Нова вкладка" },
   "tabbar_newTabButton_tooltip": {
     "message": "Відкрити нову вкладку",
     "hash": "cdeaa496e27f481f501b51c5f07478f9"

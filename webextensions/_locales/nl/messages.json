@@ -224,6 +224,7 @@
     },
     "hash": "f7d2172e715235f06bcb735d83461315"
   },
+  "tabbar_newTabButton_label":   { "message": "Nieuw tabblad" },
   "tabbar_newTabButton_tooltip": {
     "message": "Nieuw tabblad openen",
     "hash": "cdeaa496e27f481f501b51c5f07478f9"

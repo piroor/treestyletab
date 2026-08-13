@@ -1381,7 +1381,7 @@ tab-item[type="group-collapsed-members-counter"] {
     max-width: var(--new-tab-button-anchor-size);
     opacity: 0;
     overflow: hidden;
-    padding-block: calc((var(--new-tab-button-anchor-size) - var(--svg-small-icon-size)) / 2);
+    padding-block: 0;
     padding-inline: calc((var(--new-tab-button-anchor-size) - var(--svg-small-icon-size)) / 2);
     pointer-events: none;
     position: absolute;
@@ -1397,22 +1397,31 @@ tab-item[type="group-collapsed-members-counter"] {
 }
 
 .newtab-button {
+  align-items: center;
   background: none transparent;
+  height: var(--tab-size);
   margin-block: 0;
   margin-inline: 0;
-  text-align: center;
+  text-align: start;
 
-  &::after {
+  .label {
+    --icon-margin: calc(var(--twisty-size) + ((var(--favicon-size) - 1em) / 2));
+    margin-inline-start: var(--icon-margin);
+  }
+
+  .label::before {
     -moz-context-properties: fill;
     background: url("./icons/new-16.svg") no-repeat center / 100%;
     content: "";
     display: inline-block;
     fill: var(--tab-text);
-    height: var(--svg-small-icon-size);
+    height: 1em;
+    margin: 0;
+    margin-inline-end: calc(((var(--favicon-size) - 1em) / 2) + 0.25em);
     opacity: var(--button-opacity);
-    width: var(--svg-small-icon-size);
+    width: 1em;
   }
-  :root.simulate-svg-context-fill &::after {
+  :root.simulate-svg-context-fill & .label::before {
     background: var(--tab-text);
     mask: url("./icons/new-16.svg") no-repeat center / 100%;
   }
@@ -1482,7 +1491,7 @@ tab-item[type="group-collapsed-members-counter"] {
   fill: var(--tab-text);
   height: var(--svg-small-icon-size);
   line-height: 1;
-  margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  margin-block-start: calc((var(--tab-size) - var(--svg-small-icon-size)) / 2);
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
   width: var(--svg-small-icon-size);

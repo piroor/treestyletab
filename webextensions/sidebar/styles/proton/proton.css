@@ -467,11 +467,8 @@ tab-item .contextual-identity-marker {
   }
 }
 
-.after-tabs {
-  button.newtab-action-selector-anchor::after,
-  button.contextual-identities-selector-anchor::after {
-    margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-dropshadow-blur) + var(--tab-like-button-padding));
-  }
+.newtab-button .label {
+  margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
 }
 
 /* split view separator */

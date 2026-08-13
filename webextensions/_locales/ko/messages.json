@@ -151,6 +151,7 @@
         },
         "hash": "f7d2172e715235f06bcb735d83461315"
     },
+    "tabbar_newTabButton_label":   { "message": "새 탭" },
     "tabbar_newTabButton_tooltip": {
         "message": "새 탭 열기",
         "hash": "cdeaa496e27f481f501b51c5f07478f9"

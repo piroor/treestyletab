@@ -72,6 +72,7 @@
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
       "count": { "content": "$2", "example": "3" }
     }},
+  "tabbar_newTabButton_label":   { "message": "New Tab" },
   "tabbar_newTabButton_tooltip": { "message": "Open a new tab" },
 
   "tabbar_newTabAction_tooltip":           { "message": "Open a new tab as…" },

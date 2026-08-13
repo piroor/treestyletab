@@ -248,7 +248,7 @@ tab-item[type="group"].subtree-collapsed {
 tab-item-substance:is(.active, .bundled-active) .background,
 tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 .after-tabs button:hover::before,
-.after-tabs [role="button"]:hover::before,
+.after-tabs [role="button"]:hover,
 #subpanel-selector-anchor:hover::before {
   --tab-visual-padding: 0px;
   background: var(--tab-surface);
@@ -449,11 +449,8 @@ tab-item.faviconized .contextual-identity-marker {
   margin-inline: calc(var(--toolbarbutton-border-radius) * 0.65 / 2);
 }
 
-.after-tabs {
-  button.newtab-action-selector-anchor::after,
-  button.contextual-identities-selector-anchor::after {
-    margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-like-button-padding));
-  }
+.newtab-button .label {
+  margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
 }
 
 /* split view separator */

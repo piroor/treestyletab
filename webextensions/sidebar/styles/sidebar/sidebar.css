@@ -332,6 +332,10 @@ tab-item:not(.faviconized)[data-drop-position="before"] tab-item-substance.split
   border: 0 none;
 }
 
+.newtab-button .label {
+  margin-inline-start: calc(2px/* padding-inline of tab-item-substance */ + var(--icon-margin));
+}
+
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
 :root
   tab-item:not(.active):not(#dummy-tab)

@@ -103,6 +103,10 @@ tab-item.pinned tab-item-substance {
   border-inline-end-width: 1px;
 }
 
+.newtab-button .label {
+  margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
+}
+
 #tabbar tab-item.pinned + tab-item:not(.pinned) tab-item-substance,
 #tabbar tab-item:not(.pinned):first-of-type tab-item-substance {
   border-block-start: none;

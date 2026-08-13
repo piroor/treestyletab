@@ -72,6 +72,7 @@
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
       "count": { "content": "$2", "example": "3" }
     }},
+  "tabbar_newTabButton_label":   { "message": "新しいタブ" },
   "tabbar_newTabButton_tooltip": { "message": "新しいタブを開く" },
 
   "tabbar_newTabAction_tooltip":           { "message": "関係を指定して新しいタブを開く..." },

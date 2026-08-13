@@ -168,6 +168,7 @@
       }
     }
   },
+  "tabbar_newTabButton_label":   { "message": "新建标签页" },
   "tabbar_newTabButton_tooltip": {
     "message": "打开新建标签页"
   },
