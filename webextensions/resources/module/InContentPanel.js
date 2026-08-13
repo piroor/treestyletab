@@ -188,6 +188,7 @@ export default class InContentPanel {
   constructor(givenRoot, ...args) {
     this.lastTimestamp = 0;
     this.lastTimestampFor = new Map();
+    this.logging = false;
 
     this.BASE_PANEL_WIDTH  = '280px';
 
@@ -220,6 +221,11 @@ export default class InContentPanel {
     window.addEventListener('pagehide', this.destroySelf, { once: true });
   }
 
+  log(...messages) {
+    if (this.logging)
+      console.log(...messages);
+  }
+
   async onBeforeShow(_message, _sender) {} // this can be overridden by subclasses
 
   onMessage(message, sender) {
@@ -227,8 +233,9 @@ export default class InContentPanel {
         message?.windowId != this.windowId)
       return;
 
-    if (message?.logging)
-      console.log(`${message.type}: `, message);
+    if (message && 'logging' in message)
+      this.logging = !!(message.logging);
+    this.log(`${message.type}: `, message);
 
     switch (message?.type) {
       case `treestyletab:${this.type}:show`:
@@ -236,12 +243,10 @@ export default class InContentPanel {
           await this.onBeforeShow(message, sender);
           if (message.timestamp < this.lastTimestamp ||
               message.timestamp < (this.lastTimestampFor.get(message.targetId) || 0)) {
-            if (message?.logging)
-              console.log(`${this.type} show ${message.targetId}: expired, give up to show/update `, message.timestamp);
+            this.log(`${this.type} show ${message.targetId}: expired, give up to show/update `, message.timestamp);
             return true;
           }
-          if (message?.logging)
-            console.log(`${this.type} show ${message.targetId}: invoked, let's show/update `, message.timestamp);
+          this.log(`${this.type} show ${message.targetId}: invoked, let's show/update `, message.timestamp);
           this.lastTimestamp = message.timestamp;
           this.lastTimestampFor.set(message.targetId, message.timestamp);
           this.style = message.style;
@@ -259,8 +264,7 @@ export default class InContentPanel {
           if (!this.panel ||
               (message.targetId &&
                this.panel.dataset.targetId != message.targetId)) {
-            if (message?.logging)
-              console.log(`${this.type} hide ${message.targetId}: already hidden, nothing to do `, message.timestamp);
+            this.log(`${this.type} hide ${message.targetId}: already hidden, nothing to do `, message.timestamp);
             if (!this.panel && !message.targetId) { // on initial case
               this.lastTimestamp = message.timestamp;
             }
@@ -272,12 +276,10 @@ export default class InContentPanel {
           if (message.timestamp < this.lastTimestamp ||
               (message.targetId &&
                message.timestamp < (this.lastTimestampFor.get(message.targetId) || 0))) {
-            if (message?.logging)
-              console.log(`${this.type} hide ${message.targetId}: expired, give up to hide `, message.timestamp);
+            this.log(`${this.type} hide ${message.targetId}: expired, give up to hide `, message.timestamp);
             return true;
           }
-          if (message?.logging)
-            console.log(`${this.type} hide ${message.targetId}: invoked, let's hide  `, message.timestamp);
+          this.log(`${this.type} hide ${message.targetId}: invoked, let's hide  `, message.timestamp);
           this.lastTimestamp = message.timestamp;
           if (message.targetId) {
             this.lastTimestampFor.set(message.targetId, message.timestamp);
@@ -359,7 +361,7 @@ export default class InContentPanel {
   onCompleteUpdate() {} // this can be overridden by subclasses
   onShown() {} // this can be overridden by subclasses
 
-  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, style, logging, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
+  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, style, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
     this.root.classList.toggle('in-sidebar', this.inSidebar);
 
     if (!this.panel)
@@ -367,8 +369,7 @@ export default class InContentPanel {
 
     const startAt = this.lastStartedAt = Date.now();
 
-    if (logging)
-      console.log(`${this.type} updateUI `, { panel: this.panel, targetId, anchorTabRect, offsetTop, align, rtl, scale, style, widthInOuterWorld, fixedOffsetTop });
+    this.log(`${this.type} updateUI `, { panel: this.panel, targetId, anchorTabRect, offsetTop, align, rtl, scale, style, widthInOuterWorld, fixedOffsetTop });
 
     this.panel.classList.add('updating');
     this.panel.classList.add('updating');
@@ -392,8 +393,7 @@ export default class InContentPanel {
     // platform.
     const isResistFingerprintingMode = window.mozInnerScreenY == window.screenY;
     const devicePixelRatio = window.devicePixelRatio; // ((widthInOuterWorld || window.innerWidth) / window.innerWidth);
-    if (logging)
-      console.log(`${this.type} updateUI: isResistFingerprintingMode `, isResistFingerprintingMode, { devicePixelRatio });
+    this.log(`${this.type} updateUI: isResistFingerprintingMode `, isResistFingerprintingMode, { devicePixelRatio });
     // But window.devicePixelRatio is not available if privacy.resistFingerprinting=true,
     // thus we need to calculate it based on tabs.Tab.width.
     scale = devicePixelRatio * (scale || 1);
@@ -413,8 +413,7 @@ export default class InContentPanel {
       const panelMaxHeight = Math.max(window.innerHeight - panelTopEdge - sidebarContentsOffset, panelBottomEdge);
       this.panel.style.maxHeight = `${panelMaxHeight}px`;
       this.panel.style.setProperty('--panel-max-height', `${panelMaxHeight}px`);
-      if (logging)
-        console.log('updateUI: limit panel height to ', this.panel.style.maxHeight, { anchorTabRect, maxHeight: window.innerHeight, sidebarContentsOffset, offsetFromWindowEdge });
+      this.log('updateUI: limit panel height to ', this.panel.style.maxHeight, { anchorTabRect, maxHeight: window.innerHeight, sidebarContentsOffset, offsetFromWindowEdge });
     }
 
     this.panel.classList.toggle('rtl', !!rtl);
@@ -428,7 +427,7 @@ export default class InContentPanel {
         return;
       }
 
-      this.onBeforeCompleteUpdate({ logging, complete });
+      this.onBeforeCompleteUpdate({ complete });
 
       if (this.panel.dataset.targetId != targetId ||
           this.lastStartedAt != startAt)
@@ -436,62 +435,53 @@ export default class InContentPanel {
 
       if (!anchorTabRect) {
         this.panel.classList.remove('updating');
-        if (logging)
-          console.log(`${this.type} updateUI/complete: no tab rect, no need to update the position`);
+        this.log(`${this.type} updateUI/complete: no tab rect, no need to update the position`);
         return;
       }
 
       const panelBox = this.panel.getBoundingClientRect();
       if (!panelBox.height &&
           complete.retryCount++ < 10) {
-        if (logging)
-          console.log(`${this.type} updateUI/complete: panel size is zero, retrying `, complete.retryCount);
+        this.log(`${this.type} updateUI/complete: panel size is zero, retrying `, complete.retryCount);
         requestAnimationFrame(complete);
         return;
       }
 
       complete.completed = true;
 
-      this.onCompleteUpdate({ logging });
+      this.onCompleteUpdate();
 
       const maxY = window.innerHeight;
       const panelHeight = panelBox.height;
 
       let top;
       if (this.inSidebar) {
-        if (logging)
-          console.log(`${this.type} updateUI/complete: in-sidebar, alignment calculating: `, { half: window.innerHeight, maxY, scale, anchorTabRect });
+        this.log(`${this.type} updateUI/complete: in-sidebar, alignment calculating: `, { half: window.innerHeight, maxY, scale, anchorTabRect });
         if (anchorTabRect.top > (window.innerHeight / 2)) { // align to bottom edge of the tab
           top = `${Math.min(maxY, anchorTabRect.bottom / scale) - panelHeight - anchorTabRect.height}px`;
-          if (logging)
-            console.log(`${this.type}  => align to bottom edge of the tab, top=`, top);
+          this.log(`${this.type}  => align to bottom edge of the tab, top=`, top);
         }
         else { // align to top edge of the tab
           top = `${Math.max(0, anchorTabRect.top / scale) + anchorTabRect.height}px`;
-          if (logging)
-            console.log(`${this.type}  => align to top edge of the tab, top=`, top);
+          this.log(`${this.type}  => align to top edge of the tab, top=`, top);
         }
 
-        if (logging)
-          console.log(`${this.type}  => top=`, top);
+        this.log(`${this.type}  => top=`, top);
       }
       else { // in-content
         // We need to shift the position with the height of the sidebar header.
         const alignToTopPosition = Math.max(0, anchorTabRect.top / scale) + sidebarContentsOffset;
         const alignToBottomPosition = Math.min(maxY, (anchorTabRect.bottom / scale) + sidebarContentsOffset) - panelHeight;
 
-        if (logging)
-          console.log(`${this.type} updateUI/complete: in-content, alignment calculating: `, { offsetFromWindowEdge, sidebarContentsOffset, alignToTopPosition, panelHeight, maxY, scale });
+        this.log(`${this.type} updateUI/complete: in-content, alignment calculating: `, { offsetFromWindowEdge, sidebarContentsOffset, alignToTopPosition, panelHeight, maxY, scale });
         if (alignToTopPosition + panelHeight >= maxY &&
             alignToBottomPosition >= 0) { // align to bottom edge of the tab
           top = `${alignToBottomPosition}px`;
-          if (logging)
-            console.log(`${this.type}  => align to bottom edge of the tab, top=`, top);
+          this.log(`${this.type}  => align to bottom edge of the tab, top=`, top);
         }
         else { // align to top edge of the tab
           top = `${alignToTopPosition}px`;
-          if (logging)
-            console.log(`${this.type}  => align to top edge of the tab, top=`, top);
+          this.log(`${this.type}  => align to top edge of the tab, top=`, top);
         }
       }
       // updateUI() may be called multiple times for a target tab
@@ -520,7 +510,7 @@ export default class InContentPanel {
 
       this.panel.classList.remove('updating');
 
-      this.onShown({ logging });
+      this.onShown();
     };
     complete.retryCount = 0;
 
@@ -533,7 +523,6 @@ export default class InContentPanel {
       borderColor,
       color,
       fixedOffsetTop,
-      logging,
       offsetTop,
       rtl,
       scale,

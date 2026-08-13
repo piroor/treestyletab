@@ -695,9 +695,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
     this.panel.addEventListener('keydown', this.onKeyDownSelf);
   }
 
-  onUpdateUI({ targetId, groupTitle, groupColor, creating, anchorTabRect, logging, complete, ...params }) {
-    if (logging)
-      console.log(`${this.type} updateUI `, { panel: this.panel, targetId, groupTitle, groupColor, creating, anchorTabRect, ...params });
+  onUpdateUI({ targetId, groupTitle, groupColor, creating, anchorTabRect, complete, ...params }) {
+    this.log(`${this.type} updateUI `, { panel: this.panel, targetId, groupTitle, groupColor, creating, anchorTabRect, ...params });
 
     this.panel.classList.toggle('tab-group-editor-mode-create', creating);
 

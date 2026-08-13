@@ -282,9 +282,8 @@ export default class TabPreviewPanel extends InContentPanel {
     });
   }
 
-  onUpdateUI({ targetId, title, url, tooltipHtml, hasPreview, previewURL, logging, complete, scale, ...params }) {
-    if (logging)
-      console.log(`${this.type} onUpdateUI `, { panel: this.panel, targetId, title, url, tooltipHtml, hasPreview, previewURL, ...params });
+  onUpdateUI({ targetId, title, url, tooltipHtml, hasPreview, previewURL, complete, scale, ...params }) {
+    this.log(`${this.type} onUpdateUI `, { panel: this.panel, targetId, title, url, tooltipHtml, hasPreview, previewURL, ...params });
 
     const hasLoadablePreviewURL = previewURL && /^((https?|moz-extension):|data:image\/[^,]+,.+)/.test(previewURL);
     if (previewURL)
@@ -322,9 +321,7 @@ export default class TabPreviewPanel extends InContentPanel {
     }
 
     if (!hasPreview) {
-      if (logging) {
-        console.log('updateUI: no preview, complete now');
-      }
+      this.log('updateUI: no preview, complete now');
       return;
     }
 
@@ -332,8 +329,7 @@ export default class TabPreviewPanel extends InContentPanel {
       const { width, height } = !previewImage.src || previewImage.src == this.DATA_URI_BLANK_PNG ?
         { width: this.BASE_PANEL_WIDTH, height: this.BASE_PANEL_HEIGHT } :
         this.getPngDimensionsFromDataUri(previewURL);
-      if (logging)
-        console.log('updateUI: determined preview size: ', { width, height });
+      this.log('updateUI: determined preview size: ', { width, height });
       const imageWidth = Math.min(window.innerWidth, Math.min(width, parseInt(this.BASE_PANEL_WIDTH)) / scale);
       const imageHeight = imageWidth / width * height;
       previewImage.style.width = previewImage.style.maxWidth = `min(100%, ${imageWidth}px)`;
@@ -342,8 +338,7 @@ export default class TabPreviewPanel extends InContentPanel {
       return true;
     }
     catch(error) {
-      if (logging)
-        console.log('updateUI: could not detemine preview size ', error, previewURL);
+      this.log('updateUI: could not detemine preview size ', error, previewURL);
     }
 
     // failsafe: if it is not a png or failed to get dimensions, give up to determine the image size before loading.
@@ -362,14 +357,13 @@ export default class TabPreviewPanel extends InContentPanel {
     previewImage.removeEventListener('error', complete);
   }
 
-  onCompleteUpdate({ logging }) {
+  onCompleteUpdate() {
     const panelBox = this.panel.getBoundingClientRect();
     const panelHeight = panelBox.height;
 
     const contentsHeight = this.panel.querySelector('.in-content-panel-contents-inner-box').getBoundingClientRect().height;
     this.panel.classList.toggle('overflow', contentsHeight > panelHeight);
-    if (logging)
-      console.log(`${this.type} updateUI/complete: overflow: `, contentsHeight, ' > ', panelHeight);
+    this.log(`${this.type} updateUI/complete: overflow: `, contentsHeight, ' > ', panelHeight);
   }
 
   getPngDimensionsFromDataUri(uri) {
