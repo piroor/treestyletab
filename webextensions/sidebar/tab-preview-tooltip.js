@@ -10,6 +10,7 @@ import {
   log as internalLogger,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TabsStore from '/common/tabs-store.js';
 import { Tab, TreeItem } from '/common/TreeItem.js';
@@ -165,6 +166,8 @@ async function onTabSubstanceEnter(event) {
   hoveringItemIds.add(raw.id);
   mLastHoverItemId = raw.id;
 
+  const contextualIdentity = raw.cookieStoreId && raw.cookieStoreId != 'firefox-default' ? ContextualIdentities.get(raw.cookieStoreId) : null;
+
   const succeeded = await mController.show({
     anchorItem:    raw,
     targetItem:    raw,
@@ -177,6 +180,7 @@ async function onTabSubstanceEnter(event) {
         {
           title: raw.title,
           url,
+          contextualIdentity,
         }
       ),
       hasPreview,

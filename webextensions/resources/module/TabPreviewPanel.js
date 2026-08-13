@@ -132,6 +132,26 @@ export default class TabPreviewPanel extends InContentPanel {
           white-space: nowrap;
         }
 
+        .in-content-panel-contextual-identity {
+          align-items: center;
+          display: flex;
+          flex-direction: row;
+          font-size: calc(1em / var(--in-content-panel-scale));
+          margin: 0 var(--panel-padding-inline);
+
+          .label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .icon {
+            margin: 0.25em;
+            max-height: 1em;
+            max-width: 1em;
+          }
+        }
+
         .in-content-panel-extended-content {
           font-size: calc(1em / var(--in-content-panel-scale));
           margin: var(--panel-padding-block) var(--panel-padding-inline);
@@ -248,6 +268,7 @@ export default class TabPreviewPanel extends InContentPanel {
     return `
       <div class="in-content-panel-title"></div>
       <div class="in-content-panel-url"></div>
+      <div class="in-content-panel-contextual-identity"><span class="label"></span><img class="icon"/></div>
       <div class="in-content-panel-extended-content"></div>
       <div class="in-content-panel-image-container">
         <img class="in-content-panel-image"/>
@@ -282,8 +303,8 @@ export default class TabPreviewPanel extends InContentPanel {
     });
   }
 
-  onUpdateUI({ targetId, title, url, tooltipHtml, hasPreview, previewURL, complete, scale, ...params }) {
-    this.log(`${this.type} onUpdateUI `, { panel: this.panel, targetId, title, url, tooltipHtml, hasPreview, previewURL, ...params });
+  onUpdateUI({ targetId, title, url, contextualIdentity, tooltipHtml, hasPreview, previewURL, complete, scale, ...params }) {
+    this.log(`${this.type} onUpdateUI `, { panel: this.panel, targetId, title, url, contextualIdentity, tooltipHtml, hasPreview, previewURL, ...params });
 
     const hasLoadablePreviewURL = previewURL && /^((https?|moz-extension):|data:image\/[^,]+,.+)/.test(previewURL);
     if (previewURL)
@@ -313,9 +334,23 @@ export default class TabPreviewPanel extends InContentPanel {
         typeof url == 'string') {
       const titleElement = this.panel.querySelector('.in-content-panel-title');
       titleElement.textContent = title;
+
       const urlElement = this.panel.querySelector('.in-content-panel-url');
       urlElement.textContent = url;
       urlElement.classList.toggle('blank', !url);
+
+      const contextualIdentityElement = this.panel.querySelector('.in-content-panel-contextual-identity');
+      const contextualIdentityLabelElement = contextualIdentityElement.querySelector('.label');
+      const contextualIdentityIconElement = contextualIdentityElement.querySelector('.icon');
+      if (contextualIdentity) {
+        contextualIdentityLabelElement.textContent = contextualIdentity.name;
+        contextualIdentityIconElement.src = /^[^:]+:\/\//.test(contextualIdentity.iconUrl) ? contextualIdentity.iconUrl : browser.runtime.getURL(contextualIdentity.iconUrl);
+        contextualIdentityElement.classList.remove('hidden');
+      }
+      else {
+        contextualIdentityElement.classList.add('hidden');
+      }
+
       this.panel.classList.remove('extended');
       this.root.classList.remove('extended');
     }
