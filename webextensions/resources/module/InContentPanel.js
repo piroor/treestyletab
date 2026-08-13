@@ -369,7 +369,8 @@ export default class InContentPanel {
 
     this.panel.classList.add('updating');
     this.panel.classList.add('updating');
-    this.panel.classList.add('style-nova', style == 'nova');
+    this.panel.classList.toggle('style-nova', style == 'nova');
+    this.panel.classList.toggle('style-proton', style != 'nova');
 
     if (backgroundColor) {
       this.panel.style.setProperty('--panel-background', backgroundColor);
