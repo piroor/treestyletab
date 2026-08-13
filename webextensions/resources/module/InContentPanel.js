@@ -198,6 +198,8 @@ export default class InContentPanel {
             --color-violet-60: #5939a8;
             --color-violet-70: #3e2976;
             --color-violet-desaturated-0: #f2f0f8;
+            --color-violet-desaturated-20: #d2c8ec;
+            --color-violet-desaturated-50: #75669f;
             --color-violet-desaturated-90: #180e30;
             --color-yellow-20: #fbcc77;
             --color-yellow-30: #f3a81e;

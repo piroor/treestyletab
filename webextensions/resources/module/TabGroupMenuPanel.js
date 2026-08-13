@@ -139,10 +139,13 @@ export default class TabGroupMenuPanel extends InContentPanel {
             --button-text-color-primary-active: var(--button-text-color-primary-hover);
             --button-text-color-primary-disabled: var(--button-text-color-primary);
 
-            /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-shared.css */
-            --toolbarbutton-background-color-hover: light-dark(rgba(117, 102, 159, 0.25), rgba(182, 170, 217, 0.25));
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --toolbarbutton-background-color-hover: light-dark(var(--color-violet-desaturated-20), var(--color-violet-desaturated-50));
             /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tab.tokens.css */
             --tab-hover-background-color: var(--toolbarbutton-background-color-hover);
+
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --text-color-error: light-dark(var(--color-red-50), var(--color-red-20));
 
             .in-content-panel-contents-inner-box {
               --panel-padding: var(--space-medium);
@@ -211,6 +214,11 @@ export default class TabGroupMenuPanel extends InContentPanel {
             > input[type="text"] {
               font-size: 100%;
               padding: var(/*--space-medium*/--space-xsmall);
+
+              &:focus {
+                outline: var(--focus-outline);
+                outline-offset: var(--focus-outline-inset);
+              }
             }
           }
 
@@ -294,6 +302,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
              &:not([disabled]):focus {
                box-shadow: none;
+               outline: var(--focus-outline);
+               outline-offset: var(--focus-outline-inset);
              }
             }
           }
@@ -302,7 +312,11 @@ export default class TabGroupMenuPanel extends InContentPanel {
             .tab-group-delete {
               padding-block: 0;
               > button /*toolbarbutton*/ {
-               border-radius: var(--space-large);
+                border-radius: var(--space-large);
+
+                $:focus {
+                  outline-color: var(--focus-outline-color);
+                }
               }
             }
           }
