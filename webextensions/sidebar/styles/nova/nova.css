@@ -256,10 +256,10 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
   --tab-visual-padding: 2px;
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
-  bottom: var(--tab-visual-padding);
+  inset-block-start: var(--tab-visual-padding);
+  inset-block-end: var(--tab-visual-padding);
   inset-inline-start: var(--tab-visual-padding);
   inset-inline-end: var(--tab-visual-padding);
-  top: var(--tab-visual-padding);
 }
 #subpanel-selector-anchor:hover::before {
   --tab-visual-padding: 0;
@@ -292,9 +292,9 @@ tab-item-substance.split-view-sub:is(.active, .bundled-active) .background {
   --tab-visual-padding: 4px;
 }
 
-tab-item-substance.faviconized .background {
-  --tab-visual-padding: 2px;
-  --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.6);
+tab-item-substance.faviconized:is(.active, .bundled-active, :not(.split-view-sub:not(.highlighted))) .background {
+  --tab-visual-padding: 1px;
+  --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.75) / var(--toolbarbutton-border-radius);
 }
 
 tab-item[data-next-group-color] {
@@ -329,6 +329,13 @@ tab-item-substance.split-substances-container .background {
   &:hover .background:not(.base) {
     --tab-visual-padding: 3px;
     outline-width: 2px;
+  }
+
+  &.faviconized,
+  &.faviconized:hover {
+    .background:not(.base) {
+      --tab-visual-padding: 2px;
+    }
   }
 }
 
