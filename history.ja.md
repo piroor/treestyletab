@@ -1,6 +1,8 @@
 # 更新履歴
 
  - trunk/HEAD
+   * Nightly 155用に「Nova」テーマを追加
+   * Firefoxに追従して「新しいタブ」ボタンをタブのように表示するようにした
    * 単独のタブからリンクをコピーできなくなっていたのを修正
    * タブグループのコンテキストメニューからの「グループ内のリンクをコピー」操作に対応
    * `en`ロケール内の誤記を修正（by [scrypt-kitty](https://github.com/scrypt-kitty), ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)) Thanks!）

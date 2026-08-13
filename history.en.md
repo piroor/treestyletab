@@ -1,6 +1,8 @@
 # History
 
  - trunk/HEAD
+   * Add "Nova" theme for Nightly 155.
+   * Show "New Tab" button like a new tab, matching to Firefox does.
    * Copy single link from single tab correctly.
    * Support "Copy links in group" command in the context menu on tab groups.
    * Fix mistakes in `en` locale by [scrypt-kitty](https://github.com/scrypt-kitty) ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)), Thanks!
