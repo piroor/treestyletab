@@ -58,13 +58,40 @@ export default class InContentPanel {
           /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/toolkit/themes/shared/popup.css#11-63 */
           color-scheme: light dark;
 
-          --panel-background: Menu;
-          --panel-color: MenuText;
+          /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-shared.css#107 */
+          /** Color **/
+          --color-blue-20: oklch(83% 0.17 260);
+          --color-blue-60: oklch(55% 0.24 260);
+          --color-blue-70: oklch(48% 0.2 260);
+          --color-blue-80: oklch(41% 0.17 260);
+          --color-cyan-10: oklch(90% 0.07 205);
+          --color-cyan-20: oklch(83% 0.11 205);
+          --color-cyan-30: oklch(76% 0.14 205);
+          --color-cyan-70: oklch(48% 0.2 205);
+          --color-green-20: oklch(83% 0.14 145);
+          --color-green-70: oklch(48% 0.2 145);
+          --color-orange-20: oklch(86% 0.14 50);
+          --color-orange-70: oklch(48% 0.20 50);
+          --color-pink-20: oklch(83% 0.14 360);
+          --color-pink-70: oklch(48% 0.2 360);
+          --color-purple-20: oklch(83% 0.14 315);
+          --color-purple-70: oklch(48% 0.2 315);
+          --color-red-20: oklch(83% 0.14 15);
+          --color-red-70: oklch(48% 0.2 15);
+          --color-white: #ffffff;
+          --color-yellow-20: oklch(86% 0.14 90);
+          --color-yellow-70: oklch(51% 0.23 90);
+
+          /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-platform.css#31 */
+          --color-accent-primary: AccentColor;
+
+          --panel-background: light-dark(Menu, var(--dark-popup));
+          --panel-color: light-dark(MenuText, var(--dark-popup-text));
           --panel-padding-block: var(--panel-border-radius);
           --panel-padding-inline: var(--panel-border-radius);
           --panel-padding: var(--panel-padding-block) var(--panel-padding-inline);
           --panel-border-radius: calc(var(--border-radius-xsmall) / var(--in-content-panel-scale));
-          --panel-border-color: ThreeDShadow;
+          /*--panel-border-color: light-dark(ThreeDShadow, var(--dark-popup-border));*/
 
           &.style-nova {
             --panel-padding-block: calc(var(--space-small) / var(--in-content-panel-scale));
@@ -111,7 +138,7 @@ export default class InContentPanel {
             appearance: auto;
             -moz-default-appearance: menupopup;
             background-color: Menu;
-            --panel-background: white /* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */;
+            --panel-background: light-dark(white /* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */, rgb(66, 65, 77)/* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */);
             --panel-border-color: transparent;
             --panel-border-radius: calc(6px / var(--in-content-panel-scale));
           ` : ''}
@@ -125,11 +152,61 @@ export default class InContentPanel {
           /* https://searchfox.org/mozilla-central/rev/b576bae69c6f3328d2b08108538cbbf535b1b99d/browser/themes/shared/browser-colors.css#90 */
           --panel-border-color: light-dark(rgb(240, 240, 244), rgb(82, 82, 94));
 
+          &.style-nova {
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --color-blue-20: #a2d3ff;
+            --color-blue-30: #7bb2ff;
+            --color-blue-50: #455fe7;
+            --color-blue-60: #3246b0;
+            --color-blue-70: #23327b;
+            --color-blue-80: #17214c;
+            --color-cyan-10: #c3eef8;
+            --color-cyan-20: #8fddf0;
+            --color-cyan-30: #4cc4e1;
+            --color-cyan-50: #0a809f;
+            --color-cyan-70: #034554;
+            --color-gray-0: #fbfbfe;
+            --color-gray-10: #efedf2;
+            --color-gray-50: #67666a;
+            --color-gray-55: #515054;
+            --color-gray-65: #312f33;
+            --color-gray-70: #252428;
+            --color-green-20: #90e3c6;
+            --color-green-30: #4acca6;
+            --color-green-50: #008865;
+            --color-green-70: #004933;
+            --color-orange-20: #febd99;
+            --color-orange-30: #ff9565;
+            --color-orange-50: #cd4208;
+            --color-orange-70: #701c07;
+            --color-pink-20: #ffb0e2;
+            --color-pink-30: #f585d3;
+            --color-pink-50: #b32e9f;
+            --color-pink-70: #5f1854;
+            --color-purple-20: #e8b7ff;
+            --color-purple-30: #d490ff;
+            --color-purple-50: #9540c8;
+            --color-purple-70: #4f216b;
+            --color-red-20: #ffb6bf;
+            --color-red-30: #ff8998;
+            --color-red-50: #c52d4f;
+            --color-red-70: #69172d;
+            --color-violet-10: #eaddff;
+            --color-violet-20: #d4c1ff;
+            --color-violet-30: #b89cff;
+            --color-violet-50: #764edd;
+            --color-violet-60: #5939a8;
+            --color-violet-70: #3e2976;
+            --color-violet-desaturated-0: #f2f0f8;
+            --color-violet-desaturated-90: #180e30;
+            --color-yellow-20: #fbcc77;
+            --color-yellow-30: #f3a81e;
+            --color-yellow-50: #b26100;
+            --color-yellow-70: #5f3100;
 
-          @media (prefers-color-scheme: dark) {
-            --panel-background: ${this.isMac ? 'rgb(66, 65, 77)' /* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */ : 'var(--dark-popup)'};
-            --panel-color: var(--dark-popup-text);
-            --panel-border-color: var(--dark-popup-border);
+            --panel-background: light-dark(var(--color-white), var(--color-gray-70));
+            --panel-border-color: light-dark(var(--color-gray-10), var(--color-gray-65));
+            --panel-color: light-dark(var(--color-violet-desaturated-90), var(--color-violet-desaturated-0));
           }
 
           background: var(--panel-background);
