@@ -691,7 +691,7 @@
 
 @layer tokens-forced-colors {
   /*@media (forced-colors) {*/
-    :root..forced-colors {
+    :root.forced-colors {
       /** border **/
       --border-color-deemphasized: ButtonText;
       --border-color-interactive: ButtonText;
@@ -1127,7 +1127,7 @@
 
 @layer tokens-forced-colors-nova {
   /*@media (forced-colors) {*/
-    :root..forced-colors {
+    :root.forced-colors {
       /** background-color **/
       --background-color-box: var(--background-color-canvas);
       --background-color-box-info: var(--background-color-canvas);

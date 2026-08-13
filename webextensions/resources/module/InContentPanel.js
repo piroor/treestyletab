@@ -244,6 +244,7 @@ export default class InContentPanel {
             console.log(`${this.type} show ${message.targetId}: invoked, let's show/update `, message.timestamp);
           this.lastTimestamp = message.timestamp;
           this.lastTimestampFor.set(message.targetId, message.timestamp);
+          this.style = message.style;
           this.prepareUI();
           this.updateUI(message);
           this.panel.classList.add('open');

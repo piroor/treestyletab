@@ -47,8 +47,6 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --color-cyan-20: oklch(83% 0.11 205);
           --color-cyan-30: oklch(76% 0.14 205);
           --color-cyan-70: oklch(48% 0.2 205);
-          --color-gray-05: #fbfbfe;
-          --color-gray-100: #15141a;
           --color-green-20: oklch(83% 0.14 145);
           --color-green-70: oklch(48% 0.2 145);
           --color-orange-20: oklch(86% 0.14 50);
@@ -83,66 +81,49 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --border-radius-circle: calc(9999px / var(--in-content-panel-scale));
           --border-radius-small: calc(4px/ var(--in-content-panel-scale));
           --border-radius-medium: calc(8px / var(--in-content-panel-scale));
+          --border-radius-large: calc(16px / var(--in-content-panel-scale));
           --border-width: calc(1px / var(--in-content-panel-scale));
 
           /* https://searchfox.org/mozilla-central/rev/7d73613454bfe426fdceb635b33cd3061a69def4/browser/themes/shared/tabbrowser/tabs.css#79 */
-          --tab-group-color-blue: var(--color-blue-70);
-          --tab-group-color-blue-invert: var(--color-blue-20);
-          --tab-group-color-purple: var(--color-purple-70);
-          --tab-group-color-purple-invert: var(--color-purple-20);
-          --tab-group-color-cyan: var(--color-cyan-70);
-          --tab-group-color-cyan-invert: var(--color-cyan-20);
-          --tab-group-color-orange: var(--color-orange-70);
-          --tab-group-color-orange-invert: var(--color-orange-20);
-          --tab-group-color-yellow: var(--color-yellow-70);
-          --tab-group-color-yellow-invert: var(--color-yellow-20);
-          --tab-group-color-pink: var(--color-pink-70);
-          --tab-group-color-pink-invert: var(--color-pink-20);
-          --tab-group-color-green: var(--color-green-70);
-          --tab-group-color-green-invert: var(--color-green-20);
-          --tab-group-color-red: var(--color-red-70);
-          --tab-group-color-red-invert: var(--color-red-20);
-          --tab-group-color-gray: #5E6A77;
-          --tab-group-color-gray-invert: #99A6B4;
+          --tab-group-color-blue: light-dark(var(--color-blue-70), var(--color-blue-20));
+          --tab-group-color-purple: light-dark(var(--color-purple-70), var(--color-purple-20));
+          --tab-group-color-cyan: light-dark(var(--color-cyan-70), var(--color-cyan-20));
+          --tab-group-color-orange: light-dark(var(--color-orange-70), var(--color-orange-20));
+          --tab-group-color-yellow: light-dark(var(--color-yellow-70), var(--color-yellow-20));
+          --tab-group-color-pink: light-dark(var(--color-pink-70), var(--color-pink-20));
+          --tab-group-color-green: light-dark(var(--color-green-70), var(--color-green-20));
+          --tab-group-color-red: light-dark(var(--color-red-70), var(--color-red-20));
+          --tab-group-color-gray: light-dark(#5E6A77, #99A6B4);
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-shared.css#286 */
           --text-color-error: light-dark(var(--color-red-70), var(--color-red-20));
 
           input[value="blue"] {
             --tabgroup-swatch-color: var(--tab-group-color-blue);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-blue-invert);
           }
           input[value="purple"] {
             --tabgroup-swatch-color: var(--tab-group-color-purple);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-purple-invert);
           }
           input[value="cyan"] {
             --tabgroup-swatch-color: var(--tab-group-color-cyan);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-cyan-invert);
           }
           input[value="orange"] {
             --tabgroup-swatch-color: var(--tab-group-color-orange);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-orange-invert);
           }
           input[value="yellow"] {
             --tabgroup-swatch-color: var(--tab-group-color-yellow);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-yellow-invert);
           }
           input[value="pink"] {
             --tabgroup-swatch-color: var(--tab-group-color-pink);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-pink-invert);
           }
           input[value="green"] {
             --tabgroup-swatch-color: var(--tab-group-color-green);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-green-invert);
           }
           input[value="red"] {
             --tabgroup-swatch-color: var(--tab-group-color-red);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-red-invert);
           }
           input[value="grey"] {
             --tabgroup-swatch-color: var(--tab-group-color-gray);
-            --tabgroup-swatch-color-invert: var(--tab-group-color-gray-invert);
           }
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/popup.css#63 */
@@ -154,10 +135,6 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --tab-hover-background-color: color-mix(in srgb, currentColor 11%, transparent);
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-brand.css#23 */
-          --button-background-color: color-mix(in srgb, currentColor 7%, transparent);
-          --button-background-color-hover: color-mix(in srgb, currentColor 14%, transparent);
-          --button-background-color-active: color-mix(in srgb, currentColor 21%, transparent);
-          --button-text-color: light-dark(var(--color-gray-100), var(--color-gray-05));
           --button-text-color-primary: light-dark(var(--color-white), var(--color-gray-100));
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-brand.css#30 */
           --color-accent-primary: light-dark(var(--color-blue-60), var(--color-cyan-30));
@@ -167,6 +144,84 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --button-text-color-primary-hover: var(--button-text-color-primary);
           --button-text-color-primary-active: var(--button-text-color-primary-hover);
           --button-text-color-primary-disabled: var(--button-text-color-primary);
+
+          &.style-nova {
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --color-blue-20: #a2d3ff;
+            --color-blue-30: #7bb2ff;
+            --color-blue-50: #455fe7;
+            --color-blue-60: #3246b0;
+            --color-blue-70: #23327b;
+            --color-blue-80: #17214c;
+            --color-cyan-10: #c3eef8;
+            --color-cyan-20: #8fddf0;
+            --color-cyan-30: #4cc4e1;
+            --color-cyan-50: #0a809f;
+            --color-cyan-70: #034554;
+            --color-gray-50: #67666a;
+            --color-gray-55: #515054;
+            --color-gray-70: #252428;
+            --color-green-20: #90e3c6;
+            --color-green-30: #4acca6;
+            --color-green-50: #008865;
+            --color-green-70: #004933;
+            --color-orange-20: #febd99;
+            --color-orange-30: #ff9565;
+            --color-orange-50: #cd4208;
+            --color-orange-70: #701c07;
+            --color-pink-20: #ffb0e2;
+            --color-pink-30: #f585d3;
+            --color-pink-50: #b32e9f;
+            --color-pink-70: #5f1854;
+            --color-purple-20: #e8b7ff;
+            --color-purple-30: #d490ff;
+            --color-purple-50: #9540c8;
+            --color-purple-70: #4f216b;
+            --color-red-20: #ffb6bf;
+            --color-red-30: #ff8998;
+            --color-red-50: #c52d4f;
+            --color-red-70: #69172d;
+            --color-violet-10: #eaddff;
+            --color-violet-20: #d4c1ff;
+            --color-violet-30: #b89cff;
+            --color-violet-50: #764edd;
+            --color-violet-60: #5939a8;
+            --color-violet-70: #3e2976;
+            --color-yellow-20: #fbcc77;
+            --color-yellow-30: #f3a81e;
+            --color-yellow-50: #b26100;
+            --color-yellow-70: #5f3100;
+
+            /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tab.tokens.css */
+            --tab-group-color-blue: light-dark(var(--color-blue-50), var(--color-blue-30));
+            --tab-group-color-cyan: light-dark(var(--color-cyan-50), var(--color-cyan-30));
+            --tab-group-color-gray: light-dark(var(--color-gray-55), var(--color-gray-0));
+            --tab-group-color-green: light-dark(var(--color-green-50), var(--color-green-30));
+            --tab-group-color-orange: light-dark(var(--color-orange-50), var(--color-orange-30));
+            --tab-group-color-pink: light-dark(var(--color-pink-50), var(--color-pink-30));
+            --tab-group-color-purple: light-dark(var(--color-purple-50), var(--color-purple-30));
+            --tab-group-color-red: light-dark(var(--color-red-50), var(--color-red-30));
+            --tab-group-color-yellow: light-dark(var(--color-yellow-50), var(--color-yellow-30));
+
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --button-text-color-primary: light-dark(var(--color-white), var(--color-gray-70));
+            --color-accent-primary: light-dark(var(--color-violet-50), var(--color-violet-30));
+            --color-accent-primary-hover: light-dark(var(--color-violet-60), var(--color-violet-20));
+            --color-accent-primary-active: light-dark(var(--color-violet-70), var(--color-violet-10));
+            --button-text-color-primary-hover: var(--button-text-color-primary);
+            --button-text-color-primary-active: var(--button-text-color-primary-hover);
+            --button-text-color-primary-disabled: var(--button-text-color-primary);
+
+            /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-shared.css */
+            --toolbarbutton-background-color-hover: light-dark(rgba(117, 102, 159, 0.25), rgba(182, 170, 217, 0.25));
+            /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tab.tokens.css */
+            --tab-hover-background-color: var(--toolbarbutton-background-color-hover);
+
+            .in-content-panel-contents-inner-box {
+              --panel-padding: var(--space-medium);
+              padding: var(--space-small) var(--panel-padding) var(--panel-padding);
+            }
+          }
 
 
           --panel-width: calc(22em / var(--in-content-panel-scale));
@@ -226,6 +281,10 @@ export default class TabGroupMenuPanel extends InContentPanel {
               justify-content: flex-start;
             }
           }
+          &.style-nova .tab-group-editor-swatches {
+            margin-block: 0;
+            padding-block: 0;
+          }
 
           .tab-group-editor-swatch {
             appearance: none;
@@ -239,7 +298,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
             border: var(--focus-outline-width) solid transparent;
             border-radius: var(--border-radius-medium);
             background-clip: content-box;
-            background-color: light-dark(var(--tabgroup-swatch-color), var(--tabgroup-swatch-color-invert));
+            background-color: var(--tabgroup-swatch-color);
 
             &:checked {
               border-color: var(--focus-outline-color);
@@ -257,6 +316,11 @@ export default class TabGroupMenuPanel extends InContentPanel {
             + .label-text {
               font-size: 0;
             }
+          }
+          &.style-nova .tab-group-editor-swatch {
+            width: calc(18px / var(--in-content-panel-scale));
+            height: calc(18px / var(--in-content-panel-scale));
+            border-radius: var(--border-radius-large);
           }
 
           .tab-group-edit-actions,
@@ -284,6 +348,15 @@ export default class TabGroupMenuPanel extends InContentPanel {
              &:focus {
                box-shadow: none;
              }
+            }
+          }
+          &.style-nova {
+            .tab-group-edit-actions,
+            .tab-group-delete {
+              padding-block: 0;
+              > button /*toolbarbutton*/ {
+               border-radius: var(--space-large);
+              }
             }
           }
 
@@ -487,7 +560,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
               accesskey=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_cancel_accesskey)}
              >${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_cancel_label)}</button>
     `;
-    return `
+    const title = this.style == 'nova' ? '' : `
       <div class="tab-group-default-header">
         <div class="panel-header">
           <h1 class="tab-group-editor-title-create tab-group-create-mode-only"
@@ -497,13 +570,22 @@ export default class TabGroupMenuPanel extends InContentPanel {
         </div>
       </div>
       <hr/>
+    `;
+    const nameFieldLabel = this.style == 'nova' ? '' : `
+      <span class="label-text">${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_name_label)}</span>
+    `;
+    const nameField = `
       <div class="panel-body tab-group-editor-name">
         <label>
-          <span class="label-text">${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_name_label)}</span>
+          ${nameFieldLabel}
           <input class="in-content-panel-title-field" type="text"
                  placeholder=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_name_field_placeholder)}/>
         </label>
       </div>
+    `;
+    return `
+      ${title}
+      ${this.style == 'nova' ? '' : nameField}
       <div class="tab-group-main">
         <div class="panel-body tab-group-editor-swatches" role="radiogroup"
              aria-label=${JSON.stringify(i18n.tabGroupMenu_tab_group_editor_color_selector_aria_label)}>
@@ -544,7 +626,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
             <span class="label-text">${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_color_selector2_red)}</span>
           </label>
         </div>
-        <hr/>
+        ${this.style == 'nova' ? nameField : ''}
+        ${this.style == 'nova' ? '' : '<hr/>'}
         <div class="panel-body tab-group-edit-actions tab-group-edit-mode-only">
           <button tabindex="0" class="tabGroupEditor_addNewTabInGroup subviewbutton"
                   data-command="addNewTabInGroup"
