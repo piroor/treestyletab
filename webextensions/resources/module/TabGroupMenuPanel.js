@@ -158,6 +158,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
             --color-cyan-30: #4cc4e1;
             --color-cyan-50: #0a809f;
             --color-cyan-70: #034554;
+            --color-gray-0: #fbfbfe;
             --color-gray-50: #67666a;
             --color-gray-55: #515054;
             --color-gray-70: #252428;
