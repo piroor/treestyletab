@@ -147,6 +147,9 @@ tab-item:hover tab-item-substance.split-substances-container .background:not(.ba
   color: var(--tab-text);
   line-height: 1;
 }
+.after-tabs [role="button"] {
+  background: transparent;
+}
 
 tab-item-substance.active,
 tab-item-substance.active:hover,
@@ -248,15 +251,18 @@ tab-item[type="group"].subtree-collapsed {
 tab-item-substance:is(.active, .bundled-active) .background,
 tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 .after-tabs button:hover::before,
-.after-tabs [role="button"]:hover,
+.after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
-  --tab-visual-padding: 0px;
+  --tab-visual-padding: 2px;
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
   bottom: var(--tab-visual-padding);
   inset-inline-start: var(--tab-visual-padding);
   inset-inline-end: var(--tab-visual-padding);
   top: var(--tab-visual-padding);
+}
+#subpanel-selector-anchor:hover::before {
+  --tab-visual-padding: 0;
 }
 
 :root:not(.lwtheme-applied) tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
@@ -283,11 +289,11 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 }
 
 tab-item-substance.split-view-sub:is(.active, .bundled-active) .background {
-  --tab-visual-padding: 2px;
+  --tab-visual-padding: 4px;
 }
 
 tab-item-substance.faviconized .background {
-  --tab-visual-padding: 1px;
+  --tab-visual-padding: 2px;
   --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.6);
 }
 
@@ -321,7 +327,7 @@ tab-item-substance.split-substances-container .background {
 :root.mutiple-highlighted tab-item-substance.highlighted:is(.active, .bundled-active) {
   .background:not(.base),
   &:hover .background:not(.base) {
-    --tab-visual-padding: 1px;
+    --tab-visual-padding: 3px;
     outline-width: 2px;
   }
 }
