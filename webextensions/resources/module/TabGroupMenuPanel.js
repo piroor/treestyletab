@@ -674,9 +674,15 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
   prepareUI() {
     if (this.panel) {
-      return;
+      if (this.lastStyle == this.style)
+        return;
+
+      this.panel.remove();
+      this.panel = null;
     }
     super.prepareUI();
+
+    this.lastStyle = this.style;
 
     const titleField = this.panel.querySelector('.in-content-panel-title-field');
     titleField.addEventListener('input', event => {
