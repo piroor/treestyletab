@@ -1502,6 +1502,9 @@ tab-item[type="group-collapsed-members-counter"] {
   background: var(--tab-text);
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
+#subpanel-selector-anchor::after {
+  margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+}
 
 
 #out-of-view-tab-notifier {
