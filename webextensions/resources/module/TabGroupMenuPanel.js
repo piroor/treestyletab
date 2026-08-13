@@ -342,11 +342,15 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
              justify-content: flex-start;
 
-             &:hover {
+             &[disabled] {
+               opacity: 0.5;
+             }
+
+             &:not([disabled]):hover {
                background-color: var(--tab-hover-background-color);
              }
 
-             &:focus {
+             &:not([disabled]):focus {
                box-shadow: none;
              }
             }
@@ -449,21 +453,11 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
   onClick(event) {
     event.stopPropagation();
-    const command = event.target?.closest('input, button')?.dataset?.command;
-    if (!command) {
+    const target = event.target?.closest('input, button');
+    if (!target?.dataset?.command) {
       return;
     }
-    browser.runtime.sendMessage({
-      type:     'treestyletab:invoke-native-tab-group-menu-panel-command',
-      windowId: this.windowId,
-      groupId:  parseInt(this.panel.dataset.targetId),
-      command,
-    });
-    this.onMessage({
-      type:      `treestyletab:${this.type}:hide`,
-      windowId:  this.windowId,
-      timestamp: Date.now(),
-    });
+    this.invokeCommand(target);
   }
 
   onKeyDown(event) {
@@ -480,17 +474,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
       case 'Enter':
       case 'Return':
-        browser.runtime.sendMessage({
-          type:     'treestyletab:invoke-native-tab-group-menu-panel-command',
-          windowId: this.windowId,
-          groupId:  parseInt(this.panel.dataset.targetId),
-          command:  target.dataset?.command,
-        });
-        this.onMessage({
-          type:      `treestyletab:${this.type}:hide`,
-          windowId:  this.windowId,
-          timestamp: Date.now(),
-        });
+        this.invokeCommand(target);
         return;
 
       case 'Escape':
@@ -501,6 +485,25 @@ export default class TabGroupMenuPanel extends InContentPanel {
         });
         return;
     }
+  }
+
+  invokeCommand(target) {
+    if (target.dataset?.command == 'copyLinks') {
+      this.copyLinks();
+    }
+    else {
+      browser.runtime.sendMessage({
+        type:     'treestyletab:invoke-native-tab-group-menu-panel-command',
+        windowId: this.windowId,
+        groupId:  parseInt(this.panel.dataset.targetId),
+        command:  target.dataset?.command,
+      });
+    }
+    this.onMessage({
+      type:      `treestyletab:${this.type}:hide`,
+      windowId:  this.windowId,
+      timestamp: Date.now(),
+    });
   }
 
   advanceFocus(direction) {
@@ -636,6 +639,9 @@ export default class TabGroupMenuPanel extends InContentPanel {
           <button tabindex="0" class="tabGroupEditor_moveGroupToNewWindow subviewbutton"
                   data-command="moveGroupToNewWindow"
                  >${this.sanitizeForHTMLText(i18n.tabGroupMenu_tab_group_editor_action_new_window_label)}</button>
+          <button tabindex="0" class="tabGroupEditor_copyLinks subviewbutton"
+                  data-command="copyLinks"
+                 ></button>
           <!--
           <button tabindex="0" class="tabGroupEditor_saveAndCloseGroup subviewbutton"
                   data-command="saveAndCloseGroup"
@@ -695,7 +701,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
     this.panel.addEventListener('keydown', this.onKeyDownSelf);
   }
 
-  onUpdateUI({ targetId, groupTitle, groupColor, creating, anchorTabRect, complete, ...params }) {
+  onUpdateUI({ targetId, groupTitle, groupColor, creating, tabsToBeCopied, anchorTabRect, complete, ...params }) {
     this.log(`${this.type} updateUI `, { panel: this.panel, targetId, groupTitle, groupColor, creating, anchorTabRect, ...params });
 
     this.panel.classList.toggle('tab-group-editor-mode-create', creating);
@@ -708,11 +714,54 @@ export default class TabGroupMenuPanel extends InContentPanel {
       colorRadio.checked = true;
     }
 
+    this.tabsToBeCopied = tabsToBeCopied || [];
+    const copyLinksButton = this.panel.querySelector(`button[data-command="copyLinks"]`)
+    copyLinksButton.disabled = this.tabsToBeCopied.length <= 0;
+    copyLinksButton.textContent = this.tabsToBeCopied.length == 1 ?
+      this.i18n.tabGroupMenu_tab_group_editor_action_copy_link_label :
+      this.i18n.tabGroupMenu_tab_group_editor_action_copy_links_label.replace(/%S/gi, this.tabsToBeCopied.length);
+
     complete();
   }
 
   onShown() {
     const titleField = this.panel.querySelector('.in-content-panel-title-field');
     titleField.focus();
+  }
+
+  // We cannot use copyLinks() in background/commands because calling it via messaging will be blocked due to the error: "DOMException: Clipboard write was blocked due to lack of user activation."
+  async copyLinks() {
+    if (!this.tabsToBeCopied || this.tabsToBeCopied.length == 0)
+      return;
+
+    const plainText = this.tabsToBeCopied.map(tab => tab.url).join('\n');
+    const richText  = this.tabsToBeCopied.map(this.toRichTextLink, this).join('<br>\n');
+
+    if (typeof navigator.clipboard.write == 'function') {
+      this.log('trying to write data to clipboard via Clipboard API');
+      try {
+        const clipboardItem = new ClipboardItem({
+          ['text/html']:  richText,
+          ['text/plain']: plainText,
+        });
+        await navigator.clipboard.write([clipboardItem]);
+        return;
+      }
+      catch(error) {
+        console.error(error);
+      }
+      return;
+    }
+
+    try {
+      navigator.clipboard.writeText(plainText);
+      return;
+    }
+    catch(error) {
+      console.error(error);
+    }
+  }
+  toRichTextLink(tab) {
+    return `<a href="${this.sanitizeForHTMLText(tab.url)}">${this.sanitizeForHTMLText(tab.title)}</a>`;
   }
 }

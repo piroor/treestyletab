@@ -1031,6 +1031,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "赤" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "グルーブ内に新しいタブを開く" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "グループを新しいウィンドウへ移動" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "グループ内のリンクをコピー" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "グループ内の %S 個のリンクをコピー" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "グループを保存して閉じる" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "グループを解放" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "グループを削除" },

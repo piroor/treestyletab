@@ -10,6 +10,7 @@ import {
   log as internalLogger,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as Sync from '/common/sync.js';
 import * as TabsStore from '/common/tabs-store.js';
 import { Tab } from '/common/TreeItem.js';
 
@@ -48,6 +49,8 @@ const TAB_GROUP_MENU_LABELS = Object.fromEntries(`
   tabGroupMenu_tab-group-editor-color-selector2-red_title
   tabGroupMenu_tab-group-editor-action-new-tab_label
   tabGroupMenu_tab-group-editor-action-new-window_label
+  tabGroupMenu_tab-group-editor-action-copy-link_label
+  tabGroupMenu_tab-group-editor-action-copy-links_label
   tabGroupMenu_tab-group-editor-action-save_label
   tabGroupMenu_tab-group-editor-action-ungroup_label
   tabGroupMenu_tab-group-editor-action-delete_label
@@ -113,13 +116,16 @@ export async function show(group, creating = false) {
     mTabGroupMenuPanel.windowId = windowId;
   }
 
+  const sendableTabs = group.$TST.members.filter(Sync.isSendableTab);
+
   mController.show({
     anchorItem:    group,
     targetItem:    group,
     messageParams: {
-      groupTitle: group.title,
-      groupColor: group.color,
-      creating:   !!creating,
+      groupTitle:     group.title,
+      groupColor:     group.color,
+      creating:       !!creating,
+      tabsToBeCopied: sendableTabs.map(tab => ({ url: tab.url, title: tab.title })),
     },
   });
 }

@@ -2314,6 +2314,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "红色" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "在群组中新建标签页" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "移动群组到新窗口" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "复制群组中的链接" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "复制群组中的 %S 个链接" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "保存群组并关闭" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "取消分组" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "删除群组" },

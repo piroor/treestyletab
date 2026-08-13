@@ -2463,6 +2463,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "빨간색" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "그룹에 새 탭" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "그룹을 새 창으로 이동" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "그룹의 링크 복사" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "그룹의 링크 %S개 복사" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "그룹 저장 후 닫기" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "그룹 해제" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "그룹 삭제" },

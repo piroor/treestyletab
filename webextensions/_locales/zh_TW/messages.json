@@ -859,6 +859,8 @@
     "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "紅色" },
     "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "在群組中開啟新分頁" },
     "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "將群組移動至新視窗" },
+    "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "複製群組中的鏈結" },
+    "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "複製群組中的 %S 的鏈結" },
     "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "儲存並關閉群組" },
     "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "取消分頁群組" },
     "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "刪除群組" },

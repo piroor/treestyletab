@@ -2958,6 +2958,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "Rood" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "Nieuw tabblad in groep" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "Groep naar nieuw venster verplaatsen" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "Koppeling in groep kopiëren" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "%S koppelingen in groep kopiëren" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "Groep opslaan en sluiten" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "Tabbladgroepering opheffen" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "Groep verwijderen" },

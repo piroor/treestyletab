@@ -974,6 +974,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "Красный" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "Новая вкладка в группе" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "Переместить группу в новое окно" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "Копировать ссылку в группе" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "Копировать %S ссылок в группе" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "Сохранить и закрыть группу" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "Разгруппировать вкладки" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "Удалить группу" },

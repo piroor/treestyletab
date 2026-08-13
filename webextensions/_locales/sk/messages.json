@@ -1035,6 +1035,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "Červená" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "Nová karta v skupine" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "Presunúť skupinu do nového okna" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "Kopírovať odkaz v skupine" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "Kopírovať %S odkazov v skupine" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "Uložiť a zavrieť skupinu" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "Zrušiť zoskupenie kariet" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "Odstrániť skupinu" },

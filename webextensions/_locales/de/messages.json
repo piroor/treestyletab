@@ -975,6 +975,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "Rot" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "Neuer Tab in Gruppe" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "Gruppe in neues Fenster verschieben" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "Link in Gruppe kopieren" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "%S Links in Gruppe kopieren" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "Gruppe speichern und schließen" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "Gruppierung der Tabs aufheben" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "Gruppe löschen" },

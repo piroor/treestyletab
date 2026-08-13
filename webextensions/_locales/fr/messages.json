@@ -1602,6 +1602,8 @@
   "tabGroupMenu_tab-group-editor-color-selector2-red_title":    { "message": "Rouge" },
   "tabGroupMenu_tab-group-editor-action-new-tab_label":         { "message": "Nouvel onglet dans le groupe" },
   "tabGroupMenu_tab-group-editor-action-new-window_label":      { "message": "Déplacer vers une nouvelle fenêtre" },
+  "tabGroupMenu_tab-group-editor-action-copy-link_label":       { "message": "Copier le lien dans le groupe" },
+  "tabGroupMenu_tab-group-editor-action-copy-links_label":      { "message": "Copier les %S liens dans le groupe" },
   "tabGroupMenu_tab-group-editor-action-save_label":            { "message": "Enregistrer et fermer le groupe" },
   "tabGroupMenu_tab-group-editor-action-ungroup_label":         { "message": "Dissocier les onglets" },
   "tabGroupMenu_tab-group-editor-action-delete_label":          { "message": "Supprimer le groupe" },
