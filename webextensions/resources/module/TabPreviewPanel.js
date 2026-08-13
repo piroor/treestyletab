@@ -134,7 +134,7 @@ export default class TabPreviewPanel extends InContentPanel {
 
         .in-content-panel-extended-content {
           font-size: calc(1em / var(--in-content-panel-scale));
-          margin: var(--panel-padding-inline) var(--panel-padding-inline);
+          margin: var(--panel-padding-block) var(--panel-padding-inline);
           white-space: pre;
         }
 
