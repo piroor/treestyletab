@@ -36,8 +36,10 @@ export default class InContentPanel {
         --base-panel-width: ${this.BASE_PANEL_WIDTH};
         --max-panel-width: 100%;
         --max-32bit-integer: 2147483647;
+        --dimension-relative-050: 0.5rem;
+        --space-small: var(--dimension-relative-050);
         --border-radius-xsmall: 4px;
-        --border-radius-xlarge: 24px;
+        --border-radius-large: 16px;
         background: transparent;
         border: 0 none;
         bottom: auto;
@@ -65,9 +67,9 @@ export default class InContentPanel {
           --panel-border-color: ThreeDShadow;
 
           &.style-nova {
-            --panel-padding-block: calc(var(--border-radius-xlarge) * 0.25 / var(--in-content-panel-scale));
-            --panel-padding-inline: calc(var(--border-radius-xlarge) * 0.75 / var(--in-content-panel-scale));
-            --panel-border-radius: calc(var(--border-radius-xlarge) / var(--in-content-panel-scale));
+            --panel-padding-block: calc(var(--space-small) / var(--in-content-panel-scale));
+            --panel-padding-inline: calc(var(--space-small) * 3 / var(--in-content-panel-scale));
+            --panel-border-radius: calc(var(--border-radius-large) / var(--in-content-panel-scale));
           }
 
           --panel-shadow-margin: 0px;
