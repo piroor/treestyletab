@@ -1466,7 +1466,7 @@ async function onClick(info, contextTab) {
         //mSharingService.openPreferences();
       break;
     case 'context_copyLinks':
-      Commands.copyLinks(sendableMultiselectedTabs || [contextTab]);
+      Commands.copyLinks(multiselectedTabs ? sendableMultiselectedTabs : [contextTab]);
       break;
     case 'context_generateQRCode':
       Commands.generateQRCode(Sync.isSendableTab(contextTab) ? contextTab : (sendableMultiselectedTabs.length > 0 && sendableMultiselectedTabs[0] || contextTab));
