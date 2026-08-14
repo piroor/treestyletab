@@ -19,6 +19,7 @@
   --tab-label-mask-size: 1em;
   --tab-border-radius-size: var(--tab-border-radius);
   --tab-dropshadow-size: 0;
+  --tab-visual-padding: 2px;
 
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
@@ -169,7 +170,7 @@ tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconiz
   --tab-surface: color-mix(in srgb, currentColor 7%, transparent); /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tabs.css#2561 */
 }
 
-tab-item:not([type="group"]) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):not(.split-view):hover,
+tab-item:not([type="group"]:not(.subtree-collapsed)) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):not(.split-view):hover,
 tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
 tab-item.split-view:hover tab-item-substance.split-substances-container,
 .after-tabs button:hover,
@@ -215,14 +216,24 @@ tab-item[type="group"].subtree-collapsed {
     --tab-text: var(--tab-group-color-text) !important;
 
     border-radius: calc(var(--tab-size) / 2);
-    height: calc(var(--tab-size) * 0.9);
-    margi-inline-start: 0.5em;
+    height: calc(var(--tab-size) - (var(--tab-visual-padding) * 4));
+    margin-inline-start: calc(var(--tab-visual-padding) * 0.5);
     max-width: calc(max(var(--tab-label-width), calc(var(--tab-size) / 3.5)) +
                     (0.25em * 2) /* margin-inline of tab-label (both side) */ +
                     (0.5em * 2) /* padding-inline */ +
                     2px /* border */);
     padding-inline: 0.5em;
 
+    :root.regular & {
+      border-end-start-radius: calc(var(--tab-size) / 8);
+    }
+
+    :root.inverted & {
+      border-end-end-radius: calc(var(--tab-size) / 8);
+    }
+  }
+
+  tab-item-substance .background {
     :root.regular & {
       border-end-start-radius: calc(var(--tab-size) / 8);
     }
@@ -255,7 +266,6 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
-  --tab-visual-padding: 2px;
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
   inset-block-start: var(--tab-visual-padding);
@@ -290,13 +300,16 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
   outline-offset: var(--tab-outline-offset);
 }
 
-tab-item-substance.split-view-sub:is(.active, .bundled-active) .background {
+tab-item-substance.split-view-sub:is(.active, .bundled-active) {
   --tab-visual-padding: 4px;
 }
 
-tab-item-substance.faviconized:is(.active, .bundled-active, :not(.split-view-sub:not(.highlighted))) .background {
+tab-item-substance.faviconized:is(.active, .bundled-active, :not(.split-view-sub:not(.highlighted))) {
   --tab-visual-padding: 1px;
-  --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.75) / var(--toolbarbutton-border-radius);
+
+  .background {
+    --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.75) / var(--toolbarbutton-border-radius);
+  }
 }
 
 tab-item[data-next-group-color] {
