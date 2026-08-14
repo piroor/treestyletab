@@ -125,7 +125,9 @@ export async function init() {
 function fixupIcon(identity) {
   if (identity.icon && identity.color) {
     const iconType = configs.style == 'nova' ? 'nova' : 'proton';
+    const menuIconType = iconType == 'nova' ? 'nova-with-bg' : 'proton';
     identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${safeColor(identity.color)}-${iconType}`;
+    identity.menuIconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${safeColor(identity.color)}-${menuIconType}`;
     log('fixupIcon: ', identity);
   }
   return identity;
@@ -190,7 +192,7 @@ export function generateMenuItems({ hasDefault } = {}) {
     const item = document.createElement('li');
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name;
-    item.dataset.icon = identity.iconUrl;
+    item.dataset.icon = identity.menuIconUrl;
     fragment.appendChild(item);
   });
 

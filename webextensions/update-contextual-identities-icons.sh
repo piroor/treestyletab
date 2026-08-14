@@ -27,36 +27,49 @@ TEMPLATE="$(cat << END
   g:not(:target) {
     display: none;
   }
-  *[id$="-nova"] {
+  *[id$="-nova"], *[id$="-nova-with-bg"] {
     fill: var(--identity-fill-color);
     /* https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css#118 */
     --background-fill-tint: color-mix(in srgb, var(--identity-fill-color) 15%, transparent);
   }
   /* colros are: nova-fill(60%,20%), nova-stroke(40%)
      See https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css */
+  #blue-nova-with-bg,
   #blue-nova     { --identity-fill-color: light-dark(#3246B0,#A2D3FF); --identity-stroke-color: #5A87FD; }
   #blue-proton   { fill: #37adff; }
+  #cyan-nova-with-bg,
   #cyan-nova     { --identity-fill-color: light-dark(#066077,#8FDDF0); --identity-stroke-color: #10A4CA; }
   #cyan-proton   { fill: #00c79a; }
+  #gray-nova-with-bg,
   #gray-nova     { --identity-fill-color: light-dark(#3F3E42,#D6D5DA); --identity-stroke-color: #949297; }
   #gray-proton   { fill: light-dark(#0C0C0D,#F9F9FA); }
+  #green-nova-with-bg,
   #green-nova    { --identity-fill-color: light-dark(#06674B,#90E3C6); --identity-stroke-color: #11AE84; }
   #green-proton  { fill: #51cd00; }
+  #orange-nova-with-bg,
   #orange-nova   { --identity-fill-color: light-dark(#9C2C05,#FEBD99); --identity-stroke-color: #F4682C; }
   #orange-proton { fill: #ff9f00; }
+  #pink-nova-with-bg,
   #pink-nova     { --identity-fill-color: light-dark(#882078,#FFB0E2); --identity-stroke-color: #DB54BF; }
   #pink-proton   { fill: #ff4bda; }
+  #purple-nova-with-bg,
   #purple-nova   { --identity-fill-color: light-dark(#702E98,#E8B7FF); --identity-stroke-color: #B864EE; }
   #purple-proton { fill: #af51f5; }
+  #red-nova-with-bg,
   #red-nova      { --identity-fill-color: light-dark(#961E3D,#FFB6BF); --identity-stroke-color: #ED566E; }
   #red-proton    { fill: #ff613d; }
+  #violet-nova-with-bg,
   #violet-nova   { --identity-fill-color: light-dark(#5939A8,#D4C1FF); --identity-stroke-color: #9871FF; }
   #violet-proton { fill: #764edd; }
+  #yellow-nova-with-bg,
   #yellow-nova   { --identity-fill-color: light-dark(#854800,#FBCC77); --identity-stroke-color: #DB820E; }
   #yellow-proton { fill: #ffcb00; }
 </style>
-<symbol id="icon-nova">
+<symbol id="icon-nova-with-bg">
   <circle fill="var(--background-fill-tint)" cx="8" cy="8" r="10"/>
+  <use href="#icon-nova"/>
+</symbol>
+<symbol id="icon-nova">
 %SOURCE_NOVA%
 </symbol>
 <symbol id="icon-proton">
@@ -85,7 +98,9 @@ colors() {
   echo "$COLORS" |
     while read name
     do
-      echo -n "<g id=\"${name}-nova\"><use href=\"#icon-nova\"/></g><g id=\"${name}-proton\"><use href=\"#icon-proton\"/></g>"
+      echo -n "<g id=\"${name}-nova-with-bg\"><use href=\"#icon-nova-with-bg\"/></g>"
+      echo -n "<g id=\"${name}-nova\"><use href=\"#icon-nova\"/></g>"
+      echo -n "<g id=\"${name}-proton\"><use href=\"#icon-proton\"/></g>"
     done
 }
 

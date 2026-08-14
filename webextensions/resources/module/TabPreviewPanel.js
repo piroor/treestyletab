@@ -50,6 +50,18 @@ export default class TabPreviewPanel extends InContentPanel {
           /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-platform.css */
           --border-color-deemphasized: color-mix(in srgb, currentColor 24%, transparent);
 
+          /* https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css */
+          --identity-fill-color-blue: #37adff;
+          --identity-fill-color-cyan: #00c79a;
+          --identity-fill-color-green: #51cd00;
+          --identity-fill-color-yellow: #ffcb00;
+          --identity-fill-color-orange: #ff9f00;
+          --identity-fill-color-red: #ff613d;
+          --identity-fill-color-pink: #ff4bda;
+          --identity-fill-color-purple: #af51f5;
+          --identity-fill-color-violet: #764edd;
+          --identity-fill-color-gray: currentColor;
+
           &:not(.extended) {
             pointer-events: none;
           }
@@ -87,6 +99,18 @@ export default class TabPreviewPanel extends InContentPanel {
           &.style-nova {
             /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
             --border-color-deemphasized: light-dark(var(--color-gray-20), var(--color-gray-50));
+
+            /* https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css */
+            --identity-fill-color-blue: light-dark(var(--color-blue-60), var(--color-blue-20));
+            --identity-fill-color-cyan: light-dark(var(--color-cyan-60), var(--color-cyan-20));
+            --identity-fill-color-green: light-dark(var(--color-green-60), var(--color-green-20));
+            --identity-fill-color-yellow: light-dark(var(--color-yellow-60), var(--color-yellow-20));
+            --identity-fill-color-orange: light-dark(var(--color-orange-60), var(--color-orange-20));
+            --identity-fill-color-red: light-dark(var(--color-red-60), var(--color-red-20));
+            --identity-fill-color-pink: light-dark(var(--color-pink-60), var(--color-pink-20));
+            --identity-fill-color-purple: light-dark(var(--color-purple-60), var(--color-purple-20));
+            --identity-fill-color-violet: light-dark(var(--color-violet-60), var(--color-violet-20));
+            --identity-fill-color-gray: light-dark(var(--color-gray-60), var(--color-gray-20));
 
             padding-block-end: var(--panel-padding-block);
           }
@@ -145,6 +169,13 @@ export default class TabPreviewPanel extends InContentPanel {
           font-size: calc(1em / var(--in-content-panel-scale));
           margin: 0 var(--panel-padding-inline);
 
+          .contextual-identity {
+            align-items: center;
+            color: var(--identity-fill-color);
+            display: flex;
+            flex-direction: row;
+          }
+
           .label {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -152,9 +183,26 @@ export default class TabPreviewPanel extends InContentPanel {
           }
 
           .icon {
-            margin: 0.25em;
-            max-height: 1em;
-            max-width: 1em;
+            margin-inline-start: 0.25em;
+            max-height: 1.2em;
+            max-width: 1.2em;
+          }
+
+          .in-content-panel.style-nova & {
+            .contextual-identity {
+              background: color-mix(in srgb, currentColor 15%, transparent);
+              border-radius: 1.2em;
+              padding: 0 0.5em;
+            }
+
+            .label {
+              order: 2;
+            }
+
+            .icon {
+              margin-inline: 0 0.25em;
+              order: 1;
+            }
           }
         }
 
@@ -274,7 +322,7 @@ export default class TabPreviewPanel extends InContentPanel {
     return `
       <div class="in-content-panel-title"></div>
       <div class="in-content-panel-url"></div>
-      <div class="in-content-panel-contextual-identity"><span class="label"></span><img class="icon"/></div>
+      <div class="in-content-panel-contextual-identity"><label class="contextual-identity"><span class="label"></span><img class="icon"/></label></div>
       <div class="in-content-panel-extended-content"></div>
       <div class="in-content-panel-image-container">
         <img class="in-content-panel-image"/>
@@ -348,11 +396,10 @@ export default class TabPreviewPanel extends InContentPanel {
       urlElement.textContent = url;
       urlElement.classList.toggle('blank', !url);
 
-      const contextualIdentityLabelElement = contextualIdentityElement.querySelector('.label');
-      const contextualIdentityIconElement = contextualIdentityElement.querySelector('.icon');
       if (contextualIdentity) {
-        contextualIdentityLabelElement.textContent = contextualIdentity.name;
-        contextualIdentityIconElement.src = /^[^:]+:\/\//.test(contextualIdentity.iconUrl) ? contextualIdentity.iconUrl : browser.runtime.getURL(contextualIdentity.iconUrl);
+        contextualIdentityElement.querySelector('.contextual-identity').style.setProperty('--identity-fill-color', `var(--identity-fill-color-${contextualIdentity.color})`);
+        contextualIdentityElement.querySelector('.label').textContent = contextualIdentity.name;
+        contextualIdentityElement.querySelector('.icon').src = /^[^:]+:\/\//.test(contextualIdentity.iconUrl) ? contextualIdentity.iconUrl : browser.runtime.getURL(contextualIdentity.iconUrl);
       }
 
       this.panel.classList.remove('extended');

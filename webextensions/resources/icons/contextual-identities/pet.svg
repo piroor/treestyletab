@@ -6,40 +6,53 @@
   g:not(:target) {
     display: none;
   }
-  *[id$="-nova"] {
+  *[id$="-nova"], *[id$="-nova-with-bg"] {
     fill: var(--identity-fill-color);
     /* https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css#118 */
     --background-fill-tint: color-mix(in srgb, var(--identity-fill-color) 15%, transparent);
   }
   /* colros are: nova-fill(60%,20%), nova-stroke(40%)
      See https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css */
+  #blue-nova-with-bg,
   #blue-nova     { --identity-fill-color: light-dark(#3246B0,#A2D3FF); --identity-stroke-color: #5A87FD; }
   #blue-proton   { fill: #37adff; }
+  #cyan-nova-with-bg,
   #cyan-nova     { --identity-fill-color: light-dark(#066077,#8FDDF0); --identity-stroke-color: #10A4CA; }
   #cyan-proton   { fill: #00c79a; }
+  #gray-nova-with-bg,
   #gray-nova     { --identity-fill-color: light-dark(#3F3E42,#D6D5DA); --identity-stroke-color: #949297; }
   #gray-proton   { fill: light-dark(#0C0C0D,#F9F9FA); }
+  #green-nova-with-bg,
   #green-nova    { --identity-fill-color: light-dark(#06674B,#90E3C6); --identity-stroke-color: #11AE84; }
   #green-proton  { fill: #51cd00; }
+  #orange-nova-with-bg,
   #orange-nova   { --identity-fill-color: light-dark(#9C2C05,#FEBD99); --identity-stroke-color: #F4682C; }
   #orange-proton { fill: #ff9f00; }
+  #pink-nova-with-bg,
   #pink-nova     { --identity-fill-color: light-dark(#882078,#FFB0E2); --identity-stroke-color: #DB54BF; }
   #pink-proton   { fill: #ff4bda; }
+  #purple-nova-with-bg,
   #purple-nova   { --identity-fill-color: light-dark(#702E98,#E8B7FF); --identity-stroke-color: #B864EE; }
   #purple-proton { fill: #af51f5; }
+  #red-nova-with-bg,
   #red-nova      { --identity-fill-color: light-dark(#961E3D,#FFB6BF); --identity-stroke-color: #ED566E; }
   #red-proton    { fill: #ff613d; }
+  #violet-nova-with-bg,
   #violet-nova   { --identity-fill-color: light-dark(#5939A8,#D4C1FF); --identity-stroke-color: #9871FF; }
   #violet-proton { fill: #764edd; }
+  #yellow-nova-with-bg,
   #yellow-nova   { --identity-fill-color: light-dark(#854800,#FBCC77); --identity-stroke-color: #DB820E; }
   #yellow-proton { fill: #ffcb00; }
 </style>
-<symbol id="icon-nova">
+<symbol id="icon-nova-with-bg">
   <circle fill="var(--background-fill-tint)" cx="8" cy="8" r="10"/>
+  <use href="#icon-nova"/>
+</symbol>
+<symbol id="icon-nova">
   <path fill-rule="evenodd" d="M8.777.555a.75.75 0 1 1 1.446.392L10.21 1h.481c.93 0 1.799.47 2.306 1.251l.161.25h2.094a.75.75 0 0 1 .75.75v2A2.75 2.75 0 0 1 13.251 8h-.714l-.374 1.466v.001A5.2 5.2 0 0 0 12 10.763v3.45c0 .868-.642 1.615-1.507 1.736h-.002a5.5 5.5 0 0 1-1.463.002A1.76 1.76 0 0 1 7.5 14.213v-1.668a24 24 0 0 1-2 0v1.668c0 .868-.642 1.614-1.507 1.735h-.002a5.5 5.5 0 0 1-1.463.003A1.76 1.76 0 0 1 1 14.213V7.786A2.72 2.72 0 0 1-.001 5.667V3.75a.75.75 0 0 1 1.5 0v1.917c0 .795.735 1.391 1.531 1.22l.747-.172q.38-.093.773-.205l.759-.228a24 24 0 0 0 2.03-.75.24.24 0 0 0 .134-.163l.499-1.844V3.52zM7.235 7.192a25.6 25.6 0 0 1-3.891 1.163q-.431.088-.844.049v5.81c0 .12.089.232.23.251a3.8 3.8 0 0 0 1.055-.002l.043-.01a.26.26 0 0 0 .172-.24V11.77q0-.04.002-.077a.757.757 0 0 1 .806-.69c1.11.087 2.26.088 3.385 0a.76.76 0 0 1 .806.69 1 1 0 0 1 0 .09l.001.002v2.43c0 .12.089.232.23.251a3.8 3.8 0 0 0 1.055-.002l.043-.01a.26.26 0 0 0 .172-.24v-3.45c0-.547.066-1.092.198-1.623zM9.423 3.9l-.003.016-.5 1.844q-.076.282-.24.523l2.402 1.35.145-.57.042-.118a.75.75 0 0 1 .685-.446h1.297c.69 0 1.25-.56 1.25-1.25V4h-1.75a.75.75 0 0 1-.629-.34l-.384-.59a1.25 1.25 0 0 0-1.048-.57h-.887z" clip-rule="evenodd" />
 </symbol>
 <symbol id="icon-proton">
   <path  d="M14.25,4.05c0-0.55-0.5-0.95-1.05-1.2V1.85c-0.1-0.1-0.15-0.15-0.3-0.15c-0.3,0-0.55,0.4-0.65,1.05c-0.1,0-0.15,0-0.25,0l0,0  c0-0.1,0-0.15-0.1-0.25c-0.15-0.55-0.4-0.95-0.65-1.3C11,1.3,10.85,1.6,10.85,2L11,3.15c-0.15,0.1-0.3,0.15-0.5,0.3l-1.75,1.85l0,0  c0,0-3.15-0.4-5.45,0.1c-0.3,0-0.5,0.1-0.55,0.15c-0.25,0.1-0.4,0.15-0.55,0.3c-0.55-0.4-1.1-1.05-1.6-2c0-0.15-0.25-0.25-0.4-0.25s-0.25,0.3-0.15,0.5  c0.4,1.05,1.05,1.75,1.7,2.25c-0.25,0.25-0.4,0.5-0.5,0.8c0,0-0.15,1.1-0.15,2.75l0.7,4c0,0.5,0.4,0.9,0.95,0.9c0.5,0,0.95-0.4,0.95-0.9V11.5l0.25-0.65h4.4  l0.4,0.65v2.35c0,0.5,0.4,0.9,0.95,0.9c0.5,0,0.8-0.3,0.9-0.7l0,0l0.95-4.5l0,0l1.05-3.2h1.5c1.7,0,1.85-1.45,1.85-1.45L14.25,4.05z"/>
 </symbol>
-<g id="blue-nova"><use href="#icon-nova"/></g><g id="blue-proton"><use href="#icon-proton"/></g><g id="cyan-nova"><use href="#icon-nova"/></g><g id="cyan-proton"><use href="#icon-proton"/></g><g id="gray-nova"><use href="#icon-nova"/></g><g id="gray-proton"><use href="#icon-proton"/></g><g id="green-nova"><use href="#icon-nova"/></g><g id="green-proton"><use href="#icon-proton"/></g><g id="orange-nova"><use href="#icon-nova"/></g><g id="orange-proton"><use href="#icon-proton"/></g><g id="pink-nova"><use href="#icon-nova"/></g><g id="pink-proton"><use href="#icon-proton"/></g><g id="purple-nova"><use href="#icon-nova"/></g><g id="purple-proton"><use href="#icon-proton"/></g><g id="red-nova"><use href="#icon-nova"/></g><g id="red-proton"><use href="#icon-proton"/></g><g id="violet-nova"><use href="#icon-nova"/></g><g id="violet-proton"><use href="#icon-proton"/></g><g id="yellow-nova"><use href="#icon-nova"/></g><g id="yellow-proton"><use href="#icon-proton"/></g>
+<g id="blue-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="blue-nova"><use href="#icon-nova"/></g><g id="blue-proton"><use href="#icon-proton"/></g><g id="cyan-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="cyan-nova"><use href="#icon-nova"/></g><g id="cyan-proton"><use href="#icon-proton"/></g><g id="gray-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="gray-nova"><use href="#icon-nova"/></g><g id="gray-proton"><use href="#icon-proton"/></g><g id="green-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="green-nova"><use href="#icon-nova"/></g><g id="green-proton"><use href="#icon-proton"/></g><g id="orange-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="orange-nova"><use href="#icon-nova"/></g><g id="orange-proton"><use href="#icon-proton"/></g><g id="pink-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="pink-nova"><use href="#icon-nova"/></g><g id="pink-proton"><use href="#icon-proton"/></g><g id="purple-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="purple-nova"><use href="#icon-nova"/></g><g id="purple-proton"><use href="#icon-proton"/></g><g id="red-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="red-nova"><use href="#icon-nova"/></g><g id="red-proton"><use href="#icon-proton"/></g><g id="violet-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="violet-nova"><use href="#icon-nova"/></g><g id="violet-proton"><use href="#icon-proton"/></g><g id="yellow-nova-with-bg"><use href="#icon-nova-with-bg"/></g><g id="yellow-nova"><use href="#icon-nova"/></g><g id="yellow-proton"><use href="#icon-proton"/></g>
 </svg>

@@ -576,7 +576,7 @@ function updateContextualIdentities() {
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (identity.iconUrl)
-      item.icons = generateIcons(identity.iconUrl);
+      item.icons = generateIcons(identity.menuIconUrl);
     browser.menus.create(item);
     onMessageExternal({
       type:   TSTAPI.kCONTEXT_MENU_CREATE,
