@@ -1050,8 +1050,16 @@ async function onConfigChange(changedKey) {
       break;
 
     case 'longPressOnNewTabButton': {
-      const tooltipExtra = configs.longPressOnNewTabButton == Constants.kCONTEXTUAL_IDENTITY_SELECTOR ?
-        browser.i18n.getMessage('tabbar_newTabButton_tooltip_container') : '';
+      const tooltipExtra = (() => {
+        switch (configs.longPressOnNewTabButton) {
+          case Constants.kCONTEXTUAL_IDENTITY_SELECTOR:
+            return browser.i18n.getMessage('tabbar_newTabButton_tooltip_container');
+          case Constants.kNEWTAB_ACTION_SELECTOR:
+            return browser.i18n.getMessage('tabbar_newTabButton_tooltip_newtabaction');
+          default:
+            return '';
+        }
+      })();
       const tooltip = browser.i18n.getMessage('tabbar_newTabButton_tooltip') + tooltipExtra;
       for (const button of document.querySelectorAll('.newtab-button')) {
         button.setAttribute('title', tooltip);
