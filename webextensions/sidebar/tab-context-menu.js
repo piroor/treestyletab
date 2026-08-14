@@ -516,7 +516,7 @@ function updateContextualIdentitiesSelector() {
     return;
 
   const fragment = ContextualIdentities.generateMenuItems({
-    hasDefault: true,
+    defaultItemLabel: browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default'),
   });
   range.insertNode(fragment);
   range.detach();

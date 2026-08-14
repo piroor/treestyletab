@@ -174,13 +174,13 @@ function onContextualIdentityUpdated(updatedInfo) {
 }
 
 
-export function generateMenuItems({ hasDefault } = {}) {
+export function generateMenuItems({ defaultItemLabel } = {}) {
   const fragment = document.createDocumentFragment();
 
-  if (hasDefault) {
+  if (defaultItemLabel) {
     const defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
-    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default');
+    defaultCotnainerItem.textContent = defaultItemLabel;
     fragment.appendChild(defaultCotnainerItem);
 
     const separator = document.createElement('li');

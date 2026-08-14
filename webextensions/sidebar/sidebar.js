@@ -561,7 +561,9 @@ function updateContextualIdentitiesSelector() {
     return;
 
   const fragment = ContextualIdentities.generateMenuItems({
-    hasDefault: configs.inheritContextualIdentityToChildTabMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    defaultItemLabel: configs.inheritContextualIdentityToChildTabMode == Constants.kCONTEXTUAL_IDENTITY_DEFAULT ?
+      browser.i18n.getMessage('tabbar_newTabButton_label') :
+      browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default'),
   });
   range.insertNode(fragment);
   range.detach();
