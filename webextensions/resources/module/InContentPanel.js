@@ -167,6 +167,7 @@ export default class InContentPanel {
             --color-cyan-70: #034554;
             --color-gray-0: #fbfbfe;
             --color-gray-10: #efedf2;
+            --color-gray-20: #d6d5da;
             --color-gray-50: #67666a;
             --color-gray-55: #515054;
             --color-gray-65: #312f33;

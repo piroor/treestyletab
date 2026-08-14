@@ -47,6 +47,9 @@ export default class TabPreviewPanel extends InContentPanel {
           cursor: default;
           overflow: hidden; /* clip the preview with the rounded edges */
 
+          /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-platform.css */
+          --border-color-deemphasized: color-mix(in srgb, currentColor 24%, transparent);
+
           &:not(.extended) {
             pointer-events: none;
           }
@@ -82,6 +85,9 @@ export default class TabPreviewPanel extends InContentPanel {
           }
 
           &.style-nova {
+            /* https://searchfox.org/mozilla-central/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/tokens-shared.css */
+            --border-color-deemphasized: light-dark(var(--color-gray-20), var(--color-gray-50));
+
             padding-block-end: var(--panel-padding-block);
           }
 
@@ -164,11 +170,11 @@ export default class TabPreviewPanel extends InContentPanel {
           overflow: hidden;
 
           .in-content-panel.has-image & {
-            border-block-start: calc(1px / var(--in-content-panel-scale)) solid var(--panel-border-color);
+            border-block-start: calc(1px / var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
           }
 
           .in-content-panel.has-image.style-nova & {
-            border: calc(1px / var(--in-content-panel-scale)) solid var(--panel-border-color);
+            border: calc(1px / var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
             border-radius: calc(var(--panel-padding-inline) * 0.6);
             margin: 0.25em calc(var(--panel-padding-inline) * 0.6) calc(var(--panel-padding-inline) * 0.6 - var(--panel-padding-block));
           }
