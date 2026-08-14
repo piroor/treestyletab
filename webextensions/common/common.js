@@ -181,7 +181,15 @@ export const configs = new Configs({
   sidebarPositionOptionNotificationTimeout: 20 * 1000,
   rtl:                                      isRTL(),
 
-  style:       /^Mac/i.test(navigator.platform) ? 'sidebar' : 'proton',
+  style: (() => {
+    if (/^Mac/i.test(navigator.platform))
+      return 'sidebar';
+    const matched = navigator.userAgent.match(/Firefox\/(\d+)\.\d+/);
+    const version = matched ? parseInt(matched[1]) : 0;
+    if (version >= 155)
+      return 'nova';
+    return 'proton';
+  })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon',
   iconColor:   'auto',
   indentLine:  'auto',
