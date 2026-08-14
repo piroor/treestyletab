@@ -486,7 +486,7 @@ function updateNativeTabGroups(contextTab) {
   });
 
   const defaultTitle = browser.i18n.getMessage('tabContextMenu_addToGroup_unnamed_label');
-  const darkSuffix = window.matchMedia('(prefers-color-scheme: dark)').matches ? '-invert' : '';
+  const styleSuffix = configs.style == 'nova' ? 'nova' : 'proton';
   const groups = getEffectiveTabGroups(contextTab.windowId);
   for (const group of groups) {
     if (contextTab.groupId == group.id) {
@@ -497,7 +497,7 @@ function updateNativeTabGroups(contextTab) {
       id,
       parentId:            'context_addToGroup',
       title:               group.title || defaultTitle,
-      icons:               generateIcons(`/resources/icons/tab-group-chicklet.svg#${group.color}${darkSuffix}`),
+      icons:               generateIcons(`/resources/icons/tab-group-chicklet.svg#${group.color}-${styleSuffix}`),
       contexts:            ['tab'],
       viewTypes:           ['sidebar', 'tab', 'popup'],
       documentUrlPatterns: SIDEBAR_URL_PATTERN,

@@ -8,26 +8,55 @@
   g:not(:target) {
     display: none;
   }
+  g {
+    fill: var(--identity-fill-color);
+    stroke: var(--identity-fill-color);
+  }
+  #blue-nova     { --identity-fill-color: light-dark(#3246B0, #A2D3FF); --identity-stroke-color: #5A87FD; }
+  #blue-proton   { --identity-fill-color: light-dark(oklch(48% 0.2 260), oklch(83% 0.17 260)); --identity-stroke-color: var(--identity-fill-color); }
+  #cyan-nova     { --identity-fill-color: light-dark(#066077, #8FDDF0); --identity-stroke-color: #10A4CA; }
+  #cyan-proton   { --identity-fill-color: light-dark(oklch(48% 0.2 205), oklch(83% 0.11 205)); --identity-stroke-color: var(--identity-fill-color); }
+  #gray-nova     { --identity-fill-color: light-dark(#3F3E42, #D6D5DA); --identity-stroke-color: #949297; }
+  #gray-proton   { --identity-fill-color: light-dark(#5b5b66, #bac2ca); --identity-stroke-color: var(--identity-fill-color); }
+  #green-nova    { --identity-fill-color: light-dark(#06674B, #90E3C6); --identity-stroke-color: #11AE84; }
+  #green-proton  { --identity-fill-color: light-dark(oklch(48% 0.2 145), oklch(83% 0.14 145)); --identity-stroke-color: var(--identity-fill-color); }
+  #orange-nova   { --identity-fill-color: light-dark(#9C2C05, #FEBD99); --identity-stroke-color: #F4682C; }
+  #orange-proton { --identity-fill-color: light-dark(oklch(48% 0.20 50), oklch(86% 0.14 50)); --identity-stroke-color: var(--identity-fill-color); }
+  #pink-nova     { --identity-fill-color: light-dark(#882078, #FFB0E2); --identity-stroke-color: #DB54BF; }
+  #pink-proton   { --identity-fill-color: light-dark(oklch(48% 0.2 360), oklch(83% 0.14 360)); --identity-stroke-color: var(--identity-fill-color); }
+  #purple-nova   { --identity-fill-color: light-dark(#702E98, #E8B7FF); --identity-stroke-color: #B864EE; }
+  #purple-proton { --identity-fill-color: light-dark(oklch(48% 0.2 315), oklch(83% 0.14 315)); --identity-stroke-color: var(--identity-fill-color); }
+  #red-nova      { --identity-fill-color: light-dark(#961E3D, #FFB6BF); --identity-stroke-color: #ED566E; }
+  #red-proton    { --identity-fill-color: light-dark(oklch(48% 0.2 15), oklch(83% 0.14 15)); --identity-stroke-color: var(--identity-fill-color); }
+  #violet-nova   { --identity-fill-color: light-dark(#5939A8, #D4C1FF); --identity-stroke-color: #9871FF; }
+  #violet-proton { --identity-fill-color: light-dark(oklch(48% 0.2 290), oklch(83% 0.17 290)); --identity-stroke-color: var(--identity-fill-color); }
+  #yellow-nova   { --identity-fill-color: light-dark(#854800, #FBCC77); --identity-stroke-color: #DB820E; }
+  #yellow-proton { --identity-fill-color: light-dark(oklch(51% 0.23 90), oklch(86% 0.14 90)); --identity-stroke-color: var(--identity-fill-color); }
 </style>
-<symbol id="icon">
-  <rect width="15" height="15" x="0.5" y="0.5" rx="4" stroke="context-stroke" stroke-width="1"/>
+<symbol id="icon-nova">
+  <path fill-opacity="context-fill-opacity" stroke-opacity="context-stroke-opacity" stroke-linejoin="round" stroke-width="1.5" d="M.75 8a7.25 7.25 0 1 1 7.25 7.25H3.2A2.45 2.45 0 0 1 .75 12.8z"/>
 </symbol>
-<g id="blue"          fill="oklch(48% 0.2 260)"  stroke="oklch(48% 0.2 260)"><use href="#icon"/></g>
-<g id="blue-invert"   fill="oklch(83% 0.17 260)" stroke="oklch(83% 0.17 260)"><use href="#icon"/></g>
-<g id="purple"        fill="oklch(48% 0.2 315)"  stroke="oklch(48% 0.2 315)"><use href="#icon"/></g>
-<g id="purple-invert" fill="oklch(83% 0.14 315)" stroke="oklch(83% 0.14 315)"><use href="#icon"/></g>
-<g id="cyan"          fill="oklch(48% 0.2 205)"  stroke="oklch(48% 0.2 205)"><use href="#icon"/></g>
-<g id="cyan-invert"   fill="oklch(83% 0.11 205)" stroke="oklch(83% 0.11 205)"><use href="#icon"/></g>
-<g id="orange"        fill="oklch(48% 0.20 50)"  stroke="oklch(48% 0.20 50)"><use href="#icon"/></g>
-<g id="orange-invert" fill="oklch(86% 0.14 50)"  stroke="oklch(86% 0.14 50)"><use href="#icon"/></g>
-<g id="yellow"        fill="oklch(51% 0.23 90)"  stroke="oklch(51% 0.23 90)"><use href="#icon"/></g>
-<g id="yellow-invert" fill="oklch(86% 0.14 90)"  stroke="oklch(86% 0.14 90)"><use href="#icon"/></g>
-<g id="pink"          fill="oklch(48% 0.2 360)"  stroke="oklch(48% 0.2 360)"><use href="#icon"/></g>
-<g id="pink-invert"   fill="oklch(83% 0.14 360)" stroke="oklch(83% 0.14 360)"><use href="#icon"/></g>
-<g id="green"         fill="oklch(48% 0.2 145)"  stroke="oklch(48% 0.2 145)"><use href="#icon"/></g>
-<g id="green-invert"  fill="oklch(83% 0.14 145)" stroke="oklch(83% 0.14 145)"><use href="#icon"/></g>
-<g id="red"           fill="oklch(48% 0.2 15)"   stroke="oklch(48% 0.2 15)"><use href="#icon"/></g>
-<g id="red-invert"    fill="oklch(83% 0.14 15)"  stroke="oklch(83% 0.14 15)"><use href="#icon"/></g>
-<g id="grey"          fill="#5b5b66"             stroke="#5b5b66"><use href="#icon"/></g>
-<g id="grey-invert"   fill="#bac2ca"             stroke="#bac2ca"><use href="#icon"/></g>
+<symbol id="icon-proton">
+  <rect width="15" height="15" x="0.5" y="0.5" rx="4" stroke-width="1"/>
+</symbol>
+<g id="blue-nova"><use href="#icon-nova"/></g>
+<g id="blue-proton"><use href="#icon-proton"/></g>
+<g id="cyan-nova"><use href="#icon-nova"/></g>
+<g id="cyan-proton"><use href="#icon-proton"/></g>
+<g id="gray-nova"><use href="#icon-nova"/></g>
+<g id="gray-proton"><use href="#icon-proton"/></g>
+<g id="green-nova"><use href="#icon-nova"/></g>
+<g id="green-proton"><use href="#icon-proton"/></g>
+<g id="orange-nova"><use href="#icon-nova"/></g>
+<g id="orange-proton"><use href="#icon-proton"/></g>
+<g id="pink-nova"><use href="#icon-nova"/></g>
+<g id="pink-proton"><use href="#icon-proton"/></g>
+<g id="purple-nova"><use href="#icon-nova"/></g>
+<g id="purple-proton"><use href="#icon-proton"/></g>
+<g id="red-nova"><use href="#icon-nova"/></g>
+<g id="red-proton"><use href="#icon-proton"/></g>
+<g id="violet-nova"><use href="#icon-nova"/></g>
+<g id="violet-proton"><use href="#icon-proton"/></g>
+<g id="yellow-nova"><use href="#icon-nova"/></g>
+<g id="yellow-proton"><use href="#icon-proton"/></g>
 </svg>
