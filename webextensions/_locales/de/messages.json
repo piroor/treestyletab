@@ -64,6 +64,7 @@
     }},
   "tabbar_newTabButton_label":   { "message": "Neuer Tab" },
   "tabbar_newTabButton_tooltip": { "message": "Neuen Tab öffnen" },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nAnklicken und gedrückt halten, um Tab in einer Tab-Umgebung zu öffnen" },
 
   "tabbar_newTabAction_tooltip":           { "message": "Neuen Tab öffnen als…" },
   "tabbar_newTabAction_independent_label": { "message": "&Eigenständigen Tab" },

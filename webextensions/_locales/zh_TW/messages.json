@@ -57,6 +57,7 @@
       }},
     "tabbar_newTabButton_label":   { "message": "開新分頁" },
     "tabbar_newTabButton_tooltip": { "message": "開新分頁" },
+    "tabbar_newTabButton_tooltip_container": { "message": "\n長按即可開啟新容器分頁" },
   
     "tabbar_newTabAction_tooltip":           { "message": "新分頁開啟為…" },
     "tabbar_newTabAction_independent_label": { "message": "獨立分頁 (&I)" },

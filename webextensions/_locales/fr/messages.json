@@ -156,6 +156,7 @@
     "message": "Ouvrir un nouvel onglet",
     "hash": "cdeaa496e27f481f501b51c5f07478f9"
   },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nEffectuer un appui long pour ouvrir un nouvel onglet conteneur" },
   "tabbar_newTabAction_tooltip": {
     "message": "Ouvrir un nouvel onglet comme…",
     "hash": "4595cbc84085b40156711bb0df0f0ab8"

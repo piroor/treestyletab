@@ -172,6 +172,7 @@
   "tabbar_newTabButton_tooltip": {
     "message": "打开新建标签页"
   },
+  "tabbar_newTabButton_tooltip_container": { "message": "\n长按可新建身份标签页" },
   "tabbar_newTabAction_tooltip": {
     "message": "将新建标签页打开为…"
   },

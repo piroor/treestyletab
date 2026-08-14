@@ -74,6 +74,7 @@
     }},
   "tabbar_newTabButton_label":   { "message": "New Tab" },
   "tabbar_newTabButton_tooltip": { "message": "Open a new tab" },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nPress and hold to open a new container tab" },
 
   "tabbar_newTabAction_tooltip":           { "message": "Open a new tab as…" },
   "tabbar_newTabAction_independent_label": { "message": "&Independent Tab" },

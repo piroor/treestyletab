@@ -156,6 +156,7 @@
         "message": "새 탭 열기",
         "hash": "cdeaa496e27f481f501b51c5f07478f9"
     },
+    "tabbar_newTabButton_tooltip_container": { "message": "\n새 컨테이너 탭을 열려면 길게 누르세요" },
     "tabbar_newTabAction_tooltip": {
         "message": "관계를 정하고 새 탭 열기…",
         "hash": "4595cbc84085b40156711bb0df0f0ab8"

@@ -74,6 +74,7 @@
     }},
   "tabbar_newTabButton_label":   { "message": "新しいタブ" },
   "tabbar_newTabButton_tooltip": { "message": "新しいタブを開く" },
+  "tabbar_newTabButton_tooltip_container": { "message": "\n長押しすると新しいコンテナータブを開きます" },
 
   "tabbar_newTabAction_tooltip":           { "message": "関係を指定して新しいタブを開く..." },
   "tabbar_newTabAction_independent_label": { "message": "独立したタブ(&I)" },

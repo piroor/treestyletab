@@ -64,6 +64,7 @@
     }},
   "tabbar_newTabButton_label":   { "message": "Новая вкладка" },
   "tabbar_newTabButton_tooltip": { "message": "Открыть новую вкладку" },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nНажмите и удерживайте, чтобы открыть новую вкладку в контейнере" },
 
   "tabbar_newTabAction_tooltip":           { "message": "Открыть новую вкладку как…" },
   "tabbar_newTabAction_independent_label": { "message": "Отдельную вкладку" },

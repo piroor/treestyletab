@@ -229,6 +229,7 @@
     "message": "Nieuw tabblad openen",
     "hash": "cdeaa496e27f481f501b51c5f07478f9"
   },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nHoud ingedrukt om een nieuw containertabblad te openen" },
   "tabbar_newTabAction_tooltip": {
     "message": "Nieuw tabblad openen als…",
     "hash": "4595cbc84085b40156711bb0df0f0ab8"

@@ -116,6 +116,7 @@
     "message": "Відкрити нову вкладку",
     "hash": "cdeaa496e27f481f501b51c5f07478f9"
   },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nНатисніть і утримуйте, щоб відкрити нову вкладку в контейнері" },
   "tabbar_newTabAction_tooltip": {
     "message": "Відкрити нову вкладку як…",
     "hash": "4595cbc84085b40156711bb0df0f0ab8"

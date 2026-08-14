@@ -248,6 +248,7 @@ export async function init() {
       onConfigChange('shiftTabsForScrollbarOnlyOnHover');
       onConfigChange('fadeOutPendingTabs');
       onConfigChange('fadeOutDiscardedTabs');
+      onConfigChange('longPressOnNewTabButton');
 
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
@@ -1047,6 +1048,15 @@ async function onConfigChange(changedKey) {
     case 'shiftTabsForScrollbarOnlyOnHover':
       document.documentElement.classList.toggle('shift-tabs-for-scrollbar-only-on-hover', !!configs[changedKey]);
       break;
+
+    case 'longPressOnNewTabButton': {
+      const tooltipExtra = configs.longPressOnNewTabButton == Constants.kCONTEXTUAL_IDENTITY_SELECTOR ?
+        browser.i18n.getMessage('tabbar_newTabButton_tooltip_container') : '';
+      const tooltip = browser.i18n.getMessage('tabbar_newTabButton_tooltip') + tooltipExtra;
+      for (const button of document.querySelectorAll('.newtab-button')) {
+        button.setAttribute('title', tooltip);
+      }
+    }; break;
 
     default:
       if (changedKey.startsWith('chunkedUserStyleRules'))

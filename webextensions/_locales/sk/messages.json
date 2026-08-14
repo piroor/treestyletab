@@ -74,6 +74,7 @@
     }},
   "tabbar_newTabButton_label":   { "message": "Nová karta" },
   "tabbar_newTabButton_tooltip": { "message": "Otvoriť novú kartu" },
+  "tabbar_newTabButton_tooltip_container": { "message": "\nPodržaním tlačidla otvorí novú kontajnerovú kartu" },
 
   "tabbar_newTabAction_tooltip":           { "message": "Otvoriť novú kartu ako…" },
   "tabbar_newTabAction_independent_label": { "message": "&Nezávislá karta" },
