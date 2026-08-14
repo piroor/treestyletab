@@ -17,6 +17,8 @@
   --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
 
   --tab-label-mask-size: 1em;
+  --tab-border-radius-size: var(--tab-border-radius);
+  --tab-dropshadow-size: 0;
 
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
