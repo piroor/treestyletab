@@ -478,3 +478,8 @@ tab-item.split-view:not(.has-active-substance) .split-tab-separator {
     z-index: calc(var(--tab-base-z-index) + 1);
   }
 }
+
+
+#pinned-tabs-container-resizer:hover {
+  background-color: var(--color-accent-primary);
+}
