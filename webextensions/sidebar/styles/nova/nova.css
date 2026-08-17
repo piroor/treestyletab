@@ -286,13 +286,13 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
   --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--toolbar-background-color)));
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
-  bottom: var(--tab-border-width);
   content: " ";
   display: block;
+  inset-block-start: var(--tab-border-width);
+  inset-block-end: var(--tab-border-width);
   inset-inline-start: var(--tab-border-width);
   inset-inline-end: var(--tab-border-width);
   position: absolute;
-  top: var(--tab-border-width);
 }
 :root.lwtheme-applied tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
   outline: var(--tab-outline);
@@ -324,10 +324,10 @@ tab-item[data-next-group-color] {
 
 #subpanel-selector-anchor:hover::before,
 tab-item-substance.split-substances-container .background {
-  bottom: 0;
+  inset-block-start: 0;
+  inset-block-end: 0;
   inset-inline-start: 0;
   inset-inline-end: 0;
-  top: 0;
 }
 
 /* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
