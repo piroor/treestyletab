@@ -59,15 +59,10 @@
 body,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: var(--browser-bg-images, none);
+  background-image: var(--browser-bg-images, none), /* this is a hack to put another BG color on the base BG color */var(--browser-bg-images, none), linear-gradient(to right, var(--browser-toolbar-background-color, transparent) 0%, var(--browser-toolbar-background-color, transparent) 100%);
   background-position: var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
-
-  :root.lwtheme-applied & {
-    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
-    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg)), var(--browser-toolbar-background-color, transparent));
-  }
 }
 :root:not(.rtl).inverted,
 :root:not(.rtl).inverted #background,
