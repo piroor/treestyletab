@@ -111,7 +111,6 @@ export async function generateThemeDeclarations(theme) {
         images.push({
           url:      image,
           position: position.replace(/\b(top|right|bottom|left)\b\s*(.*?)(?=\s*\b(?:top|right|bottom|left)\b|$)/g, (match, position, offset) => {
-          console.log('POS ', {match, position, offset});
             switch (position.toLowerCase()) {
               case 'left':
                 return `left calc(${isRightside ? BG_POSITION_LEFT_OFFSET_RIGHT : BG_POSITION_LEFT_OFFSET_LEFT}${offset ? ' + ' + offset : ''}) `;
@@ -124,7 +123,7 @@ export async function generateThemeDeclarations(theme) {
             }
           }),
           repeat,
-          size:     'auto',
+          size: 'auto',
           //size: repeat == 'reepat-y' ? 'auto' : 'auto 100%',
         });
       }
