@@ -36,13 +36,14 @@ export default class InContentPanel {
         --base-panel-width: ${this.BASE_PANEL_WIDTH};
         --max-panel-width: 100%;
         --max-32bit-integer: 2147483647;
-        --dimension-relative-050: 0.5rem;
+        --dimension-relative-050: 0.5em/*rem // We must avoid using "rem", because it refers the font size of the root element and it can be changed by the web page author, for example extremely large value, and it will break the layout of the in-content UI. */;
         --space-small: var(--dimension-relative-050);
         --border-radius-xsmall: 4px;
         --border-radius-large: 16px;
         background: transparent;
         border: 0 none;
         bottom: auto;
+        font: Message-Box;
         height: 0px;
         left: 0;
         opacity: 1;

@@ -27,7 +27,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
           /* https://searchfox.org/mozilla-central/rev/7d73613454bfe426fdceb635b33cd3061a69def4/toolkit/themes/shared/design-system/tokens-shared.css#271 */
           /** Space **/
           --space-xxsmall: calc(0.5 * var(--space-xsmall)); /* 2px */
-          --space-xsmall: calc(0.267rem /* 4px */ / var(--in-content-panel-scale));
+          --space-xsmall: calc(0.267em/*rem // We must avoid using "rem", because it refers the font size of the root element and it can be changed by the web page author, for example extremely large value, and it will break the layout of the in-content UI. */ /* 4px */ / var(--in-content-panel-scale));
           --space-small: calc(2 * var(--space-xsmall)); /* 8px */
           --space-medium: calc(3 * var(--space-xsmall)); /* 12px */
           --space-large: calc(4 * var(--space-xsmall)); /* 16px */
