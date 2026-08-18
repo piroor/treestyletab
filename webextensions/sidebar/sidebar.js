@@ -373,6 +373,8 @@ async function applyTheme({ style } = {}) {
     await configs.$syncLoaded;
     applyThemePostProcess();
   }
+
+  document.documentElement.dataset.style = style;
 }
 function applyThemePostProcess() {
   applyUserStyleRules();

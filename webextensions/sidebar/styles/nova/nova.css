@@ -20,6 +20,8 @@
   --tab-border-radius-size: var(--tab-border-radius);
   --tab-dropshadow-size: 0;
   --tab-visual-padding: 2px;
+  --in-tab-button-negative-offset: calc(((var(--svg-small-icon-size) + 0.6em + (var(--tab-visual-padding) * 2)) - var(--tab-size)) / 2);
+  --in-tab-button-offset: calc((var(--tab-size) - (var(--svg-small-icon-size) + 0.6em + (var(--tab-visual-padding) * 2))) / 2);
 
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
@@ -389,10 +391,12 @@ tab-item {
   &:not(.faviconized) tab-sound-button {
     background: none transparent;
     border: none 0 transparent;
+    height: calc(var(--svg-small-icon-size) + 0.6em);
     margin-block: var(--in-tab-button-negative-offset);
     margin-inline: 0;
     padding-block: var(--in-tab-button-offset);
     padding-inline: 0.25em;
+    width: calc(var(--svg-small-icon-size) + 0.6em);
 
     &::before {
       border-radius: calc(var(--tab-border-radius) - 0.3em);
