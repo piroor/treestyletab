@@ -130,6 +130,15 @@ document.documentElement.classList.toggle('rtl', isRTL());
 applyAnimationState(shouldApplyAnimation());
 UserOperationBlocker.block({ throbber: true });
 
+async function setBrowserWindowSizes(win) {
+  if (!win)
+    win = await browser.windows.get(mTargetWindow);
+  document.documentElement.style.setProperty('--browser-window-width', `${win.width}px`);
+  document.documentElement.style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
+  document.documentElement.style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
+  document.documentElement.style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
+}
+
 export async function init() {
   MetricsData.add('init: start');
   log('initialize sidebar on load');
@@ -165,6 +174,7 @@ export async function init() {
           browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
+      setBrowserWindowSizes(win);
       if (win.focused)
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
@@ -828,6 +838,8 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
     if (updateSizesCount > 0)
       Size.updateContainers();
     updateTabbarLayout.lastSizes.initialized = true;
+
+    setBrowserWindowSizes();
   }
 
   const sidebarWidthInWindow = { ...configs.sidebarWidthInWindow };

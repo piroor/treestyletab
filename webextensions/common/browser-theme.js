@@ -38,6 +38,12 @@ export function generateThemeRules(theme) {
   return rules.join('\n');
 }
 
+const BG_POSITION_TOP_OFFSET         = 'calc(0px - var(--browser-sidebar-y-offset))';
+const BG_POSITION_LEFT_OFFSET_LEFT  = 'var(--browser-sidebar-x-offset)';
+const BG_POSITION_LEFT_OFFSET_RIGHT = 'var(--browser-sidebar-x-offset)';
+const BG_POSITION_RIGHT_OFFSET_LEFT  = 'calc(var(--browser-sidebar-width) - var(--browser-window-width) + var(--browser-sidebar-x-offset))';
+const BG_POSITION_RIGHT_OFFSET_RIGHT = 'calc(var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset))';
+
 export async function generateThemeDeclarations(theme) {
   if (!theme ||
       !theme.colors) {
@@ -76,8 +82,9 @@ export async function generateThemeDeclarations(theme) {
       }
       images.push({
         url:      frameImage,
-        position: isRightside ? 'top right' : 'top left',
+        position: isRightside ? `top ${BG_POSITION_TOP_OFFSET} right ${BG_POSITION_RIGHT_OFFSET_RIGHT}` : `top ${BG_POSITION_TOP_OFFSET} right ${BG_POSITION_RIGHT_OFFSET_LEFT}`,
         repeat:   'no-repeat',
+        size:     'auto',
       });
     }
 
@@ -102,16 +109,30 @@ export async function generateThemeDeclarations(theme) {
             rightImageCount > 0)
           continue;
         images.push({
-          url:  image,
-          position,
+          url:      image,
+          position: position.replace(/\b(top|right|bottom|left)\b\s*(.*?)(?=\s*\b(?:top|right|bottom|left)\b|$)/g, (match, position, offset) => {
+          console.log('POS ', {match, position, offset});
+            switch (position.toLowerCase()) {
+              case 'left':
+                return `left calc(${isRightside ? BG_POSITION_LEFT_OFFSET_RIGHT : BG_POSITION_LEFT_OFFSET_LEFT}${offset ? ' + ' + offset : ''}) `;
+              case 'right':
+                return `right calc(${isRightside ? BG_POSITION_RIGHT_OFFSET_RIGHT : BG_POSITION_RIGHT_OFFSET_LEFT}${offset ? ' + ' + offset : ''}) `;
+              case 'top':
+                return `top calc(${BG_POSITION_TOP_OFFSET}${offset ? ' + ' + offset : ''}) `;
+              default:
+                return match;
+            }
+          }),
           repeat,
-          size: repeat == 'reepat-y' ? 'auto' : 'auto 100%',
+          size:     'auto',
+          //size: repeat == 'reepat-y' ? 'auto' : 'auto 100%',
         });
       }
       bgAlpha = 0.75;
       hasImage = true;
     }
 
+    /*
     await Promise.all(images.map(async image => {
       if (image.size)
         return;
@@ -146,6 +167,7 @@ export async function generateThemeDeclarations(theme) {
         console.error(error);
       }
     }));
+    */
 
     if (hasImage) {
       extraColors.push('--browser-bg-images: ' + images.map(image => `url(${JSON.stringify(image.url)})`).join(','));
