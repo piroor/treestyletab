@@ -10,10 +10,12 @@
 }
 
 tab-sound-button {
+  align-items: center;
   background: none transparent;
   border: none 0 transparent;
   display: none;
-  height: calc(var(--svg-small-icon-size) + (var(--in-tab-button-offset) * 2));
+  flex-direction: row;
+  justify-content: center;
   line-height: 0;
   min-height: var(--svg-small-icon-size);
   min-width: var(--svg-small-icon-size); /* this is required to prevent shrinking of the box which has no position:static content */
@@ -25,11 +27,9 @@ tab-sound-button {
     -moz-context-properties: fill;
     background: none no-repeat center / 100%;
     content: "";
-    display: inline-block;
+    display: flex;
     fill: var(--tab-text);
     height: var(--sound-button-size);
-    inset-block-start: calc((var(--svg-small-icon-size) - var(--sound-button-size)) / 2);
-    inset-inline-start: calc((var(--svg-small-icon-size) - var(--sound-button-size)) / 2);
     position: absolute;
     width: var(--sound-button-size);
   }
@@ -43,35 +43,24 @@ tab-sound-button {
   /* background circle */
   tab-item.faviconized & {
     --sound-button-size: 10px;
-    inset-block-start: calc(var(--faviconized-tab-size) - (var(--sound-button-size) * 1.2)); /* cancel negative margin of the background circle */
+    inset-block-end: 0;
     inset-inline-end: 0;
     margin-block: 0;
-    margin-inline: calc(var(--sound-button-size) * 0.2 /* prevent overrapping of this button's background circle on other buttons */ + 0.2em /* and put spaces between other UIs */);
-    min-height: var(--sound-button-size);
-    min-width: var(--sound-button-size); /* this is required to prevent shrinking of the box which has no position:static content */
-    padding-block: 0;
-    padding-inline: 0;
+    min-height: calc(var(--sound-button-size) * 1.4);
+    min-width: calc(var(--sound-button-size) * 1.4);
     position: absolute;
 
     &::before {
       background: var(--tab-text-inverted);
       border-radius: 150%;
       content: "";
-      display: inline-block;
+      display: flex;
       height: calc(var(--sound-button-size) * 1.4);
-      inset-inline-start: calc(0px - (var(--sound-button-size) * 0.2));
-      top: calc(0px - (var(--sound-button-size) * 0.2));
       width: calc(var(--sound-button-size) * 1.4);
       opacity: 0.95;
-      position: absolute;
     }
     &:hover::before {
       opacity: 0.8;
-    }
-
-    &::after {
-      inset-block-start: 0;
-      inset-inline-start: 0;
     }
   }
 }
@@ -91,7 +80,7 @@ tab-item:not(.collapsed) tab-item-substance {
   &.has-muted-member.subtree-collapsed[data-child-ids] tab-sound-button,
   &.autoplay-blocked tab-sound-button,
   &.has-autoplay-blocked-member.subtree-collapsed[data-child-ids] tab-sound-button {
-    display: inline-block;
+    display: flex;
   }
 
   &.muted tab-sound-button::after,

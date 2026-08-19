@@ -20,8 +20,9 @@
   --tab-border-radius-size: var(--tab-border-radius);
   --tab-dropshadow-size: 0;
   --tab-visual-padding: 2px;
-  --in-tab-button-negative-offset: calc(((var(--svg-small-icon-size) + 0.6em + (var(--tab-visual-padding) * 2)) - var(--tab-size)) / 2);
-  --in-tab-button-offset: calc((var(--tab-size) - (var(--svg-small-icon-size) + 0.6em + (var(--tab-visual-padding) * 2))) / 2);
+  --in-tab-button-size: calc(var(--svg-small-icon-size) + 0.6em);
+  --in-tab-button-negative-offset: calc(((var(--in-tab-button-size) + (max(var(--tab-visual-padding), var(--tab-vertical-padding)) * 2)) - var(--tab-size)) / 2);
+  --in-tab-button-offset: calc((var(--tab-size) - (var(--in-tab-button-size) + (max(var(--tab-visual-padding), var(--tab-vertical-padding)) * 2))) / 2);
 
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
@@ -197,7 +198,7 @@ tab-item-substance {
   tab-item:not(.pinned) tab-item-substance,
   .after-tabs button:not([data-menu-ui]),
   .after-tabs [role="button"]:not([data-menu-ui]) {
-    padding-inline-end: 0.35em;
+    padding-inline-end: 0.5em;
   }
 }
 
@@ -205,7 +206,7 @@ tab-item-substance {
   tab-item:not(.pinned) tab-item-substance,
   .after-tabs button:not([data-menu-ui]),
   .after-tabs [role="button"]:not([data-menu-ui]) {
-    padding-inline-start: 0.35em;
+    padding-inline-start: 0.5em;
   }
 }
 
@@ -391,21 +392,20 @@ tab-item {
   &:not(.faviconized) tab-sound-button {
     background: none transparent;
     border: none 0 transparent;
-    height: calc(var(--svg-small-icon-size) + 0.6em);
+    height: var(--in-tab-button-size);
     margin-block: var(--in-tab-button-negative-offset);
     margin-inline: 0;
+    min-height: var(--in-tab-button-size);
+    min-width: var(--in-tab-button-size);
     padding-block: var(--in-tab-button-offset);
-    padding-inline: 0.25em;
-    width: calc(var(--svg-small-icon-size) + 0.6em);
+    width: var(--in-tab-button-size);
 
     &::before {
       border-radius: calc(var(--tab-border-radius) - 0.3em);
       content: "";
-      display: inline-block;
-      height: calc(var(--svg-small-icon-size) + 0.6em);
-      margin-block-start: -0.3em;
-      margin-inline-start: -0.3em;
-      width: calc(var(--svg-small-icon-size) + 0.6em);
+      display: flex;
+      height: var(--in-tab-button-size);
+      width: var(--in-tab-button-size);
       position: absolute;
     }
 

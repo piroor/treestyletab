@@ -1134,6 +1134,10 @@ tab-item:not(.subtree-collapsed) {
 /* tab-closebox */
 
 tab-closebox {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   line-height: 0;
   opacity: var(--button-opacity);
   position: relative;
@@ -1180,7 +1184,7 @@ tab-closebox {
     -moz-context-properties: fill;
     background: url("./icons/close-16.svg") no-repeat center / 100%;
     content: "";
-    display: inline-block;
+    display: flex;
     fill: var(--tab-text);
     height: var(--svg-small-icon-size);
     width: var(--svg-small-icon-size);
