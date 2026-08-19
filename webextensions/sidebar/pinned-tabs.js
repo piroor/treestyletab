@@ -111,7 +111,7 @@ export function reposition(options = {}) {
       Math.min(
         mContentsHeight,
         mMaxVisibleRows * height
-      ) :
+      ) + mContainerResizer.offsetHeight :
       Math.min(
         mFixedContainerHeight,
         allTabsAreaHeight * 0.9
@@ -353,7 +353,7 @@ mContainerResizer.addEventListener('mousedown', event => {
   event.stopPropagation();
   event.preventDefault();
   mContainerResizer.setCapture(true);
-  mDragStartY = event.clientY - mContainerResizer.offsetHeight;
+  mDragStartY = event.clientY;
   mDragStartHeight = mAreaHeight;
   mContainerResizer.addEventListener('mousemove', onMouseMove);
 });
@@ -366,7 +366,7 @@ mContainerResizer.addEventListener('mouseup', event => {
   mFixedContainerHeight = Math.max(
     getTabHeight(),
     Math.min(
-      Math.max(0, mDragStartHeight + (event.clientY - mContainerResizer.offsetHeight - mDragStartY)),
+      Math.max(0, mDragStartHeight + (event.clientY - mDragStartY)),
       mContentsHeight
     )
   );
@@ -377,7 +377,7 @@ mContainerResizer.addEventListener('mouseup', event => {
 function onMouseMove(event) {
   event.stopPropagation();
   event.preventDefault();
-  mFixedContainerHeight = Math.max(0, mDragStartHeight + (event.clientY - mContainerResizer.offsetHeight - mDragStartY));
+  mFixedContainerHeight = Math.max(0, mDragStartHeight + (event.clientY - mDragStartY));
   reposition();
 }
 
