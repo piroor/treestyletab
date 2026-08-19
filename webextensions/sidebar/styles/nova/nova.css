@@ -457,7 +457,7 @@ tab-item .contextual-identity-marker {
 }
 tab-item:not(.faviconized) {
   tab-item-substance.split-view-main .contextual-identity-marker {
-    margin-inline-start: calc(1.2em + var(--twisty-size) - var(--tab-twisty-offset));
+    margin-inline-start: calc(var(--twisty-size) + 0.25em);
   }
 
   tab-item-substance:not(.active) .contextual-identity-marker {
