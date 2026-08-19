@@ -28,6 +28,9 @@
   --tab-surface-hover: var(--tab-background-color-hover);
   --tabbar-bg: var(--toolbar-background-color);
 
+  --safe-browser-toolbar-background-color: var(--browser-toolbar-background-color, var(--toolbar-background-color, transparent));
+  --browser-toolbar-background-color-gradient: linear-gradient(to right, var(--safe-browser-toolbar-background-color) 0%, var(--safe-browser-toolbar-background-color) 100%), var(--browser-bg-images, none);
+
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-hover: var(--tab-group-blue-hover);
   --tab-group-color-blue-text: var(--tab-group-blue-text);
@@ -62,7 +65,7 @@
 body,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: /* this is a hack to put another BG color on the base BG color */linear-gradient(to right, var(--browser-toolbar-background-color, transparent) 0%, var(--browser-toolbar-background-color, transparent) 100%), var(--browser-bg-images, none);
+  background-image: /* this is a hack to put another BG color on the base BG color */var(--browser-toolbar-background-color-gradient), var(--browser-bg-images, none);
   background-position: top left, var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
@@ -356,7 +359,7 @@ tab-item-substance.split-substances-container .background {
 .sticky-tabs-container tab-item:not(.split-view) tab-item-substance .background.base,
 .sticky-tabs-container tab-item.split-view tab-item-substance.split-substances-container .background.base {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: /* this is a hack to put another BG color on the base BG color */linear-gradient(to right, var(--browser-toolbar-background-color, transparent) 0%, var(--browser-toolbar-background-color, transparent) 100%), var(--browser-bg-images, none);
+  background-image: /* this is a hack to put another BG color on the base BG color */var(--browser-toolbar-background-color-gradient), var(--browser-bg-images, none);
   background-position: top left, var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
