@@ -501,10 +501,12 @@ async function applyBrowserTheme(theme) {
 
 function updateContextualIdentitiesStyle() {
   const colorInfo = ContextualIdentities.getColorInfo();
-  const definitions = Object.keys(colorInfo.colors).map(id =>
-    `tab-item-substance.contextual-identity-${id} .contextual-identity-marker {
-       background-color: ${colorInfo.colors[id]};
-     }`);
+  const definitions = [':root{'];
+  definitions.push(...Object.keys(colorInfo.colors).map(id =>
+      `--contextual-identity-color-${id}: ${colorInfo.colors[id]};`));
+  definitions.push('}');
+  definitions.push(...Object.keys(colorInfo.colors).map(id =>
+      `tab-item-substance.contextual-identity-${id} { --contextual-identity-color: var(--contextual-identity-color-${id}); }`));
 
   // This is required to map different color for color names.
   // See also: https://github.com/piroor/treestyletab/issues/2296

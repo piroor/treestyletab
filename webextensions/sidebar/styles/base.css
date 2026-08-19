@@ -1219,6 +1219,7 @@ tab-item .contextual-identity-marker {
   --contextual-identity-marker-size: calc(var(--favicon-size) / 8);
   --contextual-identity-marker-width: var(--contextual-identity-marker-size); /* for backward compatibility */
   --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.15));
+  background-color: var(--contextual-identity-color);
   bottom: var(--contextual-identity-marker-margin);
   inset-inline-end: 0;
   position: absolute;
