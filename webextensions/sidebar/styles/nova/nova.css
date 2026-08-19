@@ -26,6 +26,7 @@
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
   --tab-surface-hover: var(--tab-background-color-hover);
+  --tabbar-bg: var(--toolbar-background-color);
 
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-hover: var(--tab-group-blue-hover);
@@ -258,8 +259,8 @@ tab-item[type="group"].subtree-collapsed {
   position: absolute;
 }
 
-tab-item-substance:is(.active, .bundled-active) .background,
-tab-item-substance:not(.split-view-sub:not(.highlighted)) .background,
+tab-item-substance:is(.active, .bundled-active) .background:not(.base),
+tab-item-substance:not(.split-view-sub:not(.highlighted)) .background:not(.base),
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
@@ -352,19 +353,15 @@ tab-item-substance.split-substances-container .background {
 }
 
 
-.sticky-tabs-container tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active) .background.base,
+.sticky-tabs-container tab-item:not(.split-view) tab-item-substance .background.base,
 .sticky-tabs-container tab-item.split-view tab-item-substance.split-substances-container .background.base {
-  background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
-  background-image: var(--browser-bg-images, none);
-  background-position: var(--browser-bg-position, left);
+  background-color: var(--browser-background, var(--tabbar-bg));
+  background-image: /* this is a hack to put another BG color on the base BG color */linear-gradient(to right, var(--browser-toolbar-background-color, transparent) 0%, var(--browser-toolbar-background-color, transparent) 100%), var(--browser-bg-images, none);
+  background-position: top left, var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
+  border-radius: var(--tab-border-radius);
   opacity: 1;
-
-  :root.lwtheme-applied & {
-    /* We should apply two colors as layers simply, but we can't do that - Firefox does not accept multiple colors. Thus we use color-mix() as an alternative for now. */
-    background-color: color-mix(in srgb, var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace))), var(--browser-toolbar-background-color, transparent));
-  }
 }
 
 
