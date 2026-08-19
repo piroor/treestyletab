@@ -815,13 +815,19 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
                           (reasons & Constants.kTABBAR_UPDATE_REASON_RESIZE) ||
                           (reasons & Constants.kTABBAR_UPDATE_REASON_ANIMATION_END);
   if (needsSizeUpdate) {
+    const tabbarSize = mTabBar.offsetHeight;
     const visibleNewTabButton = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box, #tabbar.overflow ~ .after-tabs .newtab-button-box');
     const newTabButtonSize    = visibleNewTabButton.offsetHeight;
     const extraTabbarTopContainerSize    = document.querySelector('#tabbar-top > *').offsetHeight;
     const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').offsetHeight;
-    log('height: ', { newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
+    log('height: ', { tabbarSize, newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
 
     let updateSizesCount = 0;
+    if (updateTabbarLayout.lastSizes.tabbarSize != tabbarSize) {
+      document.documentElement.style.setProperty('--tabbar-size', `${tabbarSize}px`);
+      updateTabbarLayout.lastSizes.tabbarSize = tabbarSize;
+      updateSizesCount++;
+    }
     if (updateTabbarLayout.lastSizes.extraTabbarTopContainerSize != extraTabbarTopContainerSize) {
       document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
       updateTabbarLayout.lastSizes.extraTabbarTopContainerSize = extraTabbarTopContainerSize;
