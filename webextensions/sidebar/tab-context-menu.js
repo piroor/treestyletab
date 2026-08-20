@@ -666,6 +666,11 @@ async function onContextMenu(event) {
   );
   log('onContextMenu: ', { target, originalTarget, onInputField, context });
 
+  if (target.closest('img.qrcode')) {
+    log('onContextMenu: do nothing to share QR code');
+    return;
+  }
+
   if (!onInputField && context?.context) {
     log('onContextMenu: override context as something given: ', context);
     try {

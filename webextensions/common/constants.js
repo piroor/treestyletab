@@ -122,6 +122,7 @@ export const kCOMMAND_BROADCAST_TAB_AUTO_STICKY_STATE = 'treestyletab:broadcast-
 
 export const kCOMMAND_BOOKMARK_TAB_WITH_DIALOG  = 'treestyletab:bookmark-tab-with-dialog';
 export const kCOMMAND_BOOKMARK_TABS_WITH_DIALOG = 'treestyletab:bookmark-tabs-with-dialog';
+export const kCOMMAND_SHARE_URL_WITH_DIALOG     = 'treestyletab:share-url-with-dialog';
 
 export const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
 export const kNOTIFY_TAB_MOUSEDOWN_EXPIRED  = 'treestyletab:tab-mousedown-expired';

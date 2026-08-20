@@ -68,6 +68,7 @@ import { TreeItemSubstanceElement } from './components/TreeItemSubstanceElement.
 import AutoGroupNewTabs from '/resources/dialog/AutoGroupNewTabs.js';
 import BookmarkTabs from '/resources/dialog/BookmarkTabs.js';
 import ConfirmToCloseTabs from '/resources/dialog/ConfirmToCloseTabs.js';
+import ShareQRCode from '/resources/dialog/ShareQRCode.js';
 
 const DIALOG_CONTROLLERS = {
   AutoGroupNewTabs,
@@ -1303,6 +1304,12 @@ BackgroundConnection.onMessage.addListener(async message => {
       Bookmark.bookmarkTabs(mapAndFilter(message.tabIds, id => Tab.get(id)), {
         ...(message.options || {}),
         showDialog: true
+      });
+    }; break;
+
+    case Constants.kCOMMAND_SHARE_URL_WITH_DIALOG: {
+      ShareQRCode.show({
+        sharedURL: message.url,
       });
     }; break;
 

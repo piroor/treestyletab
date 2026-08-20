@@ -21,6 +21,7 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as Constants from '/common/constants.js';
+import * as Permissions from '/common/permissions.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -1599,6 +1600,18 @@ export async function generateQRCode(tab) {
     TabsInternalOperation.activateTab(tab);
 
     await promisedRestore;
+  }
+
+  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
+  if (!granted) {
+    if (SidebarConnection.isOpen(tab.windowId)) {
+      return SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_SHARE_URL_WITH_DIALOG,
+        windowId: tab.windowId,
+        url:      tab.url,
+      });
+    }
+    return;
   }
 
   const devicePixelRatio = await browser.runtime.sendMessage({

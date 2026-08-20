@@ -31,14 +31,16 @@ class ShareQRCodeDialog extends RichConfirmDialog {
       .${this.commonClass}.rich-confirm-dialog {
         margin-left: auto !important;
         margin-right: auto !important;
-        min-width: ${dialogWidth};
+        max-width: 100%;
+        min-width: min(100%, ${dialogWidth});
         width: min(33%, ${dialogWidth});
       }
 
       .${this.commonClass} img.qrcode {
-        height: 25em;
+        height: min(80%, 25em);
         image-rendering: pixelated;
-        width: 25em;
+        pointer-events: auto;
+        width: min(80%, 25em);
       }
 
       .${this.commonClass}.rich-confirm-content p {
