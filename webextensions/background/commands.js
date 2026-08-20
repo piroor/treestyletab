@@ -1611,6 +1611,7 @@ export async function generateQRCode(tab) {
         url:      tab.url,
       });
     }
+    // the command is invoked from the context menu on a tab in the sidebar, so we don't need to take care other cases.
     return;
   }
 
