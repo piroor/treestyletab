@@ -264,7 +264,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
       notify({
         title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
         message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
-        icon:    'resources/24x24.svg#default'
+        icon:    'resources/24x24.svg#default-proton'
       });
       return;
     }
@@ -322,7 +322,7 @@ export function bindToClickable(permissions, node, { onChanged } = {}) {
       notify({
         title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
         message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
-        icon:    'resources/24x24.svg#default'
+        icon:    'resources/24x24.svg#default-proton'
       });
       return;
     }

@@ -25,10 +25,10 @@
     "tabHide"
   ],
   "icons": {
-    "16": "/resources/16x16.svg#default",
-    "20": "/resources/20x20.svg#default",
-    "24": "/resources/24x24.svg#default",
-    "32": "/resources/32x32.svg#default"
+    "16": "/resources/16x16.svg#default-proton",
+    "20": "/resources/20x20.svg#default-proton",
+    "24": "/resources/24x24.svg#default-proton",
+    "32": "/resources/32x32.svg#default-proton"
   },
   "background": {
     "page": "/background/background.html"
@@ -36,19 +36,19 @@
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "/resources/16x16.svg#toolbar",
-      "20": "/resources/20x20.svg#toolbar",
-      "24": "/resources/24x24.svg#toolbar",
-      "32": "/resources/32x32.svg#toolbar"
+      "16": "/resources/16x16.svg#toolbar-proton",
+      "20": "/resources/20x20.svg#toolbar-proton",
+      "24": "/resources/24x24.svg#toolbar-proton",
+      "32": "/resources/32x32.svg#toolbar-proton"
     }
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "/resources/16x16.svg#default",
-      "20": "/resources/20x20.svg#default",
-      "24": "/resources/24x24.svg#default",
-      "32": "/resources/32x32.svg#default"
+      "16": "/resources/16x16.svg#default-proton",
+      "20": "/resources/20x20.svg#default-proton",
+      "24": "/resources/24x24.svg#default-proton",
+      "32": "/resources/32x32.svg#default-proton"
     },
     "default_panel": "/sidebar/sidebar.html",
     "browser_style": false

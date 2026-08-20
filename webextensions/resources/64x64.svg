@@ -17,13 +17,20 @@
 	g.theme:target {
 		fill: transparent /* TO BE REPLACED WITH THEME COLOR */;
 	}
-	g.prefer-color-scheme.default:target {
+	g.prefer-color-scheme.default-nova:target,
+	g.prefer-color-scheme.toolbar-nova:target {
+		fill: light-dark(
+			/*var(--color-violet-desaturated-50)*/#75669f,
+			/*var(--color-violet-desaturated-10)*/#e7e1f8
+		);
+	}
+	g.prefer-color-scheme.default-proton:target {
 		fill: light-dark(
 			rgb(21, 20, 26), /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/toolkit/themes/shared/in-content/common-shared.css#16 */
 			rgb(251, 251, 254) /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/browser/themes/shared/browser-custom-colors.css#74 */
 		);
 	}
-	g.prefer-color-scheme.toolbar:target {
+	g.prefer-color-scheme.toolbar-proton:target {
 		fill: light-dark(
 			rgb(91, 91, 102), /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/browser/themes/shared/browser-custom-colors.css#74 */
 			rgb(251, 251, 254) /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/browser/themes/shared/browser-custom-colors.css#74 */
@@ -57,10 +64,16 @@
 <g id="default-theme" class="theme default">
 	<use href="#icon"/>
 </g>
-<g id="toolbar" class="prefer-color-scheme toolbar">
+<g id="toolbar-nova" class="prefer-color-scheme toolbar-nova">
 	<use href="#icon"/>
 </g>
-<g id="default" class="prefer-color-scheme default">
+<g id="default-nova" class="prefer-color-scheme default-nova">
+	<use href="#icon"/>
+</g>
+<g id="toolbar-proton" class="prefer-color-scheme toolbar-proton">
+	<use href="#icon"/>
+</g>
+<g id="default-proton" class="prefer-color-scheme default-proton">
 	<use href="#icon"/>
 </g>
 <g id="mask" class="mask">
