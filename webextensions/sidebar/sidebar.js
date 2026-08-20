@@ -295,7 +295,7 @@ export async function init() {
     MetricsData.addAsync('parallel initialization: post process: main', async () => {
       Indent.updateRestoredTree();
       SidebarItems.updateAll();
-      updateTabbarLayout({ justNow: true });
+      updateTabbarLayout({ justNow: true, startup: true });
       SubPanel.onResized.addListener(reserveToUpdateTabbarLayout);
       SubPanel.init();
 
@@ -746,7 +746,7 @@ export function reserveToUpdateTabbarLayout({ reason, timeout } = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
-  if (reason && !(reserveToUpdateTabbarLayout.reasons & reason))
+  if (reason)
     reserveToUpdateTabbarLayout.reasons |= reason;
   if (typeof timeout != 'number')
     timeout = 10;
@@ -763,7 +763,7 @@ reserveToUpdateTabbarLayout.timeout = 0;
 let mLastVisibleTabId = null;
 updateTabbarLayout.lastSizes = {};
 
-function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
+function updateTabbarLayout({ reason, reasons, timeout, justNow, startup } = {}) {
   Scroll.clearItemRectCache();
   if (reason && !reasons)
     reasons = reason;
@@ -794,6 +794,8 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
       readableReasons.push('tab open');
     if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE)
       readableReasons.push('tab close');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE_PINNED)
+      readableReasons.push('tab close (pinned)');
     if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_MOVE)
       readableReasons.push('tab move');
     if (reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE)
@@ -878,10 +880,14 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
     });
   }
 
+  const canAutoResize = !!(
+    reasons & Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE_PINNED ||
+    startup
+  );
   if (justNow)
-    PinnedTabs.reposition({ reasons, timeout, justNow });
+    PinnedTabs.reposition({ reasons, timeout, justNow, canAutoResize });
   else
-    PinnedTabs.reserveToReposition({ reasons, timeout, justNow });
+    PinnedTabs.reserveToReposition({ reasons, timeout, justNow, canAutoResize });
 }
 updateTabbarLayout.lastUpdateReasons = 0;
 updateTabbarLayout.lastScrollbarAutohideUpdatedAt = 0;
@@ -1256,8 +1262,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!Tab.get(message.tabId)) {
         await Tab.waitUntilTracked(message.tabId);
       }
+      const tab = Tab.get(message.tabId);
+      const reason = Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE | (tab?.pinned ? Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE_PINNED : 0);
       reserveToUpdateTabbarLayout({
-        reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+        reason,
         timeout: configs.collapseDuration
       });
     }; break;

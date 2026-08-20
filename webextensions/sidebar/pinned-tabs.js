@@ -92,7 +92,7 @@ export function reposition(options = {}) {
   const yOffset = faviconized ? Size.getFavIconizedTabYOffset() : Size.getTabYOffset();
 
   const width  = faviconized ? Size.getRenderedFavIconizedTabWidth() : maxWidth + xOffset;
-  const height = getTabHeight();
+  const oneTabHeight = getTabHeight();
   const maxCol = faviconized ? Math.max(
     1,
     configs.maxFaviconizedPinnedTabsInOneRow > 0 ?
@@ -103,14 +103,29 @@ export function reposition(options = {}) {
 
   const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
   const allTabsAreaHeight   = Size.getAllTabsAreaSize() + GapCanceller.getOffset();
-  mMaxVisibleRows = Math.max(1, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
-  mContentsHeight = height * maxRow + yOffset;
+  mMaxVisibleRows = Math.max(1, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / oneTabHeight));
+  mContentsHeight = oneTabHeight * maxRow + yOffset;
+
+  if (
+    options.canAutoResize &&
+    mFixedContainerHeight > -1 &&
+    (
+      // Expand the area to reveal the last row when at least half of it is visible.
+      (Math.ceil(mFixedContainerHeight / oneTabHeight) == Math.min(mMaxVisibleRows, maxRow) &&
+       (mFixedContainerHeight % oneTabHeight) > (oneTabHeight / 2)) ||
+      // Shrink the area to eliminate empty rows.
+      (maxRow < mMaxVisibleRows)
+    )
+  ) {
+    log('auto resize');
+    mFixedContainerHeight = -1;
+  }
   mAreaHeight = Math.max(
-    height,
+    oneTabHeight,
     mFixedContainerHeight < 0 ?
       Math.min(
         mContentsHeight,
-        mMaxVisibleRows * height
+        mMaxVisibleRows * oneTabHeight
       ) + mContainerResizer.offsetHeight :
       Math.min(
         mFixedContainerHeight,
@@ -157,7 +172,7 @@ export function reposition(options = {}) {
       tab:    dumpTab(tab),
       col:    col,
       width:  width,
-      height: height
+      height: oneTabHeight,
     });
     */
 
@@ -169,7 +184,7 @@ export function reposition(options = {}) {
       //log('=> new row');
     }
   }
-  log('reposition: ', { maxWidth, faviconized, width, height, maxCol, maxRow, pinnedTabsAreaRatio, allTabsAreaHeight, xOffset, yOffset, mMaxVisibleRows, mAreaHeight });
+  log('reposition: ', { maxWidth, faviconized, width, oneTabHeight, maxCol, maxRow, pinnedTabsAreaRatio, allTabsAreaHeight, xOffset, yOffset, mMaxVisibleRows, mAreaHeight });
   log('overflow: mContentsHeight > mAreaHeight : ', mContentsHeight > mAreaHeight);
   SidebarItems.pinnedContainer.classList.toggle('overflow', mContentsHeight > mAreaHeight);
 }
@@ -370,7 +385,7 @@ mContainerResizer.addEventListener('mouseup', event => {
       mContentsHeight
     )
   );
-  reposition();
+  reposition({ canAutoResize: true });
   saveLastHeight();
 });
 
@@ -389,6 +404,6 @@ mContainerResizer.addEventListener('dblclick', async event => {
   event.stopPropagation();
   event.preventDefault();
   mFixedContainerHeight = -1;
-  reposition();
+  reposition({ canAutoResize: true });
   saveLastHeight();
 });
