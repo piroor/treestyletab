@@ -864,8 +864,6 @@ function getTimeStamp() {
   return `${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
 
-configs.$logger = log;
-
 export function dumpTab(tab) {
   if (!configs || !configs.debug)
     return '';
