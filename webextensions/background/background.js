@@ -824,7 +824,12 @@ async function updateIconForBrowserTheme(theme) {
 
   log('updateIconForBrowserTheme: ', theme);
   if (theme.colors) {
-    const toolbarIconColor = theme.colors.icons || theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.tab_background_text || theme.colors.bookmark_text || theme.colors.textcolor;
+    const isNativeVerticalTabs = 'verticalTabs' in browser.browserSettings ? (await browser.browserSettings.verticalTabs.get({})).value : false;
+    const toolbarIconColor = theme.colors.icons || (
+      isNativeVerticalTabs ?
+        'CanvasText' : // --toolbarbutton-icon-fill in https://searchfox.org/firefox-main/rev/91c8ca3faa6ccbb72d65d89401fd31fd3313afc4/toolkit/themes/shared/design-system/dist/tokens-platform.css#225
+        theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.tab_background_text || theme.colors.bookmark_text || theme.colors.textcolor
+    );
     const menuIconColor    = theme.colors.popup_text || toolbarIconColor;
     const sidebarIconColor = theme.colors.sidebar_text || toolbarIconColor;
     log(' => ', { toolbarIconColor, menuIconColor, sidebarIconColor }, theme.colors);
@@ -876,6 +881,7 @@ configs.$addObserver(key => {
   switch (key) {
     case 'style':
       updatePanelUrl();
+      updateIconForBrowserTheme();
       break;
 
     case 'debug':
@@ -890,3 +896,7 @@ configs.$addObserver(key => {
       break;
   }
 });
+
+if ('verticalTabs' in browser.browserSettings) {
+  browser.browserSettings.verticalTabs.onChange.addListener(_details => updateIconForBrowserTheme());
+}
