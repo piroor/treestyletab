@@ -1,10 +1,13 @@
 # 更新履歴
 
  - trunk/HEAD
-   * Nightly 155用に「Nova」テーマを追加
+   * Firefox 155以降用に「Nova」テーマを追加
    * Firefoxに追従して「新しいタブ」ボタンをタブのように表示するようにした
    * 単独のタブからリンクをコピーできなくなっていたのを修正
    * タブグループのコンテキストメニューからの「グループ内のリンクをコピー」操作に対応
+   * ピン留めされたタブ用の領域についても、スクロールが発生しているときはそう分かるように影を表示するようにした
+   * ピン留めされたタブ用の領域のリサイズ時に、最終行のタブが半分以上見えている場合はタブ全体が見えるように領域の大きさを自動的に拡げるようにした
+   * ピン留めされたタブ用の領域をリサイズした後にタブを閉じて空行が生じた場合に、領域の大きさを自動的に縮小するようにした
    * `en`ロケール内の誤記を修正（by [scrypt-kitty](https://github.com/scrypt-kitty), ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)) Thanks!）
    * [`sk`ロケール追加（by rraddatch, thanks!)](github.com/piroor/treestyletab/pull/3946)
  - 4.3.6 (2026.7.15)
