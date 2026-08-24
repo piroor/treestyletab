@@ -91,13 +91,13 @@ export default class InContentPanel {
           --panel-padding-block: var(--panel-border-radius);
           --panel-padding-inline: var(--panel-border-radius);
           --panel-padding: var(--panel-padding-block) var(--panel-padding-inline);
-          --panel-border-radius: calc(var(--border-radius-xsmall) / var(--in-content-panel-scale));
+          --panel-border-radius: calc(var(--border-radius-xsmall) * var(--in-content-panel-scale));
           /*--panel-border-color: light-dark(ThreeDShadow, var(--dark-popup-border));*/
 
           &.style-nova {
-            --panel-padding-block: calc(var(--space-small) / var(--in-content-panel-scale));
-            --panel-padding-inline: calc(var(--space-small) * 3 / var(--in-content-panel-scale));
-            --panel-border-radius: calc(var(--border-radius-large) / var(--in-content-panel-scale));
+            --panel-padding-block: calc(var(--space-small) * var(--in-content-panel-scale));
+            --panel-padding-inline: calc(var(--space-small) * 3 * var(--in-content-panel-scale));
+            --panel-border-radius: calc(var(--border-radius-large) * var(--in-content-panel-scale));
           }
 
           --panel-shadow-margin: 0px;
@@ -110,9 +110,9 @@ export default class InContentPanel {
 
           /*@media (-moz-platform: linux) {*/
           ${this.isLinux ? '' : '/*'}
-            --panel-border-radius: calc(8px / var(--in-content-panel-scale));
-            --panel-padding-block: calc(3px / var(--in-content-panel-scale));
-            --panel-padding-inline: calc(3px / var(--in-content-panel-scale));
+            --panel-border-radius: calc(8px * var(--in-content-panel-scale));
+            --panel-padding-block: calc(3px * var(--in-content-panel-scale));
+            --panel-padding-inline: calc(3px * var(--in-content-panel-scale));
 
             @media (prefers-contrast) {
               --panel-border-color: color-mix(in srgb, currentColor 60%, transparent);
@@ -141,12 +141,12 @@ export default class InContentPanel {
             background-color: Menu;
             --panel-background: light-dark(white /* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */, rgb(66, 65, 77)/* https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/browser/themes/shared/browser-colors.css#89 https://searchfox.org/mozilla-central/rev/86c208f86f35d53dc824f18f8e540fe5b0663870/toolkit/themes/shared/global-shared.css#128 */);
             --panel-border-color: transparent;
-            --panel-border-radius: calc(6px / var(--in-content-panel-scale));
+            --panel-border-radius: calc(6px * var(--in-content-panel-scale));
           ` : ''}
           /*}*/
 
           /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#5 */
-          --panel-width: min(var(--max-panel-width), calc(var(--base-panel-width) / var(--in-content-panel-scale)));
+          --panel-width: min(var(--max-panel-width), calc(var(--base-panel-width) * var(--in-content-panel-scale)));
           --panel-padding: 0;
 
           /* https://searchfox.org/mozilla-central/rev/b576bae69c6f3328d2b08108538cbbf535b1b99d/toolkit/themes/shared/global-shared.css#111 */
@@ -222,7 +222,7 @@ export default class InContentPanel {
           }
 
           background: var(--panel-background);
-          border: var(--panel-border-color) solid calc(1px / var(--in-content-panel-scale));
+          border: var(--panel-border-color) solid calc(1px * var(--in-content-panel-scale));
           border-radius: var(--panel-border-radius);
           box-shadow: var(--panel-shadow);
           box-sizing: border-box;
@@ -263,12 +263,12 @@ export default class InContentPanel {
         }
 
         .in-content-panel-contents {
-          max-width: calc(var(--panel-width) - (2px / var(--in-content-panel-scale)));
-          min-width: calc(var(--panel-width) - (2px / var(--in-content-panel-scale)));
+          max-width: calc(var(--panel-width) - (2px * var(--in-content-panel-scale)));
+          min-width: calc(var(--panel-width) - (2px * var(--in-content-panel-scale)));
         }
 
         .in-content-panel-contents {
-          max-height: calc(var(--panel-max-height) - (2px / var(--in-content-panel-scale)));
+          max-height: calc(var(--panel-max-height) - (2px * var(--in-content-panel-scale)));
         }
       }
     `;
@@ -485,16 +485,16 @@ export default class InContentPanel {
     this.log(`${this.type} updateUI: isResistFingerprintingMode `, isResistFingerprintingMode, { devicePixelRatio });
     // But window.devicePixelRatio is not available if privacy.resistFingerprinting=true,
     // thus we need to calculate it based on tabs.Tab.width.
-    scale = devicePixelRatio * (scale || 1);
+    scale = (scale || 1) / devicePixelRatio;
     this.root.style.setProperty('--in-content-panel-scale', scale);
     this.root.style.setProperty('--max-panel-width', `${window.innerWidth}px`);
 
     const offsetFromWindowEdge = isResistFingerprintingMode ?
       0 :
-      (window.mozInnerScreenY - window.screenY) * scale;
+      (window.mozInnerScreenY - window.screenY) / scale;
     const sidebarContentsOffset = isResistFingerprintingMode ?
       (fixedOffsetTop || 0) :
-      (offsetTop - offsetFromWindowEdge) / scale;
+      (offsetTop - offsetFromWindowEdge) * scale;
 
     if (anchorTabRect) {
       const panelTopEdge = this.windowId ? anchorTabRect.bottom : anchorTabRect.top;
@@ -547,11 +547,11 @@ export default class InContentPanel {
       if (this.inSidebar) {
         this.log(`${this.type} updateUI/complete: in-sidebar, alignment calculating: `, { half: window.innerHeight, maxY, scale, anchorTabRect });
         if (anchorTabRect.top > (window.innerHeight / 2)) { // align to bottom edge of the tab
-          top = `${Math.min(maxY, anchorTabRect.bottom / scale) - panelHeight - anchorTabRect.height}px`;
+          top = `${Math.min(maxY, anchorTabRect.bottom * scale) - panelHeight - anchorTabRect.height}px`;
           this.log(`${this.type}  => align to bottom edge of the tab, top=`, top);
         }
         else { // align to top edge of the tab
-          top = `${Math.max(0, anchorTabRect.top / scale) + anchorTabRect.height}px`;
+          top = `${Math.max(0, anchorTabRect.top * scale) + anchorTabRect.height}px`;
           this.log(`${this.type}  => align to top edge of the tab, top=`, top);
         }
 
@@ -559,8 +559,8 @@ export default class InContentPanel {
       }
       else { // in-content
         // We need to shift the position with the height of the sidebar header.
-        const alignToTopPosition = Math.max(0, anchorTabRect.top / scale) + sidebarContentsOffset;
-        const alignToBottomPosition = Math.min(maxY, (anchorTabRect.bottom / scale) + sidebarContentsOffset) - panelHeight;
+        const alignToTopPosition = Math.max(0, anchorTabRect.top * scale) + sidebarContentsOffset;
+        const alignToBottomPosition = Math.min(maxY, (anchorTabRect.bottom * scale) + sidebarContentsOffset) - panelHeight;
 
         this.log(`${this.type} updateUI/complete: in-content, alignment calculating: `, { offsetFromWindowEdge, sidebarContentsOffset, alignToTopPosition, panelHeight, maxY, scale });
         if (alignToTopPosition + panelHeight >= maxY &&
