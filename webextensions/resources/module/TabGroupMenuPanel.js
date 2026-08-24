@@ -20,14 +20,14 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
           /* https://searchfox.org/mozilla-central/rev/7d73613454bfe426fdceb635b33cd3061a69def4/toolkit/themes/shared/design-system/tokens-shared.css#266 */
           /** Size **/
-          --size-item-small: calc(16px * var(--in-content-panel-scale));
-          --size-item-medium: calc(28px * var(--in-content-panel-scale));
-          --size-item-large: calc(32px * var(--in-content-panel-scale));
+          --size-item-small: calc(16px / var(--in-content-panel-scale));
+          --size-item-medium: calc(28px / var(--in-content-panel-scale));
+          --size-item-large: calc(32px / var(--in-content-panel-scale));
 
           /* https://searchfox.org/mozilla-central/rev/7d73613454bfe426fdceb635b33cd3061a69def4/toolkit/themes/shared/design-system/tokens-shared.css#271 */
           /** Space **/
           --space-xxsmall: calc(0.5 * var(--space-xsmall)); /* 2px */
-          --space-xsmall: calc(0.267em/*rem // We must avoid using "rem", because it refers the font size of the root element and it can be changed by the web page author, for example extremely large value, and it will break the layout of the in-content UI. */ /* 4px */ * var(--in-content-panel-scale));
+          --space-xsmall: calc(0.267em/*rem // We must avoid using "rem", because it refers the font size of the root element and it can be changed by the web page author, for example extremely large value, and it will break the layout of the in-content UI. */ /* 4px */ / var(--in-content-panel-scale));
           --space-small: calc(2 * var(--space-xsmall)); /* 8px */
           --space-medium: calc(3 * var(--space-xsmall)); /* 12px */
           --space-large: calc(4 * var(--space-xsmall)); /* 16px */
@@ -35,15 +35,15 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --space-xxlarge: calc(8 * var(--space-xsmall)); /* 32px */
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/browser/themes/shared/customizableui/panelUI-shared.css#20 */
-          --panel-separator-margin-vertical: calc(4px * var(--in-content-panel-scale));
+          --panel-separator-margin-vertical: calc(4px / var(--in-content-panel-scale));
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-shared.css#226 */
           /** Focus Outline **/
           --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
           --focus-outline-color: var(--color-accent-primary);
           --focus-outline-inset: calc(-1 * var(--focus-outline-width));
-          --focus-outline-offset: calc(2px * var(--in-content-panel-scale));
-          --focus-outline-width: calc(2px * var(--in-content-panel-scale));
+          --focus-outline-offset: calc(2px / var(--in-content-panel-scale));
+          --focus-outline-width: calc(2px / var(--in-content-panel-scale));
 
           /* https://searchfox.org/mozilla-central/rev/126697140e711e04a9d95edae537541c3bde89cc/toolkit/themes/shared/design-system/tokens-shared.css#20 */
           /** Border **/
@@ -51,11 +51,11 @@ export default class TabGroupMenuPanel extends InContentPanel {
           --border-color-interactive-hover: var(--border-color-interactive);
           --border-color-interactive-active: var(--border-color-interactive);
           --border-color-interactive-disabled: var(--border-color-interactive);
-          --border-radius-circle: calc(9999px * var(--in-content-panel-scale));
-          --border-radius-small: calc(4px * var(--in-content-panel-scale));
-          --border-radius-medium: calc(8px * var(--in-content-panel-scale));
-          --border-radius-large: calc(16px * var(--in-content-panel-scale));
-          --border-width: calc(1px * var(--in-content-panel-scale));
+          --border-radius-circle: calc(9999px / var(--in-content-panel-scale));
+          --border-radius-small: calc(4px/ var(--in-content-panel-scale));
+          --border-radius-medium: calc(8px / var(--in-content-panel-scale));
+          --border-radius-large: calc(16px / var(--in-content-panel-scale));
+          --border-width: calc(1px / var(--in-content-panel-scale));
 
           /* https://searchfox.org/mozilla-central/rev/7d73613454bfe426fdceb635b33cd3061a69def4/browser/themes/shared/tabbrowser/tabs.css#79 */
           --tab-group-color-blue: light-dark(var(--color-blue-70), var(--color-blue-20));
@@ -170,7 +170,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
           }
 
 
-          --panel-width: calc(22em * var(--in-content-panel-scale));
+          --panel-width: calc(22em / var(--in-content-panel-scale));
           --panel-padding: var(--space-large);
           --panel-separator-margin: var(--panel-separator-margin-vertical) 0;
           font: menu;
@@ -180,7 +180,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
             > h1 {
               text-align: center;
               font: menu;
-              font-size: calc(100% * var(--in-content-panel-scale));
+              font-size: calc(100% / var(--in-content-panel-scale));
               font-weight: bold;
 
               margin-top: 0;
@@ -189,8 +189,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
 
           hr /*toolbarseparator*/ {
             margin-block: var(--space-medium);
-            border: calc(1px * var(--in-content-panel-scale)) solid;
-            border-width: calc(1px * var(--in-content-panel-scale)) 0 0 0;
+            border: calc(1px / var(--in-content-panel-scale)) solid;
+            border-width: calc(1px / var(--in-content-panel-scale)) 0 0 0;
             opacity: 0.5;
           }
 
@@ -207,7 +207,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
             display: flex;
             flex-direction: column;
             font: menu;
-            font-size: calc(100% * var(--in-content-panel-scale));
+            font-size: calc(100% / var(--in-content-panel-scale));
             margin-inline: 0;
             margin-bottom: var(--space-small);
 
@@ -243,8 +243,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
             margin: 0;
 
             font-size: 0;
-            width: calc(16px * var(--in-content-panel-scale));
-            height: calc(16px * var(--in-content-panel-scale));
+            width: calc(16px / var(--in-content-panel-scale));
+            height: calc(16px / var(--in-content-panel-scale));
             padding: var(--focus-outline-offset);
             border: var(--focus-outline-width) solid transparent;
             border-radius: var(--border-radius-medium);
@@ -260,8 +260,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
             }
 
             &:focus-visible {
-              outline: calc(1px * var(--in-content-panel-scale))) solid var(--focus-outline-color);
-              outline-offset: calc(1px * var(--in-content-panel-scale))
+              outline: calc(1px / var(--in-content-panel-scale))) solid var(--focus-outline-color);
+              outline-offset: calc(1px / var(--in-content-panel-scale))
             }
 
             + .label-text {
@@ -269,8 +269,8 @@ export default class TabGroupMenuPanel extends InContentPanel {
             }
           }
           &.style-nova .tab-group-editor-swatch {
-            width: calc(18px * var(--in-content-panel-scale));
-            height: calc(18px * var(--in-content-panel-scale));
+            width: calc(18px / var(--in-content-panel-scale));
+            height: calc(18px / var(--in-content-panel-scale));
             border-radius: var(--border-radius-large);
           }
 
@@ -284,7 +284,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
              border-radius: var(--space-xsmall);
              display: block;
              font: menu;
-             font-size: calc(100% * var(--in-content-panel-scale));
+             font-size: calc(100% / var(--in-content-panel-scale));
              margin: 0;
              padding: var(--space-small);
              text-align: start;
@@ -328,7 +328,7 @@ export default class TabGroupMenuPanel extends InContentPanel {
         }
 
         .tab-group-editor-panel.tab-group-editor-panel-expanded {
-          --panel-width: calc(25em * var(--in-content-panel-scale));
+          --panel-width: calc(25em / var(--in-content-panel-scale));
         }
 
         @media not (prefers-contrast) {

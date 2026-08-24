@@ -93,7 +93,7 @@ export default class TabPreviewPanel extends InContentPanel {
           }
           &.extended .in-content-panel-contents,
           &.extended .in-content-panel-contents-inner-box {
-            max-width: calc(min(100%, calc(var(--panel-width) * 2)) - (2px * var(--in-content-panel-scale)));
+            max-width: calc(min(100%, calc(var(--panel-width) * 2)) - (2px / var(--in-content-panel-scale)));
           }
 
           &.style-nova {
@@ -135,8 +135,8 @@ export default class TabPreviewPanel extends InContentPanel {
         }
 
         .in-content-panel-contents-inner-box {
-          max-width: calc(var(--panel-width) - (2px * var(--in-content-panel-scale)));
-          min-width: calc(var(--panel-width) - (2px * var(--in-content-panel-scale)));
+          max-width: calc(var(--panel-width) - (2px / var(--in-content-panel-scale)));
+          min-width: calc(var(--panel-width) - (2px / var(--in-content-panel-scale)));
         }
 
         .in-content-panel.overflow .in-content-panel-contents {
@@ -144,7 +144,7 @@ export default class TabPreviewPanel extends InContentPanel {
         }
 
         .in-content-panel-title {
-          font-size: calc(1em * var(--in-content-panel-scale));
+          font-size: calc(1em / var(--in-content-panel-scale));
           font-weight: bold;
           margin: var(--panel-padding-block) var(--panel-padding-inline) 0;
           max-height: 3em; /* -webkit-line-clamp looks unavailable, so this is a workaround */
@@ -154,7 +154,7 @@ export default class TabPreviewPanel extends InContentPanel {
         }
 
         .in-content-panel-url {
-          font-size: calc(1em * var(--in-content-panel-scale));
+          font-size: calc(1em / var(--in-content-panel-scale));
           margin: 0 var(--panel-padding-inline);
           opacity: 0.69; /* https://searchfox.org/mozilla-central/rev/234f91a9d3ebef0d514868701cfb022d5f199cb5/toolkit/themes/shared/design-system/tokens-shared.css#182 */
           overflow: hidden;
@@ -166,7 +166,7 @@ export default class TabPreviewPanel extends InContentPanel {
           align-items: center;
           display: flex;
           flex-direction: row;
-          font-size: calc(1em * var(--in-content-panel-scale));
+          font-size: calc(1em / var(--in-content-panel-scale));
           margin: 0 var(--panel-padding-inline);
 
           .contextual-identity {
@@ -207,7 +207,7 @@ export default class TabPreviewPanel extends InContentPanel {
         }
 
         .in-content-panel-extended-content {
-          font-size: calc(1em * var(--in-content-panel-scale));
+          font-size: calc(1em / var(--in-content-panel-scale));
           margin: var(--panel-padding-block) var(--panel-padding-inline);
           white-space: pre;
         }
@@ -218,11 +218,11 @@ export default class TabPreviewPanel extends InContentPanel {
           overflow: hidden;
 
           .in-content-panel.has-image & {
-            border-block-start: calc(1px * var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
+            border-block-start: calc(1px / var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
           }
 
           .in-content-panel.has-image.style-nova & {
-            border: calc(1px * var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
+            border: calc(1px / var(--in-content-panel-scale)) solid var(--border-color-deemphasized);
             border-radius: calc(var(--panel-padding-inline) * 0.6);
             margin: 0.25em calc(var(--panel-padding-inline) * 0.6) calc(var(--panel-padding-inline) * 0.6 - var(--panel-padding-block));
           }
@@ -416,7 +416,7 @@ export default class TabPreviewPanel extends InContentPanel {
         { width: this.BASE_PANEL_WIDTH, height: this.BASE_PANEL_HEIGHT } :
         this.getPngDimensionsFromDataUri(previewURL);
       this.log('updateUI: determined preview size: ', { width, height });
-      const imageWidth = Math.min(window.innerWidth, Math.min(width, parseInt(this.BASE_PANEL_WIDTH)) * scale);
+      const imageWidth = Math.min(window.innerWidth, Math.min(width, parseInt(this.BASE_PANEL_WIDTH)) / scale);
       const imageHeight = imageWidth / width * height;
       previewImage.style.width = previewImage.style.maxWidth = `min(100%, ${imageWidth}px)`;
       previewImage.style.height = previewImage.style.maxHeight = `${imageHeight}px`;
