@@ -29,62 +29,62 @@ export function getParentTabOperationBehavior(tab, { context, byInternalOperatio
     behavior = keepDescendantsBehavior;
   }
   else {
-  switch (configs.parentTabOperationBehaviorMode) {
-    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT:
-      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT');
-      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
-        behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE;
-      }
-      else {
-        behavior = tab.$TST.subtreeCollapsed ?
-          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
-          configs.closeParentBehavior_insideSidebar_expanded;
-      }
-      break;
-    default:
-    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL:
-      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL');
-      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
-        behavior = byInternalOperation ?
-          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
-          configs.moveParentBehavior_outsideSidebar_expanded;
-      }
-      else {
-        behavior = byInternalOperation ?
-          (tab.$TST.subtreeCollapsed ?
+    switch (configs.parentTabOperationBehaviorMode) {
+      case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT:
+        log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT');
+        if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+          behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE;
+        }
+        else {
+          behavior = tab.$TST.subtreeCollapsed ?
             Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
-            configs.closeParentBehavior_insideSidebar_expanded) :
-          configs.closeParentBehavior_outsideSidebar_expanded;
-      }
-      break;
-    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
-      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM');
-      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
-        behavior = byInternalOperation ?
-          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
-          sidebarVisible ?
-            (tab.$TST.subtreeCollapsed ?
-              configs.moveParentBehavior_outsideSidebar_collapsed :
-              configs.moveParentBehavior_outsideSidebar_expanded) :
-            (tab.$TST.subtreeCollapsed ?
-              configs.moveParentBehavior_noSidebar_collapsed :
-              configs.moveParentBehavior_noSidebar_expanded);
-      }
-      else {
-        behavior = byInternalOperation ?
-          (tab.$TST.subtreeCollapsed ?
+            configs.closeParentBehavior_insideSidebar_expanded;
+        }
+        break;
+      default:
+      case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL:
+        log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL');
+        if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+          behavior = byInternalOperation ?
             Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
-            configs.closeParentBehavior_insideSidebar_expanded) :
-          sidebarVisible ?
+            configs.moveParentBehavior_outsideSidebar_expanded;
+        }
+        else {
+          behavior = byInternalOperation ?
             (tab.$TST.subtreeCollapsed ?
-              configs.closeParentBehavior_outsideSidebar_collapsed :
-              configs.closeParentBehavior_outsideSidebar_expanded) :
+              Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+              configs.closeParentBehavior_insideSidebar_expanded) :
+            configs.closeParentBehavior_outsideSidebar_expanded;
+        }
+        break;
+      case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
+        log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM');
+        if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+          behavior = byInternalOperation ?
+            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+            sidebarVisible ?
+              (tab.$TST.subtreeCollapsed ?
+                configs.moveParentBehavior_outsideSidebar_collapsed :
+                configs.moveParentBehavior_outsideSidebar_expanded) :
+              (tab.$TST.subtreeCollapsed ?
+                configs.moveParentBehavior_noSidebar_collapsed :
+                configs.moveParentBehavior_noSidebar_expanded);
+        }
+        else {
+          behavior = byInternalOperation ?
             (tab.$TST.subtreeCollapsed ?
-              configs.closeParentBehavior_noSidebar_collapsed :
-              configs.closeParentBehavior_noSidebar_expanded);
-      }
-      break;
-  }
+              Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+              configs.closeParentBehavior_insideSidebar_expanded) :
+            sidebarVisible ?
+              (tab.$TST.subtreeCollapsed ?
+                configs.closeParentBehavior_outsideSidebar_collapsed :
+                configs.closeParentBehavior_outsideSidebar_expanded) :
+              (tab.$TST.subtreeCollapsed ?
+                configs.closeParentBehavior_noSidebar_collapsed :
+                configs.closeParentBehavior_noSidebar_expanded);
+        }
+        break;
+    }
   }
   const parentTab = parent || tab.$TST.parent;
 
