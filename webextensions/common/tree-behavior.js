@@ -19,12 +19,16 @@ function log(...args) {
   internalLogger('common/tree-behavior', ...args);
 }
 
-export function getParentTabOperationBehavior(tab, { context, byInternalOperation, preventEntireTreeBehavior, parent, windowId } = {}) {
+export function getParentTabOperationBehavior(tab, { context, byInternalOperation, keepDescendants, keepDescendantsBehavior, parent, windowId } = {}) {
   const sidebarVisible = SidebarConnection.isInitialized() ? ((windowId || tab) && SidebarConnection.isOpen(windowId || tab.windowId)) : true;
-  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible, stack: stack() });
+  log('getParentTabOperationBehavior ', tab, { byInternalOperation, keepDescendants, keepDescendantsBehavior, parent, sidebarVisible, stack: stack() });
 
   // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
   let behavior;
+  if (keepDescendants && typeof keepDescendantsBehavior == 'number') {
+    behavior = keepDescendantsBehavior;
+  }
+  else {
   switch (configs.parentTabOperationBehaviorMode) {
     case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT:
       log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT');
@@ -81,6 +85,7 @@ export function getParentTabOperationBehavior(tab, { context, byInternalOperatio
       }
       break;
   }
+  }
   const parentTab = parent || tab.$TST.parent;
 
   log(' => behavior: ', behavior);
@@ -95,9 +100,9 @@ export function getParentTabOperationBehavior(tab, { context, byInternalOperatio
   }
 
   if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
-      preventEntireTreeBehavior) {
+      keepDescendants) {
     behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
-    log(' => preventEntireTreeBehavior behavior, fallback to kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY');
+    log(' => keepDescendants behavior, fallback to kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY');
   }
 
   if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY) {

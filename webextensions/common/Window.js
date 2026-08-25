@@ -43,6 +43,7 @@ export default class Window {
     this.alreadyMovedTabs    = new Map(); // Map<tabId, expectedIndex[]>
     this.internalClosingTabs = new Set();
     this.keepDescendantsTabs = new Set();
+    this.keepDescendantsBehavior = null;
     this.highlightingTabs    = new Set();
     this.tabsToBeHighlightedAlone = new Set();
     this.internallyMovingTabsForUpdatedNativeTabGroups = new Set();

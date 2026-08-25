@@ -1151,21 +1151,17 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREMOVE_TAB_KEEPING_CHILDREN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        for (const tab of tabs) {
-          if (!TabsStore.ensureLivingItem(tab))
-            continue;
-          // Re-parent children via native openerTabId BEFORE removing, so treeStructure() sees correct state.
-          // TST uses openerTabId == tab.id as a self-reference to signal "no opener", treat that as null.
-          const allWindowTabs = await browser.tabs.query({ windowId: tab.windowId });
-          const children = allWindowTabs.filter(t => t.openerTabId === tab.id);
-          const newParentId = (tab.openerTabId && tab.openerTabId !== tab.id) ? tab.openerTabId : null;
-          await Promise.all(children.map(child =>
-            browser.tabs.update(child.id, {
-              openerTabId: newParentId || child.id
-            }).catch(() => {})
-          ));
-          await browser.tabs.remove(tab.id);
-        }
+        const keepDescendantsBehavior = /promote[-_\s]*first/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD :
+          /promote[-_\s]*all/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN :
+            /detach[-_\s]*all/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN :
+              Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+        await TabsInternalOperation.removeTabs(
+          tabs.filter(tab => TabsStore.ensureLivingItem(tab)),
+          {
+            keepDescendants: true,
+            keepDescendantsBehavior,
+          }
+        );
         return true;
       })();
 

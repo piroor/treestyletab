@@ -120,7 +120,7 @@ export function removeTab(tab) {
   return removeTabs([tab]);
 }
 
-export async function removeTabs(tabs, { keepDescendants, byMouseOperation, originalStructure, triggerTab } = {}) {
+export async function removeTabs(tabs, { keepDescendants, keepDescendantsBehavior, byMouseOperation, originalStructure, triggerTab } = {}) {
   if (!Constants.IS_BACKGROUND)
     throw new Error('TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
 
@@ -154,8 +154,11 @@ export async function removeTabs(tabs, { keepDescendants, byMouseOperation, orig
       win.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
-      if (keepDescendants)
+      if (keepDescendants) {
         win.keepDescendantsTabs.add(tab.id);
+        if (keepDescendantsBehavior)
+          win.keepDescendantsBehavior = keepDescendantsBehavior;
+      }
       if (willChangeFocus && byMouseOperation) {
         win.internallyFocusingByMouseTabs.add(tab.id);
         setTimeout(() => { // the operation can be canceled
@@ -196,8 +199,11 @@ export async function removeTabs(tabs, { keepDescendants, byMouseOperation, orig
       for (const tab of canceledTabs) {
         tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
         win.internalClosingTabs.delete(tab.id);
-        if (keepDescendants)
+        if (keepDescendants) {
           win.keepDescendantsTabs.delete(tab.id);
+          if (win.keepDescendantsBehavior)
+            win.keepDescendantsBehavior = null;
+        }
       }
       Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab, originalStructure });
     });
