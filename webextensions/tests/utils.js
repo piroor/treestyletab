@@ -122,6 +122,8 @@ export async function refreshTabs(tabs) {
       idToName[tabs[name].id] = name;
     }
     for (const tab of refreshedTabsArray) {
+      if (!tab)
+        continue;
       refreshedTabs[idToName[tab.id]] = Tab.import(tab);
     }
     console.log('refreshedTabs: ', Object.entries(refreshedTabs).map(([name, tab]) => `${name}(${tab.id})`));
@@ -134,6 +136,8 @@ export async function refreshTabs(tabs) {
 export function treeStructure(tabs) {
   const tabsById = {};
   for (const tab of tabs) {
+    if (!tab)
+      continue;
     tabsById[tab.id] = tab;
   }
   const outputNestedRelation = (tab) => {

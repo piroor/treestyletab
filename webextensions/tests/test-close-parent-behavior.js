@@ -1085,3 +1085,286 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
      'other children of the group parent tab must be kept');
 }
 
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithCollapsedSubtree() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                              false,
+    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+  });
+
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await collapseAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() => {
+    browser.runtime.sendMessage({
+      type: 'treestyletab:api:remove-tab-keeping-children',
+      tabs: [tabs.B.id, tabs.E.id],
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${F?.id} => ${G?.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted even when subtree was collapsed');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithExpandedSubtree() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                              false,
+    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+  });
+
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await expandAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() => {
+    browser.runtime.sendMessage({
+      type: 'treestyletab:api:remove-tab-keeping-children',
+      tabs: [tabs.B.id, tabs.E.id],
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${F?.id} => ${G?.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted when subtree was already expanded');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithExpandedSubtreeAnd_promoteFirst() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                               false,
+    parentTabOperationBehaviorMode:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:    Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    promoteAllChildrenWhenClosedParentIsLastChild: false,
+  });
+
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await expandAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() => {
+    browser.runtime.sendMessage({
+      type:   'treestyletab:api:remove-tab-keeping-children',
+      tabs:   [tabs.B.id, tabs.E.id],
+      method: 'promote-first',
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${C?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${F?.id} => ${G?.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted when subtree was already expanded');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithExpandedSubtreeAnd_promoteAll() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                              false,
+    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+  });
+
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await expandAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() => {
+    browser.runtime.sendMessage({
+      type:   'treestyletab:api:remove-tab-keeping-children',
+      tabs:   [tabs.B.id, tabs.E.id],
+      method: 'promote-first',
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${F?.id} => ${G?.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted when subtree was already expanded');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithExpandedSubtreeAnd_detachAll() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                              false,
+    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+  });
+
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await expandAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() => {
+    browser.runtime.sendMessage({
+      type:   'treestyletab:api:remove-tab-keeping-children',
+      tabs:   [tabs.B.id, tabs.E.id],
+      method: 'detach-all',
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A?.id}`,
+      `${C?.id}`,
+      `${D?.id}`,
+      `${F?.id}`,
+      `${G?.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted when subtree was already expanded');
+  }
+}

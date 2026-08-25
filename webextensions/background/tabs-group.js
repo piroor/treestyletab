@@ -543,8 +543,8 @@ Tab.onPinned.addListener(async tab => {
     log(' => no need to group left tabs, just detaching');
     await Tree.detachAllChildren(tab, {
       behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
-        context:                   Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
-        preventEntireTreeBehavior: true,
+        context:         Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+        keepDescendants: true,
       }),
       broadcast: true
     });

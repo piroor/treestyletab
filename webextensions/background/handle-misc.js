@@ -1148,6 +1148,23 @@ function onMessageExternal(message, sender) {
         return true;
       })();
 
+    case TSTAPI.kREMOVE_TAB_KEEPING_CHILDREN:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const keepDescendantsBehavior = /promote[-_\s]*first/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD :
+          /promote[-_\s]*all/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN :
+            /detach[-_\s]*all/i.test(message.method) ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN :
+              Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+        await TabsInternalOperation.removeTabs(
+          tabs.filter(tab => TabsStore.ensureLivingItem(tab)),
+          {
+            keepDescendants: true,
+            keepDescendantsBehavior,
+          }
+        );
+        return true;
+      })();
+
     case TSTAPI.kSTART_CUSTOM_DRAG:
       return (async () => {
         SidebarConnection.sendMessage({
