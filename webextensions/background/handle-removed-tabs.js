@@ -30,6 +30,7 @@ function log(...args) {
   internalLogger('background/handle-removed-tabs', ...args);
 }
 
+
 Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   log('Tabs.onRemoving ', dumpTab(tab), removeInfo);
   if (removeInfo.isWindowClosing)
