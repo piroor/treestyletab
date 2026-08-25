@@ -1107,25 +1107,25 @@ export async function testRemoveTabKeepingChildrenWithCollapsedSubtree() {
   );
   await collapseAll(win.id);
 
-  await Utils.waitUntilAllTabChangesFinished(() =>
+  await Utils.waitUntilAllTabChangesFinished(() => {
     browser.runtime.sendMessage({
       type: 'treestyletab:api:remove-tab-keeping-children',
       tabs: [tabs.B.id, tabs.E.id],
-    })
-  );
-  await wait(500);
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
 
-  delete tabs.B;
-  delete tabs.E;
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, C, D, F, G } = tabs;
     is([
-      `${A.id}`,
-      `${A.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-      `${F.id}`,
-      `${G.id}`,
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${G?.id}`,
     ], Utils.treeStructure([A, C, D, F, G]),
        'all children must be promoted even when subtree was collapsed');
   }
@@ -1153,25 +1153,25 @@ export async function testRemoveTabKeepingChildrenWithExpandedSubtree() {
   );
   await expandAll(win.id);
 
-  await Utils.waitUntilAllTabChangesFinished(() =>
+  await Utils.waitUntilAllTabChangesFinished(() => {
     browser.runtime.sendMessage({
       type: 'treestyletab:api:remove-tab-keeping-children',
       tabs: [tabs.B.id, tabs.E.id],
-    })
-  );
-  await wait(500);
+    });
+  }, {
+    close:   2,
+    timeout: 10000,
+  });
 
-  delete tabs.B;
-  delete tabs.E;
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, C, D, F, G } = tabs;
     is([
-      `${A.id}`,
-      `${A.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-      `${F.id}`,
-      `${G.id}`,
+      `${A?.id}`,
+      `${A?.id} => ${C?.id}`,
+      `${A?.id} => ${D?.id}`,
+      `${F?.id}`,
+      `${G?.id}`,
     ], Utils.treeStructure([A, C, D, F, G]),
        'all children must be promoted when subtree was already expanded');
   }
