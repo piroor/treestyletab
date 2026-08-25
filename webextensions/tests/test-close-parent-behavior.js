@@ -1200,13 +1200,14 @@ export async function testRemoveTabKeepingChildrenWithExpandedSubtree() {
 // https://github.com/piroor/treestyletab/issues/3933
 export async function testRemoveTabKeepingChildrenWithExpandedSubtreeAnd_promoteFirst() {
   await Utils.setConfigs({
-    warnOnCloseTabs:                              false,
-    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
-    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
-    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    warnOnCloseTabs:                               false,
+    parentTabOperationBehaviorMode:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior_insideSidebar_expanded:    Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    promoteAllChildrenWhenClosedParentIsLastChild: false,
   });
 
   await cleanupTabs();
