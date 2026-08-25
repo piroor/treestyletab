@@ -23,12 +23,13 @@ export function getParentTabOperationBehavior(tab, { context, byInternalOperatio
   const sidebarVisible = SidebarConnection.isInitialized() ? ((windowId || tab) && SidebarConnection.isOpen(windowId || tab.windowId)) : true;
   log('getParentTabOperationBehavior ', tab, { byInternalOperation, keepDescendants, keepDescendantsBehavior, parent, sidebarVisible, stack: stack() });
 
-  // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
   let behavior;
-  if (keepDescendants && typeof keepDescendantsBehavior == 'number') {
+  if (keepDescendants &&
+      Constants.kPARENT_TAB_OPERATION_BEHAVIORS.has(keepDescendantsBehavior)) {
     behavior = keepDescendantsBehavior;
   }
   else {
+    // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
     switch (configs.parentTabOperationBehaviorMode) {
       case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT:
         log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT');
