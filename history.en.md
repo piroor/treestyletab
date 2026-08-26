@@ -1,6 +1,7 @@
 # History
 
  - trunk/HEAD
+ - 4.4.0 (2026.8.26)
    * Add "Nova" theme for Firefox 155 and later.
    * Show "New Tab" button like a new tab, matching to Firefox does.
    * Copy single link from single tab correctly.
@@ -8,6 +9,10 @@
    * Drop-shadow to indicate scrollable state is now available in the pinned tabs area, not only in regular tabs area.
    * Expand height of the pinned tabs area automatically, when at least half of the last row is visible after resizing.
    * Shrink height of the pinned tabs area automatically, when empty rows are there after closing of pinned tabs.
+   * Better scaling of custom dialogs on hi-DPI displays.
+   * Show the QR code to share a tab in the sidebar if the `<all_urls>` permission is not granted.
+   * The root element of the sidebar panel now has a `data-style` attribute with the name of the active theme, for more customizability with user stylesheet. You'll be able to apply style rules only for specific theme with selectors like `:root[data-style="nova"]`.
+   * API: Introduce [`remove-tab-keeping-children`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#close-only-parent-tabs-keeping-their-children) message to close parent tabs keeping their children. ([initiallly implemented by Peuj](https://github.com/piroor/treestyletab/pull/3934), thanks!)
    * Fix mistakes in `en` locale by [scrypt-kitty](https://github.com/scrypt-kitty) ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)), Thanks!
    * [Add `sk` locale by rraddatch](github.com/piroor/treestyletab/pull/3946). Thanks!
  - 4.3.6 (2026.7.15)

@@ -1,6 +1,7 @@
 # 更新履歴
 
  - trunk/HEAD
+ - 4.4.0 (2026.8.26)
    * Firefox 155以降用に「Nova」テーマを追加
    * Firefoxに追従して「新しいタブ」ボタンをタブのように表示するようにした
    * 単独のタブからリンクをコピーできなくなっていたのを修正
@@ -8,6 +9,10 @@
    * ピン留めされたタブ用の領域についても、スクロールが発生しているときはそう分かるように影を表示するようにした
    * ピン留めされたタブ用の領域のリサイズ時に、最終行のタブが半分以上見えている場合はタブ全体が見えるように領域の大きさを自動的に拡げるようにした
    * ピン留めされたタブ用の領域をリサイズした後にタブを閉じて空行が生じた場合に、領域の大きさを自動的に縮小するようにした
+   * Hi-DPIディスプレイでのカスタムダイアログの表示サイズをより適切に調整するようにした
+   * `<all_urls>`権限が与えられていない場合はタブ共有用のQRコードをサイドバー内に表示するようにした
+   * ユーザースタイルシートでのカスタマイズ性を高めるため、ルート要素が現在アクティブなテーマの名前を値とした`data-style`属性を持つようになった（`:root[data-style="nova"]`のようにして特定のテーマ向けのスタイル指定を記述可能）
+   * API: 子孫タブを残したまま親タブだけを閉じる [`remove-tab-keeping-children`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#close-only-parent-tabs-keeping-their-children) を導入（[Peuj氏による初期実装](https://github.com/piroor/treestyletab/pull/3934)に基づく）
    * `en`ロケール内の誤記を修正（by [scrypt-kitty](https://github.com/scrypt-kitty), ([#3941](http://github.com/piroor/treestyletab/pull/3941) and [#3942](http://github.com/piroor/treestyletab/pull/3942)) Thanks!）
    * [`sk`ロケール追加（by rraddatch, thanks!)](github.com/piroor/treestyletab/pull/3946)
  - 4.3.6 (2026.7.15)
