@@ -30,7 +30,7 @@
   --tabbar-bg: var(--toolbar-background-color);
 
   --safe-browser-toolbar-background-color: var(--browser-toolbar-background-color, var(--toolbar-background-color, transparent));
-  --browser-toolbar-background-color-gradient: linear-gradient(to right, var(--safe-browser-toolbar-background-color) 0%, var(--safe-browser-toolbar-background-color) 100%), var(--browser-bg-images, none);
+  --browser-toolbar-background-color-gradient: linear-gradient(to right, var(--safe-browser-toolbar-background-color) 0%, var(--safe-browser-toolbar-background-color) 100%);
 
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-invert: var(--tab-group-blue-invert);
