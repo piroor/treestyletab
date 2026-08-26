@@ -114,7 +114,7 @@ export function reposition(options = {}) {
       (Math.ceil(mFixedContainerHeight / oneTabHeight) == Math.min(mMaxVisibleRows, maxRow) &&
        (mFixedContainerHeight % oneTabHeight) > (oneTabHeight / 2)) ||
       // Shrink the area to eliminate empty rows.
-      (maxRow < mMaxVisibleRows)
+      (maxRow < mFixedContainerHeight / oneTabHeight)
     )
   ) {
     log('auto resize');
