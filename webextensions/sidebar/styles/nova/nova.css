@@ -165,11 +165,8 @@ tab-item-substance {
 tab-item:hover tab-item-substance.split-substances-container .background:not(.base),
 .after-tabs button,
 .after-tabs [role="button"],
-#subpanel-container,
 #dummy-tab-color-box {
   background: var(--tab-surface);
-  color: var(--tab-text);
-  line-height: 1;
 }
 .after-tabs [role="button"] {
   background: transparent;

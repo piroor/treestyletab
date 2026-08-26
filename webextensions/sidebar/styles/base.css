@@ -69,8 +69,6 @@
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: none;
 
-  color: var(--lwt-text-color, var(--tab-text));
-
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.35;
 
@@ -151,6 +149,9 @@
       content: attr(data-native-tab-group-id) !important;
     }
   }
+
+  color: var(--lwt-text-color, var(--tab-text));
+  line-height: 1;
 }
 
 
@@ -1633,7 +1634,6 @@ iframe#subpanel {
 }
 
 #subpanel-header {
-  background: var(--tab-surface);
   border-block-start: 1px solid var(--tab-border);
   display: flex;
   flex-direction: row;
