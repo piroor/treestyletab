@@ -1,6 +1,10 @@
 # History
 
  - trunk/HEAD
+ - 4.4.1 (2026.8.26)
+   * Apply browser's theme more correctly on the "Nova" theme.
+   * Stylize pinned tabs area resizer similar to Firefox's native one.
+   * Allow to resize pinned tabs area size again. (fix regression on 4.4.0)
  - 4.4.0 (2026.8.26)
    * Add "Nova" theme for Firefox 155 and later.
    * Show "New Tab" button like a new tab, matching to Firefox does.
