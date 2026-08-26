@@ -99,6 +99,15 @@
   --visual-gap-animation: top var(--collapse-animation);
   --visual-gap-hover-animation: top var(--collapse-animation) var(--visual-gap-hover-animation-delay);
 
+  /* https://searchfox.org/firefox-main/rev/600bd2128b2ba435b9698ec8b61394aa27c7c93f/browser/themes/shared/sidebar.css#309-315 */
+  --sidebar-divider-color: var(--toolbarbutton-icon-fill);
+  --sidebar-divider-image:
+    radial-gradient(circle closest-side, var(--sidebar-divider-color) 100%, transparent 100%),
+    radial-gradient(circle closest-side, var(--sidebar-divider-color) 100%, transparent 100%),
+    linear-gradient(var(--sidebar-divider-color), var(--sidebar-divider-color));
+  --sidebar-divider-size: 2px 2px, 2px 2px, calc(var(--icon-size-small) - 2px) 2px;
+  --sidebar-divider-position: calc(50% - 7px) center, calc(50% + 7px) center, center;
+
   /* Some users may use physical properties to customize tab margins, so we should map them to logical propertis for better compatibility.
      https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#change-tab-margin */
   &:not(.rtl),
@@ -917,6 +926,10 @@ tab-item-substance.attention tab-favicon::before {
 
 #pinned-tabs-container-resizer {
   background-color: transparent;
+  background-image: var(--sidebar-divider-image);
+  background-size: var(--sidebar-divider-size);
+  background-position: var(--sidebar-divider-position);
+  background-repeat: no-repeat;
   cursor: ns-resize;
   height: var(--pinned-tabs-container-resizer-size);
   top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset) + max(0px, var(--pinned-tabs-area-size) - var(--pinned-tabs-container-resizer-size)));
@@ -925,6 +938,7 @@ tab-item-substance.attention tab-favicon::before {
 
   &:hover {
     background-color: Highlight;
+    background-image: none;
   }
 
   :root:not(.have-pinned-tabs) & {

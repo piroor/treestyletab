@@ -273,6 +273,7 @@
   --bg-color: var(--grey-10);
   --text-color: var(--grey-90);
 
+  --toolbarbutton-icon-fill: currentColor;
   /* https://searchfox.org/firefox-main/rev/c7b4ff2aadfce11e419c226b7839b0348258a504/browser/themes/shared/browser-colors.css#121 */
   --toolbarbutton-icon-fill-attention: light-dark(rgb(0, 97, 224), rgb(0, 221, 255));
 
