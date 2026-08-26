@@ -69,6 +69,8 @@
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: none;
 
+  color: var(--lwt-text-color, var(--tab-text));
+
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.35;
 
