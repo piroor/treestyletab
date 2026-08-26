@@ -9,6 +9,7 @@
 @import url("./tokens-platform.css");
 @import url("./toolbar.css");
 @import url("./tab.tokens.css");
+@import url("./tabs.css");
 
 :root {
   --color-animation: 0s ease-out;
