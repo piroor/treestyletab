@@ -824,7 +824,7 @@ async function updateIconForBrowserTheme(theme) {
 
   log('updateIconForBrowserTheme: ', theme);
   if (theme.colors) {
-    const isNativeVerticalTabs = 'verticalTabs' in browser.browserSettings ? (await browser.browserSettings.verticalTabs.get({})).value : false;
+    const isNativeVerticalTabs = browser.browserSettings && 'verticalTabs' in browser.browserSettings ? (await browser.browserSettings.verticalTabs.get({})).value : false;
     const toolbarIconColor = theme.colors.icons || (
       isNativeVerticalTabs ?
         'CanvasText' : // --toolbarbutton-icon-fill in https://searchfox.org/firefox-main/rev/91c8ca3faa6ccbb72d65d89401fd31fd3313afc4/toolkit/themes/shared/design-system/dist/tokens-platform.css#225
@@ -871,6 +871,19 @@ browser.theme.onUpdated.addListener(updateInfo => {
   updateIconForBrowserTheme(updateInfo.theme);
 });
 
+browser.permissions.onAdded?.addListener(addedPermissions => {
+  if (new Set([...addedPermissions.permissions, ...Permissions.BROWSER_SETTINGS.permissions]).size < addedPermissions.permissions.length)
+    return;
+
+  updateIconForBrowserTheme();
+
+  if ('verticalTabs' in browser.browserSettings &&
+      !updateIconForBrowserTheme.$listeningBrowserSettings) {
+    updateIconForBrowserTheme.$listeningBrowserSettings = true;
+    browser.browserSettings.verticalTabs.onChange.addListener(_details => updateIconForBrowserTheme());
+  }
+});
+
 mDarkModeMatchMedia.addListener(async _event => {
   updateIconForBrowserTheme();
 });
@@ -897,6 +910,8 @@ configs.$addObserver(key => {
   }
 });
 
-if ('verticalTabs' in browser.browserSettings) {
+if (browser.browserSettings &&
+    'verticalTabs' in browser.browserSettings) {
+  updateIconForBrowserTheme.$listeningBrowserSettings = true;
   browser.browserSettings.verticalTabs.onChange.addListener(_details => updateIconForBrowserTheme());
 }

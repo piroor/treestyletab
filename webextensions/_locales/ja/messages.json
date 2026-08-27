@@ -297,6 +297,8 @@
   "message_startup_requestPermissions_allUrls_preventBlankDialogRestoration":   { "message": "タブを開きなおす操作でダイアログ用の空のウィンドウが復元されないようにする" },
   "message_startup_requestPermissions_clipboardRead": { "message": "クリップボードの読み取り" },
   "message_startup_requestPermissions_clipboardRead_newTabButtonMiddleClick": { "message": "「新しいタブ」ボタンの中ボタンクリックでクリップボード内のURLを開く（※\"dom.events.asyncClipboard.clipboardItem\"の有効化が必要）" },
+  "message_startup_requestPermissions_browserSettings": { "message": "ブラウザー設定の読み取りと変更" },
+  "message_startup_requestPermissions_browserSettings_toolbarIconColor": { "message": "ブラウザー側の垂直タブバーの状態に応じてツールバーのアイコンを適切な色で表示する" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、ブラウザーのタブバーとサイドバーのヘッダーはTree Style Tabから制御できません。これらを隠したい場合は" },
@@ -457,6 +459,7 @@
   "config_inContentUIOffsetTop_label_after": { "message": "ピクセルずらす" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "親タブ上のツールチップで、折りたたまれた子孫タブの一覧を表示する" },
   "config_showCollapsedDescendantsByLegacyTooltipOnSidebar_label": { "message": "その際は必要に応じてネイティブのツールチップ（サイドバーの幅より広く表示できる）を使用する" },
+  "config_requestPermissions_browserSettings": { "message": "ブラウザー側の垂直タブバーの状態に応じてツールバーのアイコンを適切な色で表示する（※ブラウザーの設定の読み取りを許可する必要があります）" },
   "config_shiftTabsForScrollbarDistance_label_before": { "message": "自動的に表示されるスクロールバーに覆われてタブ内のボタンに触れなくならないよう、" },
   "config_shiftTabsForScrollbarDistance_label_after": { "message": "ぶんだけタブをずらして表示する" },
   "config_shiftTabsForScrollbarDistance_placeholder": { "message": "(CSS長さ)" },

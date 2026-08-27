@@ -41,6 +41,10 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#clipboardReadPermissionGranted')
   );
   document.querySelector('#clipboardReadPermissionGranted').style.display = configs.middleClickPasteURLOnNewTabButton ? 'none' : '';
+  Permissions.bindToCheckbox(
+    Permissions.BROWSER_SETTINGS,
+    document.querySelector('#browserSettingsPermissionGranted')
+  );
 
   document.documentElement.classList.add('initialized');
 }, { once: true });

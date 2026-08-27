@@ -6,7 +6,6 @@
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
-    "browserSettings",
     "contextualIdentities",
     "cookies",
     "menus",
@@ -22,6 +21,7 @@
   "optional_permissions": [
     "<all_urls>",
     "bookmarks",
+    "browserSettings",
     "clipboardRead",
     "tabHide"
   ],

@@ -831,6 +831,11 @@ function initPermissionOptions() {
   );
 
   Permissions.bindToCheckbox(
+    Permissions.BROWSER_SETTINGS,
+    document.querySelector('#browserSettingsPermissionGranted_toolbarIconColor')
+  );
+
+  Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
     document.querySelector('#tabHidePermissionGranted'),
     { onChanged: async (granted) => {

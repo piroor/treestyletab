@@ -20,6 +20,7 @@ function log(...args) {
 export const ALL_URLS = { origins: ['<all_urls>'] };
 export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const CLIPBOARD_READ = { permissions: ['clipboardRead'] };
+export const BROWSER_SETTINGS = { permissions: ['browserSettings'] };
 export const TAB_HIDE = { permissions: ['tabHide'] };
 
 const checkboxesForPermission = new Map();
@@ -48,7 +49,7 @@ export function isGrantedSync(permissions) {
 }
 
 // cache last state
-for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ, TAB_HIDE]) {
+for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ, BROWSER_SETTINGS, TAB_HIDE]) {
   isGranted(permissions);
 }
 
@@ -115,9 +116,7 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   }
 });
 
-/*
-// These events are not available yet on Firefox...
-browser.permissions.onAdded.addListener(addedPermissions => {
+browser.permissions.onAdded?.addListener(addedPermissions => {
   const permissions = JSON.stringify(addedPermissions.permissions);
   const requests = mRequests.get(permissions);
   if (!requests)
@@ -130,8 +129,8 @@ browser.permissions.onAdded.addListener(addedPermissions => {
     checkbox.checked = true;
   }
 });
-browser.permissions.onRemoved.addListener(removedPermissions => {
-  const permissions = JSON.stringify(addedPermissions.permissions);
+browser.permissions.onRemoved?.addListener(removedPermissions => {
+  const permissions = JSON.stringify(removedPermissions.permissions);
   const requests = mRequests.get(permissions);
   if (!requests)
     return;
@@ -143,7 +142,6 @@ browser.permissions.onRemoved.addListener(removedPermissions => {
     checkbox.checked = false;
   }
 });
-*/
 
 export function bindToCheckbox(permissions, checkbox, options = {}) {
   const checkboxes = checkboxesForPermission.get(permissions) || [];

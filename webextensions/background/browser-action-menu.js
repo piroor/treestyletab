@@ -164,6 +164,11 @@ const mItems = [
         expert: true
       },
       {
+        title:       browser.i18n.getMessage('config_requestPermissions_browserSettings'),
+        type:        'checkbox',
+        permissions: Permissions.BROWSER_SETTINGS
+      },
+      {
         dynamicTitle: true,
         get title() {
           return browser.i18n.getMessage('config_shiftTabsForScrollbarDistance_label_before') + configs.shiftTabsForScrollbarDistance + browser.i18n.getMessage('config_shiftTabsForScrollbarDistance_label_after')
