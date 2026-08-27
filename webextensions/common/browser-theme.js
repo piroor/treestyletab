@@ -198,7 +198,7 @@ export async function generateThemeDeclarations(theme) {
   if (theme.colors.accentcolor || theme.colors.frame)
     extraColors.push(`--lwt-accent-color: ${theme.colors.accentcolor || theme.colors.frame}`);
   if (theme.colors.textcolor || theme.colors.tab_background_text)
-    extraColors.push(`--lwt-text-color: ${theme.colors.textcolor || theme.colors.tab_background_text}`);
+    extraColors.push(`--lwt-text-color: ${theme.colors.tab_background_text || theme.colors.textcolor}`);
   if (theme.colors.toolbar_text)
     extraColors.push(`--browser-toolbar-text-color: ${theme.colors.toolbar_text}`);
   if (theme.colors.toolbar)

@@ -146,7 +146,7 @@ tab-item-substance {
 
   /* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/browser/themes/shared/browser-shared.css#412-418 */
   :root.lwtheme-applied & {
-    --tab-text: var(--toolbar-text-color);
+    --tab-text: var(--lwt-text-color, var(--toolbar-text-color));
   }
 }
 .after-tabs button,
