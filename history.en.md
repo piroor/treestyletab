@@ -1,6 +1,8 @@
 # History
 
  - trunk/HEAD
+ - 4.4.3 (2026.8.27)
+   * Fix mismatched description about permission about browser settings in the options page.
  - 4.4.2 (2026.8.27)
    * Still use "Proton" instead of "Nova" as the default theme on Firefox 155 and later.
    * Apply colors defined in browser's themes more correctly.
