@@ -45,7 +45,7 @@ body,
 }
 :root:not(.rtl).inverted,
 :root.rtl.regular #background {
-  background-position: right;
+  background-position: var(--browser-bg-position, right);
 }
 
 @media not (prefers-color-scheme: dark) {
