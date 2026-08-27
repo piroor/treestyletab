@@ -827,7 +827,7 @@ async function updateIconForBrowserTheme(theme) {
     const isNativeVerticalTabs = browser.browserSettings && 'verticalTabs' in browser.browserSettings ? (await browser.browserSettings.verticalTabs.get({})).value : false;
     const toolbarIconColor = theme.colors.icons || (
       isNativeVerticalTabs ?
-        'CanvasText' : // --toolbarbutton-icon-fill in https://searchfox.org/firefox-main/rev/91c8ca3faa6ccbb72d65d89401fd31fd3313afc4/toolkit/themes/shared/design-system/dist/tokens-platform.css#225
+        theme.colors.textcolor || theme.colors.tab_background_text || 'CanvasText' : // --toolbarbutton-icon-fill in https://searchfox.org/firefox-main/rev/91c8ca3faa6ccbb72d65d89401fd31fd3313afc4/toolkit/themes/shared/design-system/dist/tokens-platform.css#225
         theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.tab_background_text || theme.colors.bookmark_text || theme.colors.textcolor
     );
     const menuIconColor    = theme.colors.popup_text || toolbarIconColor;
