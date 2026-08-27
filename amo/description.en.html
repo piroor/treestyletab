@@ -6,9 +6,9 @@ If you want, you can restructure the tree via drag and drop.
 
 
 * Such a tree of tabs will behave like a visual browsing history for you.
-  * For example, if you see a list of search results for a topic, each search result link will open in new child tab.
-  * New tabs opened from these "child" tabs will appear as descendants of their originating tabs.
-  * You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
+    * For example, if you see a list of search results for a topic, each search result link will open in new child tab.
+    * New tabs opened from these "child" tabs will appear as descendants of their originating tabs.
+    * You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
 * Moreover, each tree will reflect a group of tabs on a similar topic.
 
 
@@ -27,14 +27,15 @@ This extension needs following permissions to work as expected:
 
 
 * Required:
-  * Access browser tabs: to list both active and non-active tabs in the UI.
-  * Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.
-  * Display notifications to you: to present information and navigate users without blocking.
-  * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
+    * Access browser tabs: to list both active and non-active tabs in the UI.
+    * Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.
+    * Display notifications to you: to present information and navigate users without blocking.
+    * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
 * Optional:
-  * Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.
-  * Access your data for all websites (run scripts on webpages): to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab.
-  * Hide and show browser tabs: just for automated tests, not required on regular use.
+    * Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.
+    * Get data from the clipboard: to simulate commands like "Share > Copy Links" in the tab context menu and others. / to simulate opening a new tab with the URL in the clipboard with middle click on the tab bar.
+    * Access your data for all websites (run scripts on webpages) / Access local files on your computer: to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab. / to render simulated preview panel and tab groups context menu on the content area.
+    * Hide and show browser tabs: just for automated tests, not required on regular use.
 
 
 

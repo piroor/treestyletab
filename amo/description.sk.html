@@ -6,9 +6,9 @@ Ak chcete, môžete strom preusporiadať pomocou ťahania myšou (drag and drop)
 
 
 * Takýto strom kariet sa pre vás bude správať ako vizuálna história prehliadania.
-  * Ak si napríklad zobrazíte zoznam výsledkov vyhľadávania na nejakú tému, každý odkaz na výsledok sa otvorí v novej podradenej karte.
-  * Nové karty otvorené z týchto "podradených" kariet sa zobrazia ako ich potomkovia.
-  * Môžete sa tak ľahko ponárať čoraz hlbšie, bez toho, aby ste stratili svoju stopu prehliadania - ak sa chcete vrátiť k pôvodnému výsledku vyhľadávania, stačí prepnúť na "koreňovú" kartu.
+    * Ak si napríklad zobrazíte zoznam výsledkov vyhľadávania na nejakú tému, každý odkaz na výsledok sa otvorí v novej podradenej karte.
+    * Nové karty otvorené z týchto "podradených" kariet sa zobrazia ako ich potomkovia.
+    * Môžete sa tak ľahko ponárať čoraz hlbšie, bez toho, aby ste stratili svoju stopu prehliadania - ak sa chcete vrátiť k pôvodnému výsledku vyhľadávania, stačí prepnúť na "koreňovú" kartu.
 * Okrem toho každý strom bude odrážať skupinu kariet na podobnú tému.
 
 
@@ -27,14 +27,15 @@ Toto rozšírenie potrebuje na svoju správnu funkčnosť nasledujúce oprávnen
 
 
 * Povinné:
-  * Prístup ku kartám prehliadača: na zobrazenie aktívnych aj neaktívnych kariet v používateľskom rozhraní.
-  * Prístup k nedávno zatvoreným kartám (prístup k informáciám o relácii): na uloženie informácií o strome kariet (štruktúra, stav zbalenia/rozbalenia atď.) do informácií o relácii kariet a na to, aby Firefox mohol tieto karty spravovať ako celok.
-  * Zobrazovanie upozornení: na poskytovanie informácií a navigáciu používateľov bez blokovania ich činnosti.
-  * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
+    * Prístup ku kartám prehliadača: na zobrazenie aktívnych aj neaktívnych kariet v používateľskom rozhraní.
+    * Prístup k nedávno zatvoreným kartám (prístup k informáciám o relácii): na uloženie informácií o strome kariet (štruktúra, stav zbalenia/rozbalenia atď.) do informácií o relácii kariet a na to, aby Firefox mohol tieto karty spravovať ako celok.
+    * Zobrazovanie upozornení: na poskytovanie informácií a navigáciu používateľov bez blokovania ich činnosti.
+    * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
 * Voliteľné:
-  * Čítanie a úprava záložiek: na simuláciu príkazov súvisiacich so záložkami v kontextovej ponuke kariet / na zistenie, či boli karty otvorené zo záložiek.
-  * Prístup k vašim údajom pre všetky webové stránky (spúšťanie skriptov na webových stránkach): na zistenie stlačenia/uvoľnenia klávesu Ctrl a zabránenie zbytočnému rozbaľovaniu zbalených stromov pri prepínaní kariet pomocou Ctrl-Tab/Ctrl-Shift-Tab.
-  * Skrývanie a zobrazovanie kariet prehliadača: len pre automatizované testy, pri bežnom používaní sa nevyžaduje.
+    * Čítanie a úprava záložiek: na simuláciu príkazov súvisiacich so záložkami v kontextovej ponuke kariet / na zistenie, či boli karty otvorené zo záložiek.
+    * Get data from the clipboard: to simulate commands like "Share > Copy Links" in the tab context menu and others. / to simulate opening a new tab with the URL in the clipboard with middle click on the tab bar.
+    * Prístup k vašim údajom pre všetky webové stránky (spúšťanie skriptov na webových stránkach) / Access local files on your computer: na zistenie stlačenia/uvoľnenia klávesu Ctrl a zabránenie zbytočnému rozbaľovaniu zbalených stromov pri prepínaní kariet pomocou Ctrl-Tab/Ctrl-Shift-Tab. / to render simulated preview panel and tab groups context menu on the content area.
+    * Skrývanie a zobrazovanie kariet prehliadača: len pre automatizované testy, pri bežnom používaní sa nevyžaduje.
 
 
 

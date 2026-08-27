@@ -6,9 +6,9 @@ Si vous le souhaitez, vous pouvez restructurer l’arbre avec le glisser-dépose
 
 
 * Un tel arbre d’onglet se comporte comme un historique de navigation visuel pour vous.
-  * Par exemple, si vous voyez une liste de résultats de recherche sur un sujet, vous ouvrirez chaque lien de résultat dans un nouvel onglet enfant.
-  * Pour plus de détails vous allez aussi ouvrir plus de descendants à partir d’eux.
-  * Vous creuserez de plus en plus sans perdre votre fil de navigation — si vous souhaitez revenir au résultat de recherche initial, vous avez juste à aller à l’onglet « racine ».
+    * Par exemple, si vous voyez une liste de résultats de recherche sur un sujet, vous ouvrirez chaque lien de résultat dans un nouvel onglet enfant.
+    * Pour plus de détails vous allez aussi ouvrir plus de descendants à partir d’eux.
+    * Vous creuserez de plus en plus sans perdre votre fil de navigation — si vous souhaitez revenir au résultat de recherche initial, vous avez juste à aller à l’onglet « racine ».
 * De plus, vous pouvez juste considérer les arbres d’onglets comme un « groupe d’onglets » à propos d’un même sujet.
 
 
@@ -28,14 +28,15 @@ This extension needs following permissions to work as expected:
 
 
 * Required:
-  * Access browser tabs: to list both active and non-active tabs in the UI.
-  * Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.
-  * Display notifications to you: to present information and navigate users without blocking.
-  * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
+    * Access browser tabs: to list both active and non-active tabs in the UI.
+    * Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.
+    * Display notifications to you: to present information and navigate users without blocking.
+    * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
 * Optional:
-  * Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.
-  * Access your data for all websites (run scripts on webpages): to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab.
-  * Hide and show browser tabs: just for automated tests, not required on regular use.
+    * Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.
+    * Get data from the clipboard: to simulate commands like "Share > Copy Links" in the tab context menu and others. / to simulate opening a new tab with the URL in the clipboard with middle click on the tab bar.
+    * Access your data for all websites (run scripts on webpages) / Access local files on your computer: to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab. / to render simulated preview panel and tab groups context menu on the content area.
+    * Hide and show browser tabs: just for automated tests, not required on regular use.
 
 
 
