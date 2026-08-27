@@ -25,9 +25,13 @@
   --tabbar-bottom-area-size: 0px;
   --after-tabs-area-size: 0px;
   --pinned-tabs-area-size: 0px;
-  --pinned-tabs-container-resizer-size: 2px;
+  --pinned-tabs-container-resizer-size: 0px;
   --subpanel-area-size: 0px;
   --subpanel-content-size: auto;
+
+  &.have-pinned-tabs {
+    --pinned-tabs-container-resizer-size: 2px;
+  }
 
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;
@@ -297,7 +301,7 @@ body {
 }
 
 #normal-tabs-container {
-  margin-block-start: var(--pinned-tabs-area-size);
+  margin-block-start: calc(var(--pinned-tabs-area-size) + var(--pinned-tabs-container-resizer-size));
   max-height: 100%;
   min-height: 0;
   overflow: hidden;
@@ -348,11 +352,11 @@ body {
     top: var(--tabbar-top-area-size);
   }
   #pinned-tabs-container &.end {
-    bottom: calc(var(--subpanel-area-size) + var(--tabbar-bottom-area-size) + var(--after-tabs-area-size) + var(--tabbar-size) - var(--pinned-tabs-area-size) + var(--pinned-tabs-container-resizer-size));
+    bottom: calc(var(--subpanel-area-size) + var(--tabbar-bottom-area-size) + var(--after-tabs-area-size) + var(--tabbar-size) - var(--pinned-tabs-area-size));
   }
 
   #normal-tabs-container &.start {
-    top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
+    top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size) + var(--pinned-tabs-container-resizer-size));
   }
   #normal-tabs-container &.end {
     bottom: calc(var(--subpanel-area-size) + var(--tabbar-bottom-area-size) + var(--after-tabs-area-size));
@@ -388,7 +392,7 @@ body {
   z-index: var(--tab-ui-z-index);
 
   &.above {
-    top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
+    top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size) + var(--pinned-tabs-container-resizer-size));
   }
   &.below {
     bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size) + var(--tabbar-bottom-area-size) + var(--subpanel-area-size));
@@ -909,7 +913,7 @@ tab-item-substance.attention tab-favicon::before {
   align-items: stretch;
   display: flex;
   flex-direction: column;
-  max-height: calc(var(--pinned-tabs-area-size) - var(--pinned-tabs-container-resizer-size));
+  max-height: var(--pinned-tabs-area-size);
   overflow: hidden;
   top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset));
   transition: max-height var(--collapse-animation),
@@ -935,7 +939,7 @@ tab-item-substance.attention tab-favicon::before {
   background-repeat: no-repeat;
   cursor: ns-resize;
   height: var(--pinned-tabs-container-resizer-size);
-  top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset) + max(0px, var(--pinned-tabs-area-size) - var(--pinned-tabs-container-resizer-size)));
+  top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset) + var(--pinned-tabs-area-size));
   transition: background-color var(--color-animation);
   z-index: var(--over-tabs-z-index);
 

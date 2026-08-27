@@ -126,7 +126,7 @@ export function reposition(options = {}) {
       Math.min(
         mContentsHeight,
         mMaxVisibleRows * oneTabHeight
-      ) + mContainerResizer.offsetHeight :
+      ) :
       Math.min(
         mFixedContainerHeight,
         allTabsAreaHeight * 0.9
