@@ -94,7 +94,7 @@
 
 @layer tokens-browser-theme {
   /*@media not ((forced-colors) or (-moz-native-theme)) {*/
-    :root/*:is([theme-in-app], :not([lwtheme]))*/ {
+    :root/*:is([theme-in-app], :not([lwtheme]))*/:not(.lwtheme-applied) {
       /** background-color **/
       --background-color-dimmed: light-dark(color-mix(in srgb, currentColor 12%, transparent), color-mix(in srgb, currentColor 17%, transparent));
       --background-color-dimmed-further: light-dark(color-mix(in srgb, currentColor 20%, transparent), color-mix(in srgb, currentColor 14%, transparent));
