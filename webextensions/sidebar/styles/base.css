@@ -30,7 +30,7 @@
   --subpanel-content-size: auto;
 
   &.have-pinned-tabs {
-    --pinned-tabs-container-resizer-size: 2px;
+    --pinned-tabs-container-resizer-size: 4px;
   }
 
   --color-animation: 0.25s ease-out;
