@@ -38,11 +38,9 @@ export function generateThemeRules(theme) {
   return rules.join('\n');
 }
 
-const BG_POSITION_TOP_OFFSET         = 'calc(0px - var(--browser-sidebar-y-offset))';
-const BG_POSITION_LEFT_OFFSET_LEFT  = 'var(--browser-sidebar-x-offset)';
-const BG_POSITION_LEFT_OFFSET_RIGHT = 'var(--browser-sidebar-x-offset)';
-const BG_POSITION_RIGHT_OFFSET_LEFT  = 'calc(var(--browser-sidebar-width) - var(--browser-window-width) + var(--browser-sidebar-x-offset))';
-const BG_POSITION_RIGHT_OFFSET_RIGHT = 'calc(var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset))';
+const BG_POSITION_TOP_OFFSET   = 'calc(0px - var(--browser-sidebar-y-offset) - var(--element-y-offset, 0px))';
+const BG_POSITION_LEFT_OFFSET  = 'var(--browser-sidebar-x-offset) - var(--element-x-offset, 0px)';
+const BG_POSITION_RIGHT_OFFSET = 'calc(var(--browser-sidebar-width) - var(--browser-window-width) + var(--browser-sidebar-x-offset) - var(--element-x-end-offset, 0px))';
 
 export async function generateThemeDeclarations(theme) {
   if (!theme ||
@@ -82,7 +80,7 @@ export async function generateThemeDeclarations(theme) {
       }
       images.push({
         url:      frameImage,
-        position: isRightside ? `top ${BG_POSITION_TOP_OFFSET} right ${BG_POSITION_RIGHT_OFFSET_RIGHT}` : `top ${BG_POSITION_TOP_OFFSET} right ${BG_POSITION_RIGHT_OFFSET_LEFT}`,
+        position: `top ${BG_POSITION_TOP_OFFSET} right ${BG_POSITION_RIGHT_OFFSET}`,
         repeat:   'no-repeat',
         size:     'auto',
       });
@@ -113,9 +111,9 @@ export async function generateThemeDeclarations(theme) {
           position: position.replace(/\b(top|right|bottom|left)\b\s*(.*?)(?=\s*\b(?:top|right|bottom|left)\b|$)/g, (match, position, offset) => {
             switch (position.toLowerCase()) {
               case 'left':
-                return `left calc(${isRightside ? BG_POSITION_LEFT_OFFSET_RIGHT : BG_POSITION_LEFT_OFFSET_LEFT}${offset ? ' + ' + offset : ''}) `;
+                return `left calc(${BG_POSITION_LEFT_OFFSET}${offset ? ' + ' + offset : ''}) `;
               case 'right':
-                return `right calc(${isRightside ? BG_POSITION_RIGHT_OFFSET_RIGHT : BG_POSITION_RIGHT_OFFSET_LEFT}${offset ? ' + ' + offset : ''}) `;
+                return `right calc(${BG_POSITION_RIGHT_OFFSET}${offset ? ' + ' + offset : ''}) `;
               case 'top':
                 return `top calc(${BG_POSITION_TOP_OFFSET}${offset ? ' + ' + offset : ''}) `;
               default:
@@ -171,6 +169,7 @@ export async function generateThemeDeclarations(theme) {
     if (hasImage) {
       extraColors.push('--browser-bg-images: ' + images.map(image => `url(${JSON.stringify(image.url)})`).join(','));
       extraColors.push('--browser-bg-position: ' + images.map(image => image.position).join(','));
+      extraColors.push('--browser-bg-position-definition: "' + images.map(image => image.position).join(',') + '"');
       extraColors.push('--browser-bg-repeat: ' + images.map(image => image.repeat).join(','));
       extraColors.push('--browser-bg-size: ' + images.map(image => image.size).join(','));
     }

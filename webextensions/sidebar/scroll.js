@@ -561,6 +561,7 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
     }
   }
 
+  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
   for (const [lastIds, currentIds, place] of [
     [[...mLastStickyItemIdsAbove], [...stickyItemIdsAbove], 'above'],
     [[...mLastStickyItemIdsBelow].reverse(), [...stickyItemIdsBelow].reverse(), 'below'],
@@ -570,6 +571,12 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
       const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
       switch (tag) {
         case 'equal':
+          if (shouldUpdateBG) {
+            const insertIds = currentIds.slice(toStart, toEnd);
+            for (const id of insertIds) {
+              Tab.get(id)?.$TST?.updateBG();
+            }
+          }
           break;
 
         case 'delete': {
@@ -594,10 +601,13 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
             Tab.get(lastIds[fromEnd]) :
             null;
           for (const id of insertIds) {
-            SidebarItems.renderItem(Tab.get(id), {
+            const tab = Tab.get(id);
+            SidebarItems.renderItem(tab, {
               containerElement: document.querySelector(`.sticky-tabs-container.${place}`),
               insertBefore:     referenceItem,
             });
+            if (shouldUpdateBG)
+              tab.$TST.updateBG();
           }
         }; break;
       }

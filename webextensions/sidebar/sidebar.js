@@ -134,10 +134,19 @@ UserOperationBlocker.block({ throbber: true });
 async function setBrowserWindowSizes(win) {
   if (!win)
     win = await browser.windows.get(mTargetWindow);
-  document.documentElement.style.setProperty('--browser-window-width', `${win.width}px`);
-  document.documentElement.style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
-  document.documentElement.style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
-  document.documentElement.style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
+
+  const style = document.documentElement.style;
+  style.setProperty('--browser-window-width', `${win.width}px`);
+  style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
+  style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
+  style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
+
+  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
+  if (shouldUpdateBG) {
+    for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
+      tab.$TST.updateBG();
+    }
+  }
 }
 
 export async function init() {

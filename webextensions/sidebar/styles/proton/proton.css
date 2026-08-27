@@ -131,7 +131,7 @@ body,
 :root:not(.rtl).inverted #background,
 :root.rtl.regular,
 :root.rtl.regular #background {
-  background-position: right;
+  background-position: var(--browser-bg-position, right);
 }
 
 

@@ -258,6 +258,22 @@ export class TreeItem {
     this.classList = null;
   }
 
+  updateBG() {
+    if (!this.element)
+      return;
+
+    const bg = this.element.querySelector('.background.base');
+    const style = bg.style;
+
+    const definition = window.getComputedStyle(bg, null).getPropertyValue('--browser-bg-position-definition');
+    style.setProperty('--browser-bg-position', JSON.parse(definition));
+
+    const rect = bg.getClientRects()[0];
+    style.setProperty('--element-x-offset', `${Math.round(rect.left)}px`);
+    style.setProperty('--element-x-end-offset', `${Math.round(window.innerWidth - rect.right)}px`);
+    style.setProperty('--element-y-offset', `${Math.round(rect.top)}px`);
+  }
+
   startMoving() {
     return Promise.resolve();
   }
