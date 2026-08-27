@@ -105,7 +105,7 @@
     radial-gradient(circle closest-side, var(--sidebar-divider-color) 100%, transparent 100%),
     radial-gradient(circle closest-side, var(--sidebar-divider-color) 100%, transparent 100%),
     linear-gradient(var(--sidebar-divider-color), var(--sidebar-divider-color));
-  --sidebar-divider-size: 2px 2px, 2px 2px, calc(var(--icon-size-small) - 2px) 2px;
+  --sidebar-divider-size: 2px 2px, 2px 2px, calc(var(--icon-size-small, var(--favicon-size)) - 2px) 2px;
   --sidebar-divider-position: calc(50% - 7px) center, calc(50% + 7px) center, center;
 
   /* Some users may use physical properties to customize tab margins, so we should map them to logical propertis for better compatibility.
