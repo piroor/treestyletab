@@ -1,6 +1,10 @@
 # History
 
  - trunk/HEAD
+ - 4.4.2 (2026.8.27)
+   * Still use "Proton" instead of "Nova" as the default theme on Firefox 155 and later.
+   * Apply colors defined in browser's themes more correctly.
+   * Make "browserSettings" permission optional.
  - 4.4.1 (2026.8.26)
    * Apply browser's theme more correctly on the "Nova" theme.
    * Stylize pinned tabs area resizer similar to Firefox's native one.
