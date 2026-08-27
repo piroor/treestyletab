@@ -116,33 +116,6 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   }
 });
 
-browser.permissions.onAdded?.addListener(addedPermissions => {
-  const permissions = JSON.stringify(addedPermissions.permissions);
-  const requests = mRequests.get(permissions);
-  if (!requests)
-    return;
-
-  mRequests.delete(permissions);
-
-  for (const request of requests) {
-    const { checkbox } = destroyRequest(request);
-    checkbox.checked = true;
-  }
-});
-browser.permissions.onRemoved?.addListener(removedPermissions => {
-  const permissions = JSON.stringify(removedPermissions.permissions);
-  const requests = mRequests.get(permissions);
-  if (!requests)
-    return;
-
-  mRequests.delete(permissions);
-
-  for (const request of requests) {
-    const { checkbox } = destroyRequest(request);
-    checkbox.checked = false;
-  }
-});
-
 export function bindToCheckbox(permissions, checkbox, options = {}) {
   const checkboxes = checkboxesForPermission.get(permissions) || [];
   checkboxes.push(checkbox);
