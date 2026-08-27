@@ -4,57 +4,54 @@
 このようにして作られた「枝」は「親」タブに表示されている「▼」マークをクリックすると簡単に折り畳むことができますので、大量のタブがある場合でも混乱しなくて済みます。
 また必要に応じて、ツリーをドラッグ＆ドロップで編集することもできます。
 
-<ul>
-<li>こうして構築されたタブのツリーは、視覚化されたWebブラウズの履歴のように振る舞います。
-<ul>
-<li>例えば、ある話題の検索結果を見たい時には検索結果のリンクを新しい子タブとして開いていくことになるでしょう。詳しく調べるために孫タブ・ひ孫タブを開いていくこともできます。</li>
-<li>このようにどんどん情報を深掘りしていっても、閲覧履歴がツリーとして目に見える形で残されていれば、自分の現在位置を見失う事はありませんし、元の検索結果の一覧にも「ツリーの上位階層のタブ」をクリックすればすぐに戻れます。</li>
-</ul></li>
-<li>他にも、似た話題のタブを「グループ化されたタブ」として取り扱うためにもツリーを使う事ができます。</li>
-</ul>
+
+* こうして構築されたタブのツリーは、視覚化されたWebブラウズの履歴のように振る舞います。
+  * 例えば、ある話題の検索結果を見たい時には検索結果のリンクを新しい子タブとして開いていくことになるでしょう。詳しく調べるために孫タブ・ひ孫タブを開いていくこともできます。
+  * このようにどんどん情報を深掘りしていっても、閲覧履歴がツリーとして目に見える形で残されていれば、自分の現在位置を見失う事はありませんし、元の検索結果の一覧にも「ツリーの上位階層のタブ」をクリックすればすぐに戻れます。
+* 他にも、似た話題のタブを「グループ化されたタブ」として取り扱うためにもツリーを使う事ができます。
+
 
 何はともあれ、このアドオンはプレーンな「ツリー」機能だけを提供します。
 お好みで自由に使いこなして下さい！
 
-<strong>小ネタ:</strong>
+**小ネタ:**
 
-<ul>
-<li>F1キーでツリー型タブのサイドバーを開閉できます。</li>
-<li>サイドバーはツールバー上の「ツリー型タブ」ボタンでも開閉できます。ボタンが不要な場合はツールバーから取り除く事もできます。</li>
-</ul>
 
-<strong>権限について:</strong>
+* F1キーでツリー型タブのサイドバーを開閉できます。
+* サイドバーはツールバー上の「ツリー型タブ」ボタンでも開閉できます。ボタンが不要な場合はツールバーから取り除く事もできます。
+
+
+**権限について:**
 
 このアドオンは動作のために以下の権限を必要とします。
 
-<ul>
-<li>必須:<ul>
-<li>ブラウザーのタブへのアクセス：アクティブなタブ以外のタブも含めて、タブの情報をUIに表示するため。</li>
-<li>最近閉じられたタブへのアクセス（セッション情報へのアクセス）：タブのツリー構造、ツリーの開閉状態などの状態をセッション情報の一部として含めてFirefoxに管理させるため。</li>
-<li>通知の表示：ユーザーの操作を妨げない形で操作の案内を表示するため。</li>
-<li>ブラウザー設定の読み取りと変更：垂直タブバーの有効・無効の状態を検知し、ブラウザーのテーマに合わせた配色を、ナビゲーションツールバー上に置かれるアイコンに適用するため。</li>
-</ul></li>
-<li>任意:<ul>
-<li>ブックマークの読み取りと変更：タブのコンテキストメニューのブックマーク関連機能を再現するため、および、タブがブックマークから開かれた物かどうかを判別するため。</li>
-<li>すべてのウェブサイトの保存されたデータへのアクセス（Webページ上でのスクリプトの実行）：Ctrlキーが押されたことを検知して、Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え中のツリー開閉を抑止するため。</li>
-<li>ブラウザーのタブの表示状態の変更：自動テスト用。通常の用途では必要ありません。</li>
-</ul></li>
-</ul>
+
+* 必須:
+  * ブラウザーのタブへのアクセス：アクティブなタブ以外のタブも含めて、タブの情報をUIに表示するため。
+  * 最近閉じられたタブへのアクセス（セッション情報へのアクセス）：タブのツリー構造、ツリーの開閉状態などの状態をセッション情報の一部として含めてFirefoxに管理させるため。
+  * 通知の表示：ユーザーの操作を妨げない形で操作の案内を表示するため。
+  * ブラウザー設定の読み取りと変更：垂直タブバーの有効・無効の状態を検知し、ブラウザーのテーマに合わせた配色を、ナビゲーションツールバー上に置かれるアイコンに適用するため。
+* 任意:
+  * ブックマークの読み取りと変更：タブのコンテキストメニューのブックマーク関連機能を再現するため、および、タブがブックマークから開かれた物かどうかを判別するため。
+  * すべてのウェブサイトの保存されたデータへのアクセス（Webページ上でのスクリプトの実行）：Ctrlキーが押されたことを検知して、Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え中のツリー開閉を抑止するため。
+  * ブラウザーのタブの表示状態の変更：自動テスト用。通常の用途では必要ありません。
 
 
 
-<strong>ヘルパーアドオン:</strong>
+
+
+**ヘルパーアドオン:**
 
 TSTのサイドバーの機能を使い勝手を強化するアドオンもあります。
 
-<ul>
-<li><a href="https://addons.mozilla.org/firefox/addon/multiple-tab-handler/">Multiple Tab Handler</a> タブの長押しで、タブの複数選択を開始できるようになります。また、クローズボックスの長押しで複数のタブをまとめて閉じることもできます。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/">TST Active Tab in Collapsed Tree</a> 折りたたんだツリーの親タブについて、<a href="https://github.com/piroor/treestyletab/issues/2192">そのツリーの中で最後にアクティブだったタブへの参照を表示します</a>。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/">TST Auto Group Tabs</a> 新しく開かれたタブを様々な条件でグループ化します。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/">TST Auto Sticky Tabs</a> 特定の状態のタブを自動的にタブバーの端に貼り付けられるようにします。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> TSTのサイドバーの下側に「ブックマーク」サイドバーパネルの小型版を表示します。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-indent-line/">TST Indent Line</a> Visual Studio Codeのようなインデントの線を表示します。</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> ツリーを折りたたんだ状態に固定できるようにします。（この機能はTST 3.3.0～3.3.6の組み込みの機能でしたが、分離されました）</li>
-</ul>
 
-<a href="https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST">TSTを拡張するヘルパーアドオンのリストは他にもあります。</a>
+* [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) タブの長押しで、タブの複数選択を開始できるようになります。また、クローズボックスの長押しで複数のタブをまとめて閉じることもできます。
+* [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/) 折りたたんだツリーの親タブについて、[そのツリーの中で最後にアクティブだったタブへの参照を表示します](https://github.com/piroor/treestyletab/issues/2192)。
+* [TST Auto Group Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/) 新しく開かれたタブを様々な条件でグループ化します。
+* [TST Auto Sticky Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/) 特定の状態のタブを自動的にタブバーの端に貼り付けられるようにします。
+* [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) TSTのサイドバーの下側に「ブックマーク」サイドバーパネルの小型版を表示します。
+* [TST Indent Line](https://addons.mozilla.org/firefox/addon/tst-indent-line/) Visual Studio Codeのようなインデントの線を表示します。
+* [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) ツリーを折りたたんだ状態に固定できるようにします。（この機能はTST 3.3.0～3.3.6の組み込みの機能でしたが、分離されました）
+
+
+[TSTを拡張するヘルパーアドオンのリストは他にもあります。](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST)

@@ -4,56 +4,53 @@ Nové karty otvorené z aktuálnej karty sa automaticky usporiadajú ako "podrad
 Takéto "vetvy" možno jednoducho zbaliť kliknutím na šípku zobrazenú na "nadradenej" karte, takže už netrpíte príliš veľkým počtom viditeľných kariet.
 Ak chcete, môžete strom preusporiadať pomocou ťahania myšou (drag and drop).
 
-<ul>
-<li>Takýto strom kariet sa pre vás bude správať ako vizuálna história prehliadania.
-<ul>
-<li>Ak si napríklad zobrazíte zoznam výsledkov vyhľadávania na nejakú tému, každý odkaz na výsledok sa otvorí v novej podradenej karte.</li>
-<li>Nové karty otvorené z týchto "podradených" kariet sa zobrazia ako ich potomkovia.</li>
-<li>Môžete sa tak ľahko ponárať čoraz hlbšie, bez toho, aby ste stratili svoju stopu prehliadania - ak sa chcete vrátiť k pôvodnému výsledku vyhľadávania, stačí prepnúť na "koreňovú" kartu.</li>
-</ul></li>
-<li>Okrem toho každý strom bude odrážať skupinu kariet na podobnú tému.</li>
-</ul>
+
+* Takýto strom kariet sa pre vás bude správať ako vizuálna história prehliadania.
+  * Ak si napríklad zobrazíte zoznam výsledkov vyhľadávania na nejakú tému, každý odkaz na výsledok sa otvorí v novej podradenej karte.
+  * Nové karty otvorené z týchto "podradených" kariet sa zobrazia ako ich potomkovia.
+  * Môžete sa tak ľahko ponárať čoraz hlbšie, bez toho, aby ste stratili svoju stopu prehliadania - ak sa chcete vrátiť k pôvodnému výsledku vyhľadávania, stačí prepnúť na "koreňovú" kartu.
+* Okrem toho každý strom bude odrážať skupinu kariet na podobnú tému.
+
 
 Užívajte si to, ako sa vám páči!
 
-<strong>Tipy:</strong>
+**Tipy:**
 
-<ul>
-<li>Kláves "F1" prepína bočný panel TST.</li>
-<li>Tlačidlo "Tree Style Tab" na paneli s nástrojmi tiež prepína bočný panel. Ak ho nepotrebujete, môžete ho odstrániť z panela s nástrojmi.</li>
-</ul>
 
-<strong>Oprávnenia:</strong>
+* Kláves "F1" prepína bočný panel TST.
+* Tlačidlo "Tree Style Tab" na paneli s nástrojmi tiež prepína bočný panel. Ak ho nepotrebujete, môžete ho odstrániť z panela s nástrojmi.
+
+
+**Oprávnenia:**
 
 Toto rozšírenie potrebuje na svoju správnu funkčnosť nasledujúce oprávnenia:
 
-<ul>
-<li>Povinné:<ul>
-<li>Prístup ku kartám prehliadača: na zobrazenie aktívnych aj neaktívnych kariet v používateľskom rozhraní.</li>
-<li>Prístup k nedávno zatvoreným kartám (prístup k informáciám o relácii): na uloženie informácií o strome kariet (štruktúra, stav zbalenia/rozbalenia atď.) do informácií o relácii kariet a na to, aby Firefox mohol tieto karty spravovať ako celok.</li>
-<li>Zobrazovanie upozornení: na poskytovanie informácií a navigáciu používateľov bez blokovania ich činnosti.</li>
-<li>Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.</li>
-</ul></li>
-<li>Voliteľné:<ul>
-<li>Čítanie a úprava záložiek: na simuláciu príkazov súvisiacich so záložkami v kontextovej ponuke kariet / na zistenie, či boli karty otvorené zo záložiek.</li>
-<li>Prístup k vašim údajom pre všetky webové stránky (spúšťanie skriptov na webových stránkach): na zistenie stlačenia/uvoľnenia klávesu Ctrl a zabránenie zbytočnému rozbaľovaniu zbalených stromov pri prepínaní kariet pomocou Ctrl-Tab/Ctrl-Shift-Tab.</li>
-<li>Skrývanie a zobrazovanie kariet prehliadača: len pre automatizované testy, pri bežnom používaní sa nevyžaduje.</li>
-</ul></li>
-</ul>
 
-<strong>Rozšírenia rozširujúce TST:</strong>
+* Povinné:
+  * Prístup ku kartám prehliadača: na zobrazenie aktívnych aj neaktívnych kariet v používateľskom rozhraní.
+  * Prístup k nedávno zatvoreným kartám (prístup k informáciám o relácii): na uloženie informácií o strome kariet (štruktúra, stav zbalenia/rozbalenia atď.) do informácií o relácii kariet a na to, aby Firefox mohol tieto karty spravovať ako celok.
+  * Zobrazovanie upozornení: na poskytovanie informácií a navigáciu používateľov bez blokovania ich činnosti.
+  * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
+* Voliteľné:
+  * Čítanie a úprava záložiek: na simuláciu príkazov súvisiacich so záložkami v kontextovej ponuke kariet / na zistenie, či boli karty otvorené zo záložiek.
+  * Prístup k vašim údajom pre všetky webové stránky (spúšťanie skriptov na webových stránkach): na zistenie stlačenia/uvoľnenia klávesu Ctrl a zabránenie zbytočnému rozbaľovaniu zbalených stromov pri prepínaní kariet pomocou Ctrl-Tab/Ctrl-Shift-Tab.
+  * Skrývanie a zobrazovanie kariet prehliadača: len pre automatizované testy, pri bežnom používaní sa nevyžaduje.
 
-TST poskytuje <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">API pre ostatné rozšírenia</a>.
+
+
+**Rozšírenia rozširujúce TST:**
+
+TST poskytuje [API pre ostatné rozšírenia](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
 Niektoré rozšírenia rozširujú správanie bočného panela TST:
 
-<ul>
-<li><a href="https://addons.mozilla.org/firefox/addon/multiple-tab-handler/">Multiple Tab Handler</a> umožňuje vybrať viacero kariet dlhým podržaním na kartách. Umožňuje tiež zatvoriť viacero kariet dlhým podržaním na tlačidle na zatvorenie karty.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/">TST Active Tab in Collapsed Tree</a> zobrazuje <a href="https://github.com/piroor/treestyletab/issues/2192">malú kartu na zbalenom strome ako alias pre poslednú aktívnu kartu v danom strome</a>.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/">TST Auto Group Tabs</a> poskytuje možnosť automaticky zoskupovať novo otvorené karty za rôznych podmienok.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/">TST Auto Sticky Tabs</a> poskytuje možnosť automaticky prilepiť karty v určitom stave k okrajom panela kariet.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> umožňuje zobraziť malý bočný panel "Záložky" pod kartami v bočnom paneli TST.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-indent-line/">TST Indent Line</a> poskytuje čiary odsadenia podobné tým vo Visual Studio Code.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> umožňuje uzamknúť ľubovoľné stromy v zbalenom stave. (Toto bola vstavaná funkcia v TST 3.3.0-3.3.6, teraz je oddelená.)</li>
-</ul>
 
-A <a href="https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST">existuje ešte viac pomocných rozšírení</a>.
+* [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) umožňuje vybrať viacero kariet dlhým podržaním na kartách. Umožňuje tiež zatvoriť viacero kariet dlhým podržaním na tlačidle na zatvorenie karty.
+* [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/) zobrazuje [malú kartu na zbalenom strome ako alias pre poslednú aktívnu kartu v danom strome](https://github.com/piroor/treestyletab/issues/2192).
+* [TST Auto Group Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/) poskytuje možnosť automaticky zoskupovať novo otvorené karty za rôznych podmienok.
+* [TST Auto Sticky Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/) poskytuje možnosť automaticky prilepiť karty v určitom stave k okrajom panela kariet.
+* [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) umožňuje zobraziť malý bočný panel "Záložky" pod kartami v bočnom paneli TST.
+* [TST Indent Line](https://addons.mozilla.org/firefox/addon/tst-indent-line/) poskytuje čiary odsadenia podobné tým vo Visual Studio Code.
+* [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) umožňuje uzamknúť ľubovoľné stromy v zbalenom stave. (Toto bola vstavaná funkcia v TST 3.3.0-3.3.6, teraz je oddelená.)
+
+
+A [existuje ešte viac pomocných rozšírení](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST).

@@ -4,56 +4,53 @@ New tabs opened from the current tab are automatically organized as "children" o
 Such "branches" are easily folded (collapsed) by clicking on the arrow shown in the "parent" tab, so you no longer need to suffer from too many visible tabs.
 If you want, you can restructure the tree via drag and drop.
 
-<ul>
-<li>Such a tree of tabs will behave like a visual browsing history for you.
-<ul>
-<li>For example, if you see a list of search results for a topic, each search result link will open in new child tab.</li>
-<li>New tabs opened from these "child" tabs will appear as descendants of their originating tabs.</li>
-<li>You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.</li>
-</ul></li>
-<li>Moreover, each tree will reflect a group of tabs on a similar topic.</li>
-</ul>
+
+* Such a tree of tabs will behave like a visual browsing history for you.
+  * For example, if you see a list of search results for a topic, each search result link will open in new child tab.
+  * New tabs opened from these "child" tabs will appear as descendants of their originating tabs.
+  * You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
+* Moreover, each tree will reflect a group of tabs on a similar topic.
+
 
 Please enjoy as you like!
 
-<strong>Tips:</strong>
+**Tips:**
 
-<ul>
-<li>"F1" key toggles the TST sidebar.</li>
-<li>"Tree Style Tab" toolbar button also toggles the sidebar. If it's unnecessary, you can remove it from the toolbar.</li>
-</ul>
 
-<strong>Permissions:</strong>
+* "F1" key toggles the TST sidebar.
+* "Tree Style Tab" toolbar button also toggles the sidebar. If it's unnecessary, you can remove it from the toolbar.
+
+
+**Permissions:**
 
 This extension needs following permissions to work as expected:
 
-<ul>
-<li>Required:<ul>
-<li>Access browser tabs: to list both active and non-active tabs in the UI.</li>
-<li>Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.</li>
-<li>Display notifications to you: to present information and navigate users without blocking.</li>
-<li>Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.</li>
-</ul></li>
-<li>Optional:<ul>
-<li>Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.</li>
-<li>Access your data for all websites (run scripts on webpages): to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab.</li>
-<li>Hide and show browser tabs: just for automated tests, not required on regular use.</li>
-</ul></li>
-</ul>
 
-<strong>Extensions extend TST:</strong>
+* Required:
+  * Access browser tabs: to list both active and non-active tabs in the UI.
+  * Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.
+  * Display notifications to you: to present information and navigate users without blocking.
+  * Read and modify browser settings: to know the activation status of the native vertical tabs and apply suitable color matching to the browser's theme to the toolbar icon placed on the navigation toolbar.
+* Optional:
+  * Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.
+  * Access your data for all websites (run scripts on webpages): to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab.
+  * Hide and show browser tabs: just for automated tests, not required on regular use.
 
-TST provides <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">APIs for other extensions</a>.
-Some extemsopms extend the behavior of TST's sidebar panel:
 
-<ul>
-<li><a href="https://addons.mozilla.org/firefox/addon/multiple-tab-handler/">Multiple Tab Handler</a> allows you to select multiple tabs with long-press on tabs. It also allows you to close mutiple tabs with long-press on the closebox on tabs.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/">TST Active Tab in Collapsed Tree</a> shows <a href="https://github.com/piroor/treestyletab/issues/2192">a small tab on a collapsed tree as an alias for the last active tab under the tree</a>.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/">TST Auto Group Tabs</a> provides ability to group newly opened tabs automatically in various conditions.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/">TST Auto Sticky Tabs</a> provides ability to stick some state tabs to tab bar edges automatically.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-indent-line/">TST Indent Line</a> provides indent lines like Visual Studio Code's one.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)</li>
-</ul>
 
-And <a href="https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST">there are more helper extensions</a>.
+**Extensions extend TST:**
+
+TST provides [APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
+Some extensions extend the behavior of TST's sidebar panel:
+
+
+* [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs with long-press on tabs. It also allows you to close multiple tabs with long-press on the closebox on tabs.
+* [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/) shows [a small tab on a collapsed tree as an alias for the last active tab under the tree](https://github.com/piroor/treestyletab/issues/2192).
+* [TST Auto Group Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/) provides ability to group newly opened tabs automatically in various conditions.
+* [TST Auto Sticky Tabs](https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/) provides ability to stick some state tabs to tab bar edges automatically.
+* [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.
+* [TST Indent Line](https://addons.mozilla.org/firefox/addon/tst-indent-line/) provides indent lines like Visual Studio Code's one.
+* [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)
+
+
+And [there are more helper extensions](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST).
