@@ -131,24 +131,6 @@ document.documentElement.classList.toggle('rtl', isRTL());
 applyAnimationState(shouldApplyAnimation());
 UserOperationBlocker.block({ throbber: true });
 
-async function setBrowserWindowSizes(win) {
-  if (!win)
-    win = await browser.windows.get(mTargetWindow);
-
-  const style = document.documentElement.style;
-  style.setProperty('--browser-window-width', `${win.width}px`);
-  style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
-  style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
-  style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
-
-  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
-  if (shouldUpdateBG) {
-    for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
-      tab.$TST.updateBG();
-    }
-  }
-}
-
 export async function init() {
   MetricsData.add('init: start');
   log('initialize sidebar on load');
@@ -184,7 +166,7 @@ export async function init() {
           browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
-      setBrowserWindowSizes(win);
+      updateTabbarDimensionsForLightWeightTheme(win);
       if (win.focused)
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
@@ -859,7 +841,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow, startup } = {})
       Size.updateContainers();
     updateTabbarLayout.lastSizes.initialized = true;
 
-    setBrowserWindowSizes();
+    updateTabbarDimensionsForLightWeightTheme();
   }
 
   const sidebarWidthInWindow = { ...configs.sidebarWidthInWindow };
@@ -902,6 +884,45 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow, startup } = {})
 updateTabbarLayout.lastUpdateReasons = 0;
 updateTabbarLayout.lastScrollbarAutohideUpdatedAt = 0;
 
+async function updateTabbarDimensionsForLightWeightTheme(win) {
+  if (!win)
+    win = await browser.windows.get(mTargetWindow);
+
+  const style = document.documentElement.style;
+  style.setProperty('--browser-window-width', `${win.width}px`);
+  style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
+  style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
+  style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
+
+  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
+  if (shouldUpdateBG) {
+    for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
+      updateTabDimensionsForLightWeightTheme(tab);
+    }
+  }
+}
+
+function updateTabDimensionsForLightWeightTheme(tab) {
+  if (!tab?.$TST?.element)
+    return;
+
+  const bg = tab?.$TST.element.querySelector('.background.base');
+  const style = bg.style;
+
+  const definition = window.getComputedStyle(bg, null).getPropertyValue('--browser-bg-position-definition');
+  style.setProperty('--browser-bg-position', JSON.parse(definition));
+
+  const rect = bg.getClientRects()[0];
+  style.setProperty('--element-x-offset', `${Math.round(rect.left)}px`);
+  style.setProperty('--element-x-end-offset', `${Math.round(window.innerWidth - rect.right)}px`);
+  style.setProperty('--element-y-offset', `${Math.round(rect.top)}px`);
+}
+
+Scroll.onStickyTabRendered.addListener(tab => {
+  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
+  if (shouldUpdateBG)
+    updateTabDimensionsForLightWeightTheme(tab);
+});
 
 Scroll.onNormalTabsOverflow.addListener(() => {
   log('Normal Tabs Overflow');

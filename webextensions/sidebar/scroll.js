@@ -69,6 +69,7 @@ export const onPositionUnlocked = new EventListenerManager();
 export const onVirtualScrollViewportUpdated = new EventListenerManager();
 export const onNormalTabsOverflow = new EventListenerManager();
 export const onNormalTabsUnderflow = new EventListenerManager();
+export const onStickyTabRendered = new EventListenerManager();
 
 function log(...args) {
   internalLogger('sidebar/scroll', ...args);
@@ -561,7 +562,6 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
     }
   }
 
-  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
   for (const [lastIds, currentIds, place] of [
     [[...mLastStickyItemIdsAbove], [...stickyItemIdsAbove], 'above'],
     [[...mLastStickyItemIdsBelow].reverse(), [...stickyItemIdsBelow].reverse(), 'below'],
@@ -571,11 +571,11 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
       const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
       switch (tag) {
         case 'equal':
-          if (shouldUpdateBG) {
-            const insertIds = currentIds.slice(toStart, toEnd);
-            for (const id of insertIds) {
-              Tab.get(id)?.$TST?.updateBG();
-            }
+          const insertIds = currentIds.slice(toStart, toEnd);
+          for (const id of insertIds) {
+            const tab = Tab.get(id);
+            if (tab)
+              onStickyTabRendered.dispatch(tab);
           }
           break;
 
@@ -606,8 +606,8 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
               containerElement: document.querySelector(`.sticky-tabs-container.${place}`),
               insertBefore:     referenceItem,
             });
-            if (shouldUpdateBG)
-              tab.$TST.updateBG();
+            if (tab)
+              onStickyTabRendered.dispatch(tab);
           }
         }; break;
       }
