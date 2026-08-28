@@ -918,10 +918,13 @@ function updateTabDimensionsForLightWeightTheme(tab) {
   style.setProperty('--element-y-offset', `${Math.round(rect.top)}px`);
 }
 
-Scroll.onStickyTabRendered.addListener(tab => {
+SidebarItems.onStickyTabsChanged.addListener(() => {
   const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
-  if (shouldUpdateBG)
-    updateTabDimensionsForLightWeightTheme(tab);
+  if (shouldUpdateBG) {
+    for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
+      updateTabDimensionsForLightWeightTheme(tab);
+    }
+  }
 });
 
 Scroll.onNormalTabsOverflow.addListener(() => {

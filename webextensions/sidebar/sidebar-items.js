@@ -51,6 +51,7 @@ export const normalContainer = document.querySelector('#normal-tabs-container');
 
 //export const onPinnedTabsChanged = new EventListenerManager();
 export const onNormalTabsChanged = new EventListenerManager();
+export const onStickyTabsChanged = new EventListenerManager();
 //export const onTabsRendered   = new EventListenerManager();
 //export const onTabsUnrendered = new EventListenerManager();
 export const onSyncFailed = new EventListenerManager();
@@ -337,7 +338,19 @@ export function renderItem(item, { containerElement, insertBefore } = {}) {
 
   updateSplitView(item);
 
+  reserveToNotifyStickyTabsChanged();
+
   return modified;
+}
+
+function reserveToNotifyStickyTabsChanged() {
+  if (reserveToNotifyStickyTabsChanged.invoked)
+    return;
+  reserveToNotifyStickyTabsChanged.invoked = true;
+  window.requestAnimationFrame(() => {
+    reserveToNotifyStickyTabsChanged.invoked = false;
+    onStickyTabsChanged.dispatch();
+  });
 }
 
 function initalizeItemElement(item, itemElement) {
@@ -513,6 +526,8 @@ export function unrenderItem(item) {
       mItemElementsPool = [];
     }, configs.generatedTreeItemElementsPoolLifetimeMsec);
   }
+
+  reserveToNotifyStickyTabsChanged();
 
   return true;
 }

@@ -69,7 +69,6 @@ export const onPositionUnlocked = new EventListenerManager();
 export const onVirtualScrollViewportUpdated = new EventListenerManager();
 export const onNormalTabsOverflow = new EventListenerManager();
 export const onNormalTabsUnderflow = new EventListenerManager();
-export const onStickyTabRendered = new EventListenerManager();
 
 function log(...args) {
   internalLogger('sidebar/scroll', ...args);
@@ -571,12 +570,6 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
       const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
       switch (tag) {
         case 'equal':
-          const insertIds = currentIds.slice(toStart, toEnd);
-          for (const id of insertIds) {
-            const tab = Tab.get(id);
-            if (tab)
-              onStickyTabRendered.dispatch(tab);
-          }
           break;
 
         case 'delete': {
@@ -601,13 +594,10 @@ function updateStickyItems(renderableItems, { staticRendering, skipRefreshItems 
             Tab.get(lastIds[fromEnd]) :
             null;
           for (const id of insertIds) {
-            const tab = Tab.get(id);
-            SidebarItems.renderItem(tab, {
+            SidebarItems.renderItem(Tab.get(id), {
               containerElement: document.querySelector(`.sticky-tabs-container.${place}`),
               insertBefore:     referenceItem,
             });
-            if (tab)
-              onStickyTabRendered.dispatch(tab);
           }
         }; break;
       }
