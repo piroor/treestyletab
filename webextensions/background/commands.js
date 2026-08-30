@@ -1415,15 +1415,24 @@ export async function openTabInWindow(tab, options = {}) {
     return openTabsInWindow([tab, ...tab.$TST.descendants]);
   }
   else {
-    const sourceWindow = await browser.windows.get(tab.windowId);
+    const [sourceWindow, sourceScreen] = await Promise.all([
+      browser.windows.get(tab.windowId),
+      SidebarConnection.isOpen(tab.windowId) ?
+        browser.runtime.sendMessage({
+          type:     Constants.kCOMMAND_GET_SCREEN_INFO,
+          windowId: tab.windowId,
+        }) : null,
+    ]);
     const sourceParams = getWindowParamsFromSource(sourceWindow, options);
     const windowParams = {
       //active: true,  // not supported in Firefox...
       tabId: tab.id,
       ...sourceParams,
-      left:  sourceParams.left + 20,
-      top:   sourceParams.top + 20,
     };
+    if (typeof sourceParams.left == 'number')
+      sourceParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
+    if (typeof sourceParams.top == 'number')
+      sourceParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
     const win = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
     return win.id;
   }

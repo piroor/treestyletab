@@ -1216,6 +1216,18 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_GET_DEVICE_PIXEL_RATIO:
       return Promise.resolve(window.devicePixelRatio);
 
+    case Constants.kCOMMAND_GET_SCREEN_INFO:
+      return Promise.resolve({
+        availHeight: window.screen.availHeight,
+        availLeft:   window.screen.availLeft,
+        availTop:    window.screen.availTop,
+        availWidth:  window.screen.availWidth,
+        height:      window.screen.height,
+        left:        window.screen.left,
+        top:         window.screen.top,
+        width:       window.screen.width,
+      });
+
     // for automated tests
     case Constants.kCOMMAND_GET_RECT: {
       const firstNode = document.querySelector(message.startBefore || message.selector);

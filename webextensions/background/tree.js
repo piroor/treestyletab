@@ -1761,7 +1761,14 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     return [];
 
   log('openNewWindowFromTabs: ', tabs, options);
-  const sourceWindow = await browser.windows.get(tabs[0].windowId);
+  const [sourceWindow, sourceScreen] = await Promise.all([
+    browser.windows.get(tabs[0].windowId),
+    SidebarConnection.isOpen(tabs[0].windowId) ?
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_GET_SCREEN_INFO,
+        windowId: tabs[0].windowId,
+      }) : null,
+  ]);
   const sourceParams = getWindowParamsFromSource(sourceWindow, options);
   const windowParams = {
     //active: true,  // not supported in Firefox...
@@ -1770,9 +1777,9 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
   };
   // positions are not provided for a maximized or fullscreen window!
   if (typeof sourceParams.left == 'number')
-    sourceParams.left += 20;
+    sourceParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
   if (typeof sourceParams.top == 'number')
-    sourceParams.top += 20;
+    sourceParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
     .then(createdWindow => {
