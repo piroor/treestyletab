@@ -14,4 +14,4 @@ jobs:
     - uses: actions/checkout@v7
       with:
         fetch-depth: 0
-    - uses: dcondrey/unicode-safety-check@v2
+    - uses: dcondrey/unicode-safety-check@v3
