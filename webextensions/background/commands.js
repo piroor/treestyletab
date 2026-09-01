@@ -1429,10 +1429,10 @@ export async function openTabInWindow(tab, options = {}) {
       tabId: tab.id,
       ...sourceParams,
     };
-    if (typeof sourceParams.left == 'number')
-      sourceParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
-    if (typeof sourceParams.top == 'number')
-      sourceParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
+    if (typeof windowParams.left == 'number')
+      windowParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
+    if (typeof windowParams.top == 'number')
+      windowParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
     const win = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
     return win.id;
   }

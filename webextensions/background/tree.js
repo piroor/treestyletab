@@ -1776,10 +1776,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     ...sourceParams,
   };
   // positions are not provided for a maximized or fullscreen window!
-  if (typeof sourceParams.left == 'number')
-    sourceParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
-  if (typeof sourceParams.top == 'number')
-    sourceParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
+  if (typeof windowParams.left == 'number')
+    windowParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
+  if (typeof windowParams.top == 'number')
+    windowParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
     .then(createdWindow => {
