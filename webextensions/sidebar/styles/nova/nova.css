@@ -382,6 +382,11 @@ tab-item-substance.split-substances-container .background {
   background-repeat: var(--browser-bg-repeat, none);
   border-radius: var(--tab-border-radius);
   opacity: 1;
+
+  :root:not(.rtl).inverted &,
+  :root.rtl.regular & {
+    background-position: var(--browser-bg-position, right);
+  }
 }
 
 

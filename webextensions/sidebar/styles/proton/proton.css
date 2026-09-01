@@ -382,6 +382,11 @@ tab-item.split-view:hover tab-item-substance:not(.active):not(.highlighted):not(
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
   opacity: 1;
+
+  :root:not(.rtl).inverted &,
+  :root.rtl.regular & {
+    background-position: var(--browser-bg-position, right);
+  }
 }
 
 
