@@ -906,7 +906,7 @@ function updateTabDimensionsForLightWeightTheme(tab) {
   if (!tab?.$TST?.element)
     return;
 
-  const bg = tab?.$TST.element.querySelector('.background.base');
+  const bg = tab?.$TST.element.querySelector(':is(.split-substances-container, .split-view-main:not(.split-view)) .background.base');
   const style = bg.style;
 
   const definition = window.getComputedStyle(bg, null).getPropertyValue('--browser-bg-position-definition');
