@@ -377,7 +377,7 @@ tab-item-substance.split-substances-container .background {
 .sticky-tabs-container tab-item.split-view tab-item-substance.split-substances-container .background.base {
   background-color: var(--browser-background, var(--tabbar-bg));
   background-image: var(--browser-bg-images, none);
-  background-position: top left, var(--browser-bg-position, left);
+  background-position: /*top left, */var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
   border-radius: var(--tab-border-radius);
