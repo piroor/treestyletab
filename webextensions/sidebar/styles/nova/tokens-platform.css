@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-platform.css */
+/* https://searchfox.org/firefox-main/rev/8a99ef927ea16827f2089e2bdf6a1188ddf645e7/toolkit/themes/shared/design-system/dist/tokens-platform.css */
 
 @layer tokens-foundation {
   :root {
@@ -36,6 +36,7 @@
 
     /** font-size **/
     --font-size-root: unset;
+    /* 13px in-content, unset in platform (we want to avoid going too small when the root font size is already quite small) */
     --font-size-small: unset;
 
     /** info-bar **/
@@ -74,12 +75,16 @@
 
     /** toolbar **/
     --toolbar-background-color: color-mix(in srgb, -moz-dialog 85%, var(--color-white));
+    --toolbar-field-background-color: light-dark(rgba(0, 0, 0, 0.05), var(--color-black-alpha-30));
     --toolbar-field-background-color-focus: Field;
+    --toolbar-field-border-color: var(--border-color-transparent);
     --toolbar-field-text-color: inherit;
     --toolbar-field-text-color-focus: FieldText;
     --toolbar-text-color: -moz-dialogtext;
 
     /** toolbarbutton **/
+    --toolbarbutton-background-color-hover: var(--button-background-color-ghost-hover);
+    --toolbarbutton-background-color-active: var(--button-background-color-ghost-active);
     --toolbarbutton-icon-fill: currentColor;
     --toolbarbutton-icon-fill-attention: AccentColor;
     --toolbarbutton-icon-fill-attention-text: AccentColorText;
@@ -89,6 +94,58 @@
     --toolbox-background-color-inactive: -moz-headerbarinactive;
     --toolbox-text-color: -moz-headerbartext;
     --toolbox-text-color-inactive: -moz-headerbarinactivetext;
+  }
+}
+
+@layer tokens-foundation-nova {
+  :root {
+    /** button **/
+    /* TODO Bug 1821203 - Gray use needs to be consolidated */
+    --button-background-color: color-mix(in srgb, currentColor 13%, transparent);
+    --button-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
+    --button-background-color-active: color-mix(in srgb, currentColor 30%, transparent);
+    --button-background-color-ghost: transparent;
+    --button-text-color: currentColor;
+    --button-text-color-menu-selected: currentColor;
+    --button-text-color-primary: AccentColorText;
+
+    /** color **/
+    --color-accent-attention: AccentColor;
+    --color-accent-primary: AccentColor;
+    --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary));
+    --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary));
+    --color-accent-primary-selected: SelectedItem;
+
+    /** panel **/
+    --panel-background-color: Field;
+    --panel-border-color: var(--border-color-deemphasized);
+    --panel-text-color: FieldText;
+
+    /** popup **/
+    --popup-border-color: var(--border-color-deemphasized);
+
+    /** text-color **/
+    --text-color: currentColor;
+    --text-color-accent-primary-selected: SelectedItemText;
+
+    /** toolbar **/
+    --toolbar-background-color: color-mix(in srgb, -moz-dialog 85%, var(--color-white));
+    --toolbar-field-background-color: light-dark(rgba(0, 0, 0, 0.05), var(--color-black-alpha-30));
+    --toolbar-field-background-color-focus: Field;
+    --toolbar-field-border-color: var(--border-color-transparent);
+    --toolbar-field-border-color-focus: color-mix(in srgb, var(--focus-outline-color) 50%, transparent);
+    --toolbar-field-text-color: inherit;
+    --toolbar-field-text-color-focus: FieldText;
+
+    /** toolbarbutton **/
+    --toolbarbutton-icon-fill: currentColor;
+    --toolbarbutton-icon-fill-attention: AccentColor;
+
+    /** toolbox **/
+    --toolbox-background-color-inactive: -moz-headerbarinactive;
+    /* This gradient is only used for Nova */
+    --toolbox-background-gradient: image(transparent);
+    --toolbox-text-color: -moz-headerbartext;
   }
 }
 
@@ -104,6 +161,7 @@
       --button-background-color: light-dark(rgba(207, 207, 216, 0.33), rgba(0, 0, 0, 0.33));
       --button-background-color-hover: light-dark(rgba(207, 207, 216, 0.66), rgba(207, 207, 216, 0.2));
       --button-background-color-active: light-dark(rgb(207, 207, 216), rgba(207, 207, 216, 0.4));
+      --button-background-color-ghost: transparent;
       --button-text-color: light-dark(rgb(21, 20, 26), rgb(251, 251, 254));
       --button-text-color-menu-selected: var(--button-text-color-ghost-selected);
       --button-text-color-primary: light-dark(rgb(251, 251, 254), rgb(43, 42, 51));
@@ -142,12 +200,16 @@
 
       /** toolbar **/
       --toolbar-background-color: light-dark(#f9f9fb, rgb(43, 42, 51));
+      --toolbar-field-background-color: light-dark(rgba(0, 0, 0, 0.05), var(--color-black-alpha-30));
       --toolbar-field-background-color-focus: light-dark(var(--color-white), rgb(66, 65, 77));
+      --toolbar-field-border-color: var(--border-color-transparent);
       --toolbar-field-text-color: light-dark(var(--color-gray-100), var(--color-gray-0));
       --toolbar-field-text-color-focus: light-dark(var(--color-black), var(--color-gray-0));
       --toolbar-text-color: light-dark(var(--color-gray-100), var(--color-gray-0));
 
       /** toolbarbutton **/
+      --toolbarbutton-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
+      --toolbarbutton-background-color-active: color-mix(in srgb, currentColor 30%, transparent);
       --toolbarbutton-icon-fill: light-dark(var(--color-gray-70), var(--color-gray-0));
       --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
       --toolbarbutton-icon-fill-attention-text: light-dark(var(--color-gray-20), var(--color-gray-90));
@@ -161,101 +223,57 @@
   /*}*/
 }
 
-@layer tokens-foundation-nova {
+@layer tokens-browser-theme-nova {
   :root {
     /** button **/
     /* TODO Bug 1821203 - Gray use needs to be consolidated */
-    --button-background-color: color-mix(in srgb, currentColor 13%, transparent);
-    --button-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
-    --button-background-color-active: color-mix(in srgb, currentColor 30%, transparent);
-    --button-background-color-ghost: transparent;
-    --button-text-color: currentColor;
-    --button-text-color-menu-selected: currentColor;
-    --button-text-color-primary: AccentColorText;
+    --button-background-color: transparent;
+    --button-background-color-hover: light-dark(var(--color-violet-desaturated-20), var(--color-violet-desaturated-50));
+    --button-background-color-active: light-dark(var(--color-violet-desaturated-30), var(--color-violet-desaturated-40));
+    --button-background-color-ghost: var(--button-background-color);
+    --button-text-color: light-dark(var(--color-violet-90), var(--color-gray-0));
+    --button-text-color-menu-selected: light-dark(var(--button-text-color-ghost-selected), var(--button-text-color-selected));
+    --button-text-color-primary: light-dark(var(--color-white), var(--color-gray-70));
 
     /** color **/
-    --color-accent-attention: AccentColor;
-    --color-accent-primary: AccentColor;
-    --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary));
-    --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary));
-    --color-accent-primary-selected: SelectedItem;
+    --color-accent-attention: light-dark(var(--color-green-40), var(--color-green-30));
+    --color-accent-primary: light-dark(var(--color-violet-50), var(--color-violet-30));
+    --color-accent-primary-hover: light-dark(var(--color-violet-60), var(--color-violet-20));
+    --color-accent-primary-active: light-dark(var(--color-violet-70), var(--color-violet-10));
+    --color-accent-primary-selected: var(--button-background-color-primary-active);
 
     /** panel **/
-    --panel-background-color: Field;
-    --panel-border-color: var(--border-color-deemphasized);
-    --panel-text-color: FieldText;
+    --panel-background-color: var(--popup-background-color);
+    --panel-border-color: var(--popup-border-color);
+    --panel-text-color: var(--text-color);
 
     /** popup **/
-    --popup-border-color: var(--border-color-deemphasized);
+    --popup-border-color: light-dark(var(--color-gray-10), var(--color-gray-65));
 
     /** text-color **/
-    --text-color: currentColor;
-    --text-color-accent-primary-selected: SelectedItemText;
+    --text-color: light-dark(var(--color-violet-desaturated-90), var(--color-violet-desaturated-0));
 
     /** toolbar **/
-    --toolbar-background-color: color-mix(in srgb, -moz-dialog 85%, var(--color-white));
-    --toolbar-field-background-color-focus: Field;
-    --toolbar-field-border-color-focus: color-mix(in srgb, var(--focus-outline-color) 50%, transparent);
-    --toolbar-field-text-color: inherit;
-    --toolbar-field-text-color-focus: FieldText;
+    --toolbar-background-color: var(--background-color-box);
+    --toolbar-field-background-color: var(--toolbar-background-color);
+    --toolbar-field-background-color-focus: var(--background-color-box);
+    --toolbar-field-border-color: light-dark(var(--color-gray-20), var(--color-gray-60));
+    --toolbar-field-border-color-focus: var(--focus-outline-color);
+    --toolbar-field-text-color: light-dark(var(--color-violet-desaturated-70), var(--color-violet-desaturated-10));
+    --toolbar-field-text-color-focus: var(--toolbar-field-text-color);
 
     /** toolbarbutton **/
-    --toolbarbutton-icon-fill: currentColor;
-    --toolbarbutton-icon-fill-attention: AccentColor;
+    --toolbarbutton-icon-fill: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-10));
+    --toolbarbutton-icon-fill-attention: var(--color-accent-primary);
 
     /** toolbox **/
-    --toolbox-background-color-inactive: -moz-headerbarinactive;
-    --toolbox-text-color: -moz-headerbartext;
-    --toolbox-text-color-inactive: -moz-headerbarinactivetext;
+    --toolbox-background-color-inactive: transparent;
+    /* This gradient is only used for Nova */
+    --toolbox-background-gradient: linear-gradient(
+      96deg,
+      color-mix(var(--toolbox-background-color-gradient-leading) 50%, transparent) 39.84%,
+      color-mix(var(--toolbox-background-color-gradient-trailing) 50%, transparent) 101.72%
+    );
+    --toolbox-text-color: var(--text-color);
   }
-}
-
-@layer tokens-browser-theme-nova {
-  /*@media not ((forced-colors) or (-moz-native-theme)) {*/
-    :root/*:is([theme-in-app], :not([lwtheme]))*/:not(.lwtheme-applied) {
-      /** button **/
-      /* TODO Bug 1821203 - Gray use needs to be consolidated */
-      --button-background-color: transparent;
-      --button-background-color-hover: light-dark(var(--color-violet-desaturated-20), var(--color-violet-desaturated-50));
-      --button-background-color-active: light-dark(var(--color-violet-desaturated-30), var(--color-violet-desaturated-40));
-      --button-background-color-ghost: var(--button-background-color);
-      --button-text-color: light-dark(var(--color-violet-90), var(--color-gray-0));
-      --button-text-color-menu-selected: light-dark(var(--button-text-color-ghost-selected), var(--button-text-color-selected));
-      --button-text-color-primary: light-dark(var(--color-white), var(--color-gray-70));
-
-      /** color **/
-      --color-accent-attention: light-dark(var(--color-green-40), var(--color-green-30));
-      --color-accent-primary: light-dark(var(--color-violet-50), var(--color-violet-30));
-      --color-accent-primary-hover: light-dark(var(--color-violet-60), var(--color-violet-20));
-      --color-accent-primary-active: light-dark(var(--color-violet-70), var(--color-violet-10));
-      --color-accent-primary-selected: var(--button-background-color-primary-active);
-
-      /** panel **/
-      --panel-background-color: var(--popup-background-color);
-      --panel-border-color: var(--popup-border-color);
-      --panel-text-color: var(--text-color);
-
-      /** popup **/
-      --popup-border-color: light-dark(var(--color-gray-10), var(--color-gray-65));
-
-      /** text-color **/
-      --text-color: light-dark(var(--color-violet-desaturated-90), var(--color-violet-desaturated-0));
-
-      /** toolbar **/
-      --toolbar-background-color: var(--background-color-box);
-      --toolbar-field-background-color-focus: var(--background-color-box);
-      --toolbar-field-border-color-focus: var(--focus-outline-color);
-      --toolbar-field-text-color: light-dark(var(--color-violet-desaturated-70), var(--color-violet-desaturated-10));
-      --toolbar-field-text-color-focus: var(--toolbar-field-text-color);
-
-      /** toolbarbutton **/
-      --toolbarbutton-icon-fill: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-10));
-      --toolbarbutton-icon-fill-attention: var(--color-accent-primary);
-
-      /** toolbox **/
-      --toolbox-background-color-inactive: transparent;
-      --toolbox-text-color: var(--text-color);
-      --toolbox-text-color-inactive: var(--text-color-deemphasized);
-    }
-  /*}*/
 }

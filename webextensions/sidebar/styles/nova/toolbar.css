@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/85130ba192d9f4bdf63e57502cb23fb31f95f7ca/toolkit/themes/shared/design-system/src/toolbar.css */
+/* https://searchfox.org/firefox-main/rev/8a99ef927ea16827f2089e2bdf6a1188ddf645e7/toolkit/themes/shared/design-system/src/toolbar.css */
 
 @layer tokens-foundation {
   /* These tokens are declared inside of tokens-foundation layer so that the

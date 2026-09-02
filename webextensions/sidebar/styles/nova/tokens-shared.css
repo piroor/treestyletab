@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-shared.css */
+/* https://searchfox.org/firefox-main/rev/8a99ef927ea16827f2089e2bdf6a1188ddf645e7/toolkit/themes/shared/design-system/dist/tokens-shared.css */
 
 @layer tokens-foundation {
   :root {
@@ -205,22 +205,7 @@
     --card-padding-compact: var(--space-small);
 
     /** checkbox **/
-    --checkbox-background-color: var(--button-background-color);
-    --checkbox-background-color-hover: var(--button-background-color-hover);
-    --checkbox-background-color-active: var(--button-background-color-active);
-    --checkbox-background-color-disabled: var(--button-background-color-disabled);
-    --checkbox-background-color-checked: var(--button-background-color-primary);
-    --checkbox-background-color-checked-hover: var(--button-background-color-primary-hover);
-    --checkbox-background-color-checked-active: var(--button-background-color-primary-active);
-    --checkbox-background-color-checked-disabled: var(--button-background-color-primary-disabled);
-    --checkbox-border-color: var(--border-color-interactive);
-    --checkbox-border-color-checked: var(--checkbox-background-color-checked);
-    --checkbox-border-color-checked-hover: var(--checkbox-background-color-checked-hover);
-    --checkbox-border-color-checked-active: var(--checkbox-background-color-checked-active);
-    --checkbox-border-color-checked-disabled: var(--checkbox-background-color-checked-disabled);
-    --checkbox-border-radius: var(--border-radius-small);
     --checkbox-margin-inline: var(--space-small);
-    --checkbox-opacity-disabled: var(--button-opacity-disabled);
     /* TODO Bug 1876537: Make this em-based, probably? */
     --checkbox-size: var(--size-item-small);
 
@@ -368,41 +353,6 @@
     --color-yellow-100: oklch(27% 0.13 90);
     --color-yellow-110: oklch(20% 0.08 90);
 
-    /** dimension **/
-    --dimension-2: 2px;
-    --dimension-4: 4px;
-    --dimension-8: 8px;
-    --dimension-12: 12px;
-    --dimension-16: 16px;
-    --dimension-20: 20px;
-    --dimension-24: 24px;
-    --dimension-32: 32px;
-    --dimension-40: 40px;
-    --dimension-48: 48px;
-    --dimension-56: 56px;
-    --dimension-64: 64px;
-    --dimension-80: 80px;
-    --dimension-96: 96px;
-    --dimension-100: 100px;
-    --dimension-200: 200px;
-    --dimension-300: 300px;
-    --dimension-400: 400px;
-    --dimension-500: 500px;
-    --dimension-relative-025: 0.25rem;
-    --dimension-relative-050: 0.5rem;
-    --dimension-relative-075: 0.75rem;
-    --dimension-relative-100: 1rem;
-    --dimension-relative-125: 1.25rem;
-    --dimension-relative-0125: 0.125rem;
-    --dimension-relative-150: 1.5rem;
-    --dimension-relative-200: 2rem;
-    --dimension-relative-250: 2.5rem;
-    --dimension-relative-300: 3rem;
-    --dimension-relative-350: 3.5rem;
-    --dimension-relative-400: 4rem;
-    --dimension-relative-500: 5rem;
-    --dimension-relative-600: 6rem;
-
     /** focus-outline **/
     --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
     --focus-outline-color: var(--color-accent-primary);
@@ -436,11 +386,11 @@
     --icon-color-success: light-dark(var(--color-green-60), var(--color-green-20));
     --icon-color-warning: light-dark(var(--color-yellow-60), var(--color-yellow-20));
     --icon-size: var(--icon-size-small);
-    --icon-size-xsmall: var(--dimension-12);
-    --icon-size-small: var(--dimension-16);
-    --icon-size-medium: var(--dimension-20);
-    --icon-size-large: var(--dimension-24);
-    --icon-size-xlarge: var(--dimension-32);
+    --icon-size-xsmall: 12px;
+    --icon-size-small: 16px;
+    --icon-size-medium: 20px;
+    --icon-size-large: 24px;
+    --icon-size-xlarge: 32px;
     --icon-size-xxlarge: var(--size-item-xlarge);
 
     /** info-bar **/
@@ -470,11 +420,7 @@
     --link-color-hover: var(--color-accent-primary-hover);
     --link-color-active: var(--color-accent-primary-active);
     --link-color-visited: var(--link-color);
-    /**
-     * Not using --force-outline-offset for links because that's intended for
-     * elements with a background, and we only want a slight offset here while
-     * not overlapping adjacent text
-     */
+    /* Not using --force-outline-offset for links because that's intended for elements with a background, and we only want a slight offset here while not overlapping adjacent text */
     --link-focus-outline-offset: 1px;
 
     /** opacity **/
@@ -517,40 +463,33 @@
     --sidebar-text-color: light-dark(rgb(21, 20, 26), rgb(249, 249, 250));
 
     /** size **/
-    --size-image-xsmall: var(--dimension-40);
-    --size-image-small: var(--dimension-48);
-    --size-image-medium: var(--dimension-56);
-    --size-image-large: var(--dimension-64);
-    --size-image-xlarge: var(--dimension-80);
-    --size-image-xxlarge: var(--dimension-96);
-    --size-item-xsmall: var(--dimension-12);
-    --size-item-small: var(--dimension-16);
-    --size-item-medium: var(--dimension-24);
-    --size-item-large: var(--dimension-32);
-    --size-item-xlarge: var(--dimension-48);
-    --size-layout-xsmall: var(--dimension-100);
-    --size-layout-small: var(--dimension-200);
-    --size-layout-medium: var(--dimension-300);
-    --size-layout-large: var(--dimension-400);
-    --size-layout-xlarge: var(--dimension-500);
+    --size-image-xsmall: 40px;
+    --size-image-small: 48px;
+    --size-image-medium: 56px;
+    --size-image-large: 64px;
+    --size-image-xlarge: 80px;
+    --size-image-xxlarge: 96px;
+    --size-item-xsmall: 12px;
+    --size-item-small: 16px;
+    --size-item-medium: 24px;
+    --size-item-large: 32px;
+    --size-item-xlarge: 48px;
+    --size-layout-xsmall: 100px;
+    --size-layout-small: 200px;
+    --size-layout-medium: 300px;
+    --size-layout-large: 400px;
+    --size-layout-xlarge: 500px;
     --size-sidebar: 280px;
     --size-sidebar-narrow: 118px;
 
     /** space **/
-    /* 0.125rem */
-    --space-xxsmall: var(--dimension-relative-0125);
-    /* 0.25rem */
-    --space-xsmall: var(--dimension-relative-025);
-    /* 0.5rem */
-    --space-small: var(--dimension-relative-050);
-    /* 0.75rem */
-    --space-medium: var(--dimension-relative-075);
-    /* 1rem */
-    --space-large: var(--dimension-relative-100);
-    /* 1.5rem */
-    --space-xlarge: var(--dimension-relative-150);
-    /* 2rem */
-    --space-xxlarge: var(--dimension-relative-200);
+    --space-xxsmall: 0.125rem;
+    --space-xsmall: 0.25rem;
+    --space-small: 0.5rem;
+    --space-medium: 0.75rem;
+    --space-large: 1rem;
+    --space-xlarge: 1.5rem;
+    --space-xxlarge: 2rem;
 
     /** table **/
     --table-background-color: light-dark(#f8f8fa, rgb(35, 34, 43));
@@ -714,6 +653,9 @@
       --button-background-color-menu-hover: var(--button-background-color-primary);
       --button-background-color-menu-active: var(--button-background-color-primary);
       --button-background-color-menu-selected: var(--button-background-color-primary-selected);
+      --button-background-color-primary: ButtonText;
+      --button-background-color-primary-hover: SelectedItem;
+      --button-background-color-primary-active: var(--button-background-color-primary-hover);
       --button-background-color-primary-disabled: var(--button-text-color-disabled);
       --button-border-color: var(--border-color-interactive);
       --button-border-color-hover: var(--border-color-interactive-hover);
@@ -788,6 +730,8 @@
       --text-color-accent-primary-selected: SelectedItemText;
 
       /** toolbarbutton **/
+      --toolbarbutton-background-color-hover: var(--button-background-color-hover);
+      --toolbarbutton-background-color-active: var(--button-background-color-active);
       --toolbarbutton-outline-color: ButtonText;
       --toolbarbutton-outline-color-hover: SelectedItem;
       --toolbarbutton-outline-color-active: ButtonText;
@@ -845,7 +789,11 @@
     --button-background-color-muted-active: light-dark(var(--color-gray-40), var(--color-gray-35));
     --button-background-color-muted-disabled: var(--button-background-color-muted);
     --button-background-color-muted-selected: var(--button-background-color-muted-active);
+    --button-background-color-primary: var(--color-accent-primary);
+    --button-background-color-primary-hover: var(--color-accent-primary-hover);
+    --button-background-color-primary-active: var(--color-accent-primary-active);
     --button-background-color-primary-disabled: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-40));
+    --button-background-color-selected: var(--button-background-color-active);
     --button-border-color: var(--color-accent-primary);
     --button-border-color-destructive: var(--button-border-color-ghost);
     --button-border-color-destructive-selected: var(--button-border-color-destructive);
@@ -867,7 +815,6 @@
     --button-gap-split: 0;
     --button-opacity-disabled: 0.7;
     --button-padding-inline-small: var(--space-medium);
-    --button-size-icon-small: var(--size-item-medium);
     --button-split-separator-background-color: var(--button-border-color);
     --button-text-color: light-dark(var(--color-violet-90), var(--color-gray-0));
     --button-text-color-destructive: light-dark(var(--color-white), var(--button-text-color-primary));
@@ -895,9 +842,6 @@
     --card-gap: var(--space-medium);
     --card-header-background-color: var(--button-background-color);
     --card-header-border-color: transparent;
-
-    /** checkbox **/
-    --checkbox-border-radius: var(--border-radius-xsmall);
 
     /** color **/
     --color-accent-attention: light-dark(var(--color-green-40), var(--color-green-30));
@@ -1034,7 +978,6 @@
     --icon-color-warning: light-dark(var(--color-yellow-50), var(--color-yellow-20));
     --icon-size-xsmall: var(--size-item-xsmall);
     --icon-size-small: var(--size-item-small);
-    --icon-size-medium: 20px;
     --icon-size-large: var(--size-item-medium);
     --icon-size-xlarge: var(--size-item-large);
 
@@ -1058,13 +1001,6 @@
     --popup-border-color: light-dark(var(--color-gray-10), var(--color-gray-65));
     --popup-border-radius: var(--border-radius-xlarge);
 
-    /** size **/
-    --size-item-xsmall: 12px;
-    --size-item-small: 16px;
-    --size-item-medium: 24px;
-    --size-item-large: 32px;
-    --size-item-xlarge: 48px;
-
     /** table **/
     --table-row-background-color: var(--background-color-canvas);
     /* TODO Bug 1821203 - Gray use needs to be consolidated */
@@ -1085,8 +1021,6 @@
     --toolbar-padding-inline: 6px;
 
     /** toolbarbutton **/
-    --toolbarbutton-background-color-hover: light-dark(rgba(117, 102, 159, 0.25), rgba(182, 170, 217, 0.25));
-    --toolbarbutton-background-color-active: light-dark(rgba(117, 102, 159, 0.4), rgba(182, 170, 217, 0.4));
     --toolbarbutton-icon-fill: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-10));
     --toolbarbutton-icon-fill-attention: var(--color-accent-primary);
     --toolbarbutton-opacity-disabled: 0.4;
@@ -1095,7 +1029,6 @@
     --toolbarbutton-outline-color-active: transparent;
     --toolbarbutton-outline-color-selected: var(--toolbarbutton-outline-color-active);
     --toolbarbutton-outline-offset: -1px;
-    --toolbarbutton-padding-inner-touch-narrow: 0;
 
     /** toolbox **/
     --toolbox-background-color-gradient-leading: light-dark(var(--color-violet-10), var(--color-violet-desaturated-70));
@@ -1108,7 +1041,6 @@
       color-mix(var(--toolbox-background-color-gradient-trailing) 50%, transparent) 101.72%
     );
     --toolbox-text-color: var(--text-color);
-    --toolbox-text-color-inactive: var(--text-color-deemphasized);
   }
 }
 
@@ -1163,6 +1095,8 @@
       --button-background-color-destructive-active: var(--button-background-color-primary-active);
       --button-background-color-ghost-disabled: var(--button-background-color-disabled);
       --button-background-color-menu: var(--button-background-color);
+      --button-background-color-menu-hover: ButtonText;
+      --button-background-color-menu-active: ButtonText;
       --button-background-color-muted: var(--button-background-color);
       --button-background-color-muted-hover: var(--button-background-color-hover);
       --button-background-color-muted-active: var(--button-background-color-active);
@@ -1195,9 +1129,9 @@
       --button-text-color-ghost-hover: var(--button-text-color-ghost-active);
       --button-text-color-ghost-active: var(--button-text-color-active);
       --button-text-color-ghost-disabled: GrayText;
-      --button-text-color-menu-hover: var(--button-text-color-primary);
-      --button-text-color-menu-active: var(--button-text-color-primary-active);
-      --button-text-color-menu-disabled: var(--button-text-color-primary-disabled);
+      --button-text-color-menu-hover: ButtonFace;
+      --button-text-color-menu-active: ButtonFace;
+      --button-text-color-menu-disabled: var(--button-text-color-disabled);
       --button-text-color-menu-selected: var(--button-text-color-primary-selected);
       --button-text-color-muted: ButtonText;
       --button-text-color-muted-hover: var(--button-text-color-ghost-active);
@@ -1214,7 +1148,7 @@
 
       /** color **/
       --color-accent-attention: AccentColor;
-      --color-accent-primary: AccentColor;
+      --color-accent-primary: ButtonText;
       --color-accent-primary-hover: SelectedItem;
       --color-accent-primary-active: var(--color-accent-primary-hover);
       --color-accent-primary-selected: SelectedItem;
@@ -1242,8 +1176,6 @@
       --toolbar-field-text-color: var(--text-color);
 
       /** toolbarbutton **/
-      --toolbarbutton-background-color-hover: var(--button-background-color-hover);
-      --toolbarbutton-background-color-active: var(--button-background-color-active);
       --toolbarbutton-icon-fill: var(--button-text-color);
       --toolbarbutton-outline-color: var(--button-border-color);
       --toolbarbutton-outline-color-hover: var(--button-border-color-hover);
