@@ -1,6 +1,12 @@
 # History
 
  - trunk/HEAD
+ - 4.4.4 (2026.9.2)
+   * Dimension new windows opened by "Move (tab) to New Window" commands more smartly by Firefox itself.
+   * Never produce scrolling for pinned tabs with only one row, to prevent unexpected "jumping" of pinned tabs.
+   * Enlarge resizer of pinned tabs area for more usability.
+   * Render background images more correctly on sticky tabs.
+   * Update color definitions of "Nova" following to latest Nightly.
  - 4.4.3 (2026.8.27)
    * Fix mismatched description about permission about browser settings in the options page.
  - 4.4.2 (2026.8.27)
