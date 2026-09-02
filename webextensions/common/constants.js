@@ -17,7 +17,6 @@ export const kCOMMAND_GET_CONFIG_VALUE               = 'treestyletab:get-config-
 export const kCOMMAND_SET_CONFIG_VALUE               = 'treestyletab:set-config-value';
 export const kCOMMAND_GET_USER_STYLE_RULES           = 'treestyletab:get-user-style-rules';
 export const kCOMMAND_GET_DEVICE_PIXEL_RATIO         = 'treestyletab:get-device-pixel-ratio';
-export const kCOMMAND_GET_SCREEN_INFO                = 'treestyletab:get-screen-info';
 export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
 export const kCOMMAND_SYNC_TABS_ORDER                = 'treestyletab:sync-tabs-order';
 export const kCOMMAND_PULL_TABS_ORDER                = 'treestyletab:pull-tabs-order';

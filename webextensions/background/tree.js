@@ -1761,21 +1761,14 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     return [];
 
   log('openNewWindowFromTabs: ', tabs, options);
-  const [sourceWindow, sourceScreen] = await Promise.all([
-    browser.windows.get(tabs[0].windowId),
-    SidebarConnection.isOpen(tabs[0].windowId) ?
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_GET_SCREEN_INFO,
-        windowId: tabs[0].windowId,
-      }) : null,
-  ]);
+  const sourceWindow = await browser.windows.get(tabs[0].windowId);
   const sourceParams = getWindowParamsFromSource(sourceWindow, options);
   const windowParams = {
     //active: true,  // not supported in Firefox...
     url: 'about:blank',
     ...sourceParams,
   };
-  let positioned = (
+  const positioned = (
     'left' in options &&
     'top' in options &&
     // positions are not provided for a maximized or fullscreen window!
@@ -1783,17 +1776,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     typeof windowParams.top == 'number'
   );
   if (positioned) { // opening new window at the dropped position
-    const leftOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
-    const topOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
-    if (leftOffset == 0 && topOffset == 0) {
-      positioned = false;
-    }
-    else {
-      windowParams.left += leftOffset;
-      windowParams.top += topOffset;
-    }
+    windowParams.left = options.left;
+    windowParams.top  = options.top;
   }
-  if (!positioned) {
+  else {
     // We need to delete dimensions here to open new window smartly dimensioned by Firefox itself.
     // See https://github.com/piroor/treestyletab/issues/3959#issuecomment-5494800430
     delete windowParams.height;
