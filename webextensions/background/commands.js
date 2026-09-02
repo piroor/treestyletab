@@ -1415,24 +1415,19 @@ export async function openTabInWindow(tab, options = {}) {
     return openTabsInWindow([tab, ...tab.$TST.descendants]);
   }
   else {
-    const [sourceWindow, sourceScreen] = await Promise.all([
-      browser.windows.get(tab.windowId),
-      SidebarConnection.isOpen(tab.windowId) ?
-        browser.runtime.sendMessage({
-          type:     Constants.kCOMMAND_GET_SCREEN_INFO,
-          windowId: tab.windowId,
-        }) : null,
-    ]);
+    const sourceWindow = await browser.windows.get(tab.windowId);
     const sourceParams = getWindowParamsFromSource(sourceWindow, options);
     const windowParams = {
       //active: true,  // not supported in Firefox...
       tabId: tab.id,
       ...sourceParams,
     };
-    if (typeof windowParams.left == 'number')
-      windowParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
-    if (typeof windowParams.top == 'number')
-      windowParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
+    // We need to delete dimensions here to open new window smartly dimensioned by Firefox itself.
+    // See https://github.com/piroor/treestyletab/issues/3959#issuecomment-5494800430
+    delete windowParams.height;
+    delete windowParams.left;
+    delete windowParams.top;
+    delete windowParams.width;
     const win = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
     return win.id;
   }

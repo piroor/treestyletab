@@ -1775,11 +1775,32 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     url: 'about:blank',
     ...sourceParams,
   };
-  // positions are not provided for a maximized or fullscreen window!
-  if (typeof windowParams.left == 'number')
-    windowParams.left += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
-  if (typeof windowParams.top == 'number')
-    windowParams.top += Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
+  let positioned = (
+    'left' in options &&
+    'top' in options &&
+    // positions are not provided for a maximized or fullscreen window!
+    typeof windowParams.left == 'number' &&
+    typeof windowParams.top == 'number'
+  );
+  if (positioned) { // opening new window at the droped position
+    const leftOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
+    const topOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
+    if (leftOffset == 0 && topOffset == 0) {
+      positioned = false;
+    }
+    else {
+      windowParams.left += leftOffset;
+      windowParams.top += topOffset;
+    }
+  }
+  if (!positioned) {
+    // We need to delete dimensions here to open new window smartly dimensioned by Firefox itself.
+    // See https://github.com/piroor/treestyletab/issues/3959#issuecomment-5494800430
+    delete windowParams.height;
+    delete windowParams.left;
+    delete windowParams.top;
+    delete windowParams.width;
+  }
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
     .then(createdWindow => {
