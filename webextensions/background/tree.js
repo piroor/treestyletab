@@ -1782,7 +1782,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     typeof windowParams.left == 'number' &&
     typeof windowParams.top == 'number'
   );
-  if (positioned) { // opening new window at the droped position
+  if (positioned) { // opening new window at the dropped position
     const leftOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availWidth - sourceWindow.width) : 20);
     const topOffset = Math.min(20, sourceScreen ? Math.max(0, sourceScreen.availHeight - sourceWindow.height) : 20);
     if (leftOffset == 0 && topOffset == 0) {
