@@ -91,6 +91,21 @@
   "tabbar_newTabWithContextualIdentity_tooltip": { "message": "Nová karta kontajnera" },
   "tabbar_newTabWithContextualIdentity_default": { "message": "&Bez kontajnera" },
 
+  "contextualIdentitySelector_createNew":             { "message": "&Pridať nový kontajner" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Kontajner" },
+  "contextualIdentitySelector_manage":                { "message": "&Spravovať kontajnery" },
+
+  "createContextualIdentityDialog_title":              { "message": "Pridať nový kontajner" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Názov" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Zadajte názov kontajnera" },
+  "createContextualIdentityDialog_color_label":        { "message": "Farba" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Farba" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Ikona" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Ikona" },
+  "createContextualIdentityDialog_accept":             { "message": "Hotovo" },
+  "createContextualIdentityDialog_cancel":             { "message": "Zrušiť" },
+
   "groupTab_label": { "message": "$TITLE$ a ďalšie",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

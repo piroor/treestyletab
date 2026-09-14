@@ -201,6 +201,19 @@
         "message": "컨테이너 없음(&N)",
         "hash": "229c53203d001a81c6535deec232da82"
     },
+    "contextualIdentitySelector_createNew":             { "message": "새 컨테이너 추가(&A)" },
+    "contextualIdentitySelector_createNew_defaultName": { "message": "컨테이너" },
+    "contextualIdentitySelector_manage":                { "message": "컨테이너 관리(&O)" },
+    "createContextualIdentityDialog_title":              { "message": "새 컨테이너 추가" },
+    "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+    "createContextualIdentityDialog_name_label":         { "message": "이름" },
+    "createContextualIdentityDialog_name_placeholder":   { "message": "컨테이너 이름 입력" },
+    "createContextualIdentityDialog_color_label":        { "message": "색상" },
+    "createContextualIdentityDialog_color_selector_aria_label": { "message": "색상" },
+    "createContextualIdentityDialog_icon_label":         { "message": "아이콘" },
+    "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "아이콘" },
+    "createContextualIdentityDialog_accept":             { "message": "완료" },
+    "createContextualIdentityDialog_cancel":             { "message": "취소" },
     "groupTab_label": {
         "message": "$TITLE$ 등",
         "placeholders": {

@@ -212,6 +212,19 @@
   "tabbar_newTabWithContextualIdentity_default": {
     "message": "无身份(&N)"
   },
+  "contextualIdentitySelector_createNew":             { "message": "添加新身份(&A)" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "身份" },
+  "contextualIdentitySelector_manage":                { "message": "管理身份(&O)" },
+  "createContextualIdentityDialog_title":              { "message": "添加新身份" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "名称" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "请输入身份名称" },
+  "createContextualIdentityDialog_color_label":        { "message": "颜色" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "颜色" },
+  "createContextualIdentityDialog_icon_label":         { "message": "图标" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "图标" },
+  "createContextualIdentityDialog_accept":             { "message": "完成" },
+  "createContextualIdentityDialog_cancel":             { "message": "取消" },
   "groupTab_label": {
     "message": "$TITLE$ 等多项",
     "placeholders": {

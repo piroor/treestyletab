@@ -201,6 +201,19 @@
     "message": "Aucun conteneur",
     "hash": "229c53203d001a81c6535deec232da82"
   },
+  "contextualIdentitySelector_createNew":             { "message": "&Ajouter un nouveau conteneur" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Conteneur" },
+  "contextualIdentitySelector_manage":                { "message": "Gérer les c&onteneurs" },
+  "createContextualIdentityDialog_title":              { "message": "Ajouter un nouveau conteneur" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Nom" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Saisir un nom de conteneur" },
+  "createContextualIdentityDialog_color_label":        { "message": "Couleur" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Couleur" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Icône" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Icône" },
+  "createContextualIdentityDialog_accept":             { "message": "Terminer" },
+  "createContextualIdentityDialog_cancel":             { "message": "Annuler" },
   "groupTab_label": {
     "message": "$TITLE$ et plus",
     "placeholders": {

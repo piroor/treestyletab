@@ -81,6 +81,21 @@
   "tabbar_newTabWithContextualIdentity_tooltip": { "message": "Neuer Tab in Umgebung" },
   "tabbar_newTabWithContextualIdentity_default": { "message": "Keine Tab-&Umgebung" },
 
+  "contextualIdentitySelector_createNew":             { "message": "&Neue Umgebung hinzufügen" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Umgebung" },
+  "contextualIdentitySelector_manage":                { "message": "Tab-Umgebungen &verwalten" },
+
+  "createContextualIdentityDialog_title":              { "message": "Neue Umgebung hinzufügen" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Name" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Umgebungsnamen eingeben" },
+  "createContextualIdentityDialog_color_label":        { "message": "Farbe" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Farbe" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Symbol" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Symbol" },
+  "createContextualIdentityDialog_accept":             { "message": "Fertig" },
+  "createContextualIdentityDialog_cancel":             { "message": "Abbrechen" },
+
   "groupTab_label": { "message": "$TITLE$ und mehr",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }

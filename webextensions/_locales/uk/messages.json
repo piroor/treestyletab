@@ -161,6 +161,19 @@
     "message": "За замовч.",
     "hash": "62484898877c1c17dc4d60b12e127d45"
   },
+  "contextualIdentitySelector_createNew":             { "message": "&Додати новий контейнер" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Контейнер" },
+  "contextualIdentitySelector_manage":                { "message": "&Керувати контейнерами" },
+  "createContextualIdentityDialog_title":              { "message": "Додати новий контейнер" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Назва" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Введіть назву контейнера" },
+  "createContextualIdentityDialog_color_label":        { "message": "Колір" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Колір" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Піктограма" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Піктограма" },
+  "createContextualIdentityDialog_accept":             { "message": "Готово" },
+  "createContextualIdentityDialog_cancel":             { "message": "Скасувати" },
   "groupTab_label": {
     "message": "$TITLE$ і більше",
     "placeholders": {

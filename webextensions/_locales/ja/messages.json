@@ -220,7 +220,7 @@
   "shareQRCode_dialogWidth": { "message": "40em" },
   "shareQRCode_close":       { "message": "閉じる" },
 
-  "createContextualIdentityDialog_title":              { "message": "新しいコンテナーを追加" },
+  "createContextualIdentityDialog_title":              { "message": "新しいコンテナーを追加する" },
   "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
   "createContextualIdentityDialog_name_label":         { "message": "名前" },
   "createContextualIdentityDialog_name_placeholder":   { "message": "コンテナー名を入力してください" },

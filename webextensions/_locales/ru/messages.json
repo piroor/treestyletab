@@ -81,6 +81,21 @@
   "tabbar_newTabWithContextualIdentity_tooltip": { "message": "Новая вкладка контейнера" },
   "tabbar_newTabWithContextualIdentity_default": { "message": "Переоткрыть &без контейнера" },
 
+  "contextualIdentitySelector_createNew":             { "message": "&Добавить новый контейнер" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Контейнер" },
+  "contextualIdentitySelector_manage":                { "message": "Управление конте&йнерами" },
+
+  "createContextualIdentityDialog_title":              { "message": "Добавить новый контейнер" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Имя" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Введите имя контейнера" },
+  "createContextualIdentityDialog_color_label":        { "message": "Цвет" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Цвет" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Значок" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Значок" },
+  "createContextualIdentityDialog_accept":             { "message": "Готово" },
+  "createContextualIdentityDialog_cancel":             { "message": "Отмена" },
+
   "groupTab_label": { "message": "$TITLE$ и больше",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

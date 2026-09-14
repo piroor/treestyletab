@@ -71,7 +71,22 @@
   
     "tabbar_newTabWithContextualIdentity_tooltip": { "message": "新容器分頁" },
     "tabbar_newTabWithContextualIdentity_default": { "message": "無容器 (&N)" },
-  
+
+    "contextualIdentitySelector_createNew":             { "message": "新增容器 (&A)" },
+    "contextualIdentitySelector_createNew_defaultName": { "message": "容器" },
+    "contextualIdentitySelector_manage":                { "message": "管理容器 (&O)" },
+
+    "createContextualIdentityDialog_title":              { "message": "新增容器" },
+    "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+    "createContextualIdentityDialog_name_label":         { "message": "名稱" },
+    "createContextualIdentityDialog_name_placeholder":   { "message": "輸入容器名稱" },
+    "createContextualIdentityDialog_color_label":        { "message": "色彩" },
+    "createContextualIdentityDialog_color_selector_aria_label": { "message": "色彩" },
+    "createContextualIdentityDialog_icon_label":         { "message": "圖示" },
+    "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "圖示" },
+    "createContextualIdentityDialog_accept":             { "message": "完成" },
+    "createContextualIdentityDialog_cancel":             { "message": "取消" },
+
     "groupTab_label": { "message": "$TITLE$ 等",
       "placeholders": {
         "title": { "content": "$1", "example": "標題" }

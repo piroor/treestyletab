@@ -282,6 +282,19 @@
     "message": "Gee&n container",
     "hash": "62484898877c1c17dc4d60b12e127d45"
   },
+  "contextualIdentitySelector_createNew":             { "message": "Nieuwe &container toevoegen" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Container" },
+  "contextualIdentitySelector_manage":                { "message": "C&ontainers beheren" },
+  "createContextualIdentityDialog_title":              { "message": "Nieuwe container toevoegen" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Naam" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Voer een containernaam in" },
+  "createContextualIdentityDialog_color_label":        { "message": "Kleur" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Kleur" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Pictogram" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Pictogram" },
+  "createContextualIdentityDialog_accept":             { "message": "Gereed" },
+  "createContextualIdentityDialog_cancel":             { "message": "Annuleren" },
   "groupTab_label": {
     "message": "$TITLE$ en meer",
     "placeholders": {
