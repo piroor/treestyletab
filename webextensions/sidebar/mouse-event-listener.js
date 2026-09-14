@@ -41,6 +41,7 @@ import {
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
+import * as Permissions from '/common/permissions.js';
 import * as RetrieveURL from '/common/retrieve-url.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
@@ -48,6 +49,8 @@ import * as TSTAPI from '/common/tst-api.js';
 
 import MetricsData from '/common/MetricsData.js';
 import { Tab, TabGroup, TreeItem } from '/common/TreeItem.js';
+
+import CreateContextualIdentity from '/resources/dialog/CreateContextualIdentity.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as EventUtils from './event-utils.js';
@@ -1193,6 +1196,14 @@ function onNewTabActionSelect(item, event) {
 }
 
 function onContextualIdentitySelect(item, event) {
+  if (mContextualIdentitySelector.ui)
+    mContextualIdentitySelector.ui.close();
+
+  if (item.dataset.command == Constants.kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_CREATE_NEW) {
+    createContextualIdentityWithDialog();
+    return;
+  }
+
   if (item.dataset.value) {
     const action = EventUtils.isAccelAction(event) ?
       configs.autoAttachOnNewTabButtonMiddleClick :
@@ -1202,8 +1213,25 @@ function onContextualIdentitySelect(item, event) {
       cookieStoreId: item.dataset.value
     });
   }
-  if (mContextualIdentitySelector.ui)
-    mContextualIdentitySelector.ui.close();
+}
+
+async function createContextualIdentityWithDialog() {
+  const activeTab = Tab.getActiveTab(mTargetWindow);
+  const showInActiveTab = await Permissions.canInjectScriptToTab(activeTab);
+
+  const result = showInActiveTab ?
+    await CreateContextualIdentity.showInTab(activeTab.id, {}).catch(_error => ({ buttonIndex: -1 })) :
+    await CreateContextualIdentity.show({}).catch(_error => ({ buttonIndex: -1 }));
+  if (result.buttonIndex != 0)
+    return;
+
+  const name = (result.values.name || '').trim() ||
+    browser.i18n.getMessage('contextualIdentitySelector_createNew_defaultName');
+  await browser.contextualIdentities.create({
+    name,
+    color: result.values.color,
+    icon:  result.values.icon,
+  }).catch(ApiTabs.createErrorHandler());
 }
 
 

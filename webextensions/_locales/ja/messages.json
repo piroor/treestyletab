@@ -92,6 +92,10 @@
   "tabbar_newTabWithContextualIdentity_tooltip": { "message": "新しいコンテナータブ" },
   "tabbar_newTabWithContextualIdentity_default": { "message": "コンテナーなし(&N)" },
 
+  "contextualIdentitySelector_createNew":             { "message": "新しいコンテナーを追加(&A)" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "コンテナー" },
+  "contextualIdentitySelector_manage":                { "message": "コンテナーを管理(&O)" },
+
   "groupTab_label": { "message": "$TITLE$ など",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" }
@@ -215,6 +219,17 @@
   "shareQRCode_alt":         { "message": "[QRコード]" },
   "shareQRCode_dialogWidth": { "message": "40em" },
   "shareQRCode_close":       { "message": "閉じる" },
+
+  "createContextualIdentityDialog_title":              { "message": "新しいコンテナーを追加" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "名前" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "コンテナー名を入力してください" },
+  "createContextualIdentityDialog_color_label":        { "message": "色" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "コンテナーの色" },
+  "createContextualIdentityDialog_icon_label":         { "message": "アイコン" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "コンテナーのアイコン" },
+  "createContextualIdentityDialog_accept":             { "message": "完了" },
+  "createContextualIdentityDialog_cancel":             { "message": "キャンセル" },
 
   "syncDeviceDefaultName": { "message": "$PLATFORM$ の $BROWSER$",
     "placeholders": {

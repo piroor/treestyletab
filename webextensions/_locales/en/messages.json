@@ -92,6 +92,10 @@
   "tabbar_newTabWithContextualIdentity_tooltip": { "message": "New Container Tab" },
   "tabbar_newTabWithContextualIdentity_default": { "message": "&No Container" },
 
+  "contextualIdentitySelector_createNew":             { "message": "&Add new container" },
+  "contextualIdentitySelector_createNew_defaultName": { "message": "Container" },
+  "contextualIdentitySelector_manage":                { "message": "Manage c&ontainers" },
+
   "groupTab_label": { "message": "$TITLE$ and more",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
@@ -215,6 +219,17 @@
   "shareQRCode_alt":         { "message": "[QR Code]" },
   "shareQRCode_dialogWidth": { "message": "35em" },
   "shareQRCode_close":       { "message": "Close" },
+
+  "createContextualIdentityDialog_title":              { "message": "Add New Container" },
+  "createContextualIdentityDialog_dialogWidth":        { "message": "38em" },
+  "createContextualIdentityDialog_name_label":         { "message": "Name" },
+  "createContextualIdentityDialog_name_placeholder":   { "message": "Add a name" },
+  "createContextualIdentityDialog_color_label":        { "message": "Color" },
+  "createContextualIdentityDialog_color_selector_aria_label": { "message": "Container color" },
+  "createContextualIdentityDialog_icon_label":         { "message": "Icon" },
+  "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Container icon" },
+  "createContextualIdentityDialog_accept":             { "message": "Done" },
+  "createContextualIdentityDialog_cancel":             { "message": "Cancel" },
 
   "syncDeviceDefaultName": { "message": "$BROWSER$ on $PLATFORM$",
     "placeholders": {

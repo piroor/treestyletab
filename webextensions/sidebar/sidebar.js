@@ -549,7 +549,7 @@ function reloadAllMaskImages() {
 
 
 function updateContextualIdentitiesSelector() {
-  const disabled = document.documentElement.classList.contains('incognito') || ContextualIdentities.getCount() == 0;
+  const disabled = document.documentElement.classList.contains('incognito');
 
   const anchors = document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`);
   for (const anchor of anchors) {
@@ -572,6 +572,16 @@ function updateContextualIdentitiesSelector() {
       browser.i18n.getMessage('tabbar_newTabButton_label') :
       browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default'),
   });
+
+  const separator = document.createElement('li');
+  separator.classList.add('separator');
+  fragment.appendChild(separator);
+
+  const createNewItem = document.createElement('li');
+  createNewItem.dataset.command   = Constants.kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_CREATE_NEW;
+  createNewItem.textContent       = browser.i18n.getMessage('contextualIdentitySelector_createNew');
+  fragment.appendChild(createNewItem);
+
   range.insertNode(fragment);
   range.detach();
 }

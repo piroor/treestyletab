@@ -174,6 +174,7 @@ export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 export const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
+export const kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_CREATE_NEW = 'create-new-contextual-identity';
 export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 export const kTABBAR_SPACER   = 'tabs-spacer';
 
