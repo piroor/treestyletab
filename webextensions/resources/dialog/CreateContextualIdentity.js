@@ -24,8 +24,8 @@ class CreateContextualIdentity extends RichConfirm {
       return params;
 
     const [colors, icons] = await Promise.all([
-      needsColors ? browser.contextualIdentities.getSupportedColors().catch(() => []) : params.colors,
-      needsIcons  ? browser.contextualIdentities.getSupportedIcons().catch(() => [])  : params.icons,
+      needsColors ? this.getSupportedColors() : params.colors,
+      needsIcons  ? this.getSupportedIcons()  : params.icons,
     ]);
     const style = configs.style == 'nova' ? 'nova' : 'proton';
     return { ...params, colors, icons, style };
@@ -33,6 +33,49 @@ class CreateContextualIdentity extends RichConfirm {
 
   static async show(params, onDialogOpened = null) {
     return super.show(await this.withColorsAndIcons(params), onDialogOpened);
+  }
+
+  static async getSupportedColors() {
+    // Firefox 153 and later
+    if (typeof browser.contextualIdentities.getSupportedColors == 'function')
+      return browser.contextualIdentities.getSupportedColors().catch(() => []);
+
+    // Firefox 152 and older
+    return [
+      { color: 'toolbar',   colorCode: '#949297' }, // 'gray', (new in Firefox 153)
+      { color: 'yellow',    colorCode: '#db820e' },
+      { color: 'orange',    colorCode: '#f4682c' },
+      { color: 'red',       colorCode: '#ed566e' },
+      { color: 'pink',      colorCode: '#db54bf' },
+      { color: 'purple',    colorCode: '#b864ee' },
+      //{ color: 'violet',    colorCode: '#9871ff' }, (new in Firefox 153)
+      { color: 'blue',      colorCode: '#5a87fd' },
+      { color: 'turquoise', colorCode: '#10a4ca' }, // 'cyan', (new in Firefox 153)
+      { color: 'green',     colorCode: '#11ae84' },
+    ];
+  }
+
+  static async getSupportedIcons() {
+    // Firefox 153 and later
+    if (typeof browser.contextualIdentities.getSupportedIcons == 'function')
+      return browser.contextualIdentities.getSupportedIcons().catch(() => []);
+
+    // Firefox 152 and older
+    return [
+      'briefcase',
+      'cart',
+      'chill',
+      'circle',
+      'dollar',
+      'fence',
+      'fingerprint',
+      'food',
+      'fruit',
+      'gift',
+      'pet',
+      'tree',
+      'vacation',
+    ].map(icon => ({ icon }));
   }
 
   static async showInTab(tabId, params, onDialogOpened = null) {
