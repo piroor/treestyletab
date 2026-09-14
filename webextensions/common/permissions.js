@@ -54,7 +54,7 @@ for (const permissions of [ALL_URLS, BOOKMARKS, CLIPBOARD_READ, BROWSER_SETTINGS
 }
 
 
-const CUSTOM_PANEL_AVAILABLE_URLS_MATCHER = new RegExp(`^((https?|data):|moz-extension://${window.location.host}/)`);
+const CUSTOM_PANEL_AVAILABLE_URLS_MATCHER = /^(about:blank|(https?|file):\/\/)/;
 
 export async function canInjectScriptToTab(tab) {
   if (!tab ||
