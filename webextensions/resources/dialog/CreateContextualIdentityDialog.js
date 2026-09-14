@@ -30,6 +30,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
       ${definitions}
 
       .${this.commonClass}.rich-confirm-dialog {
+        font-size: calc(100% / var(--in-content-ui-scale));
         margin-left: auto !important;
         margin-right: auto !important;
         max-width: 100%;
@@ -62,6 +63,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
       .${this.commonClass} .cci-name-field {
         box-sizing: border-box;
         display: block;
+        font-size: 100%;
         padding: 0.4em 0.6em;
         width: 100%;
       }
@@ -90,14 +92,14 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
       .${this.commonClass} .cci-icon-swatch-icon {
         appearance: none;
         background-clip: content-box;
-        border: 2px solid transparent !important /* required to override dark color scheme */;
+        border: calc(2px / var(--in-content-ui-scale)) solid transparent !important /* required to override dark color scheme */;
         border-radius: 50%;
         box-sizing: content-box;
-        height: 1.6em;
+        height: calc(1.6em / var(--in-content-ui-scale));
         margin: 0;
-        outline-offset: 2px;
-        padding: 2px;
-        width: 1.6em;
+        outline-offset: calc(2px / var(--in-content-ui-scale));
+        padding: calc(2px / var(--in-content-ui-scale));
+        width: calc(1.6em / var(--in-content-ui-scale));
       }
 
       .${this.commonClass} .cci-color-swatch {
@@ -111,11 +113,11 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
         background-color: currentColor;
         content: " ";
         display: inline-block;
-        height: calc((2px * 2 /*padding*/) + 1.8em);
-        margin-left: calc(0px - (2px * 2 /*border of two elements*/) - (2px * 2 /*padding of two elements*/) - 1px - 1.8em);
+        height: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
+        margin-left: calc(0px - ((2px * 2 /*border of two elements*/) + (2px * 2 /*padding of two elements*/) + 1px) / var(--in-content-ui-scale) - 1.8em);
         mask: var(--cci-icon-mask) no-repeat center / 60%;
         padding: 0;
-        width: calc((2px * 2 /*padding*/) + 1.8em);
+        width: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
       }
 
       .${this.commonClass} .cci-color-swatch:checked,
@@ -125,7 +127,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
 
       .${this.commonClass} .cci-color-swatch:focus-visible,
       .${this.commonClass} .cci-icon-swatch:focus-visible {
-        outline: 2px solid var(--in-content-border-active);
+        outline: calc(2px / var(--in-content-ui-scale)) solid var(--in-content-border-active);
       }
     `.trim();
   }

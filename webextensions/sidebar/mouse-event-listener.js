@@ -1220,7 +1220,9 @@ async function createContextualIdentityWithDialog() {
   const showInActiveTab = await Permissions.canInjectScriptToTab(activeTab);
 
   const result = showInActiveTab ?
-    await CreateContextualIdentity.showInTab(activeTab.id, {}).catch(_error => ({ buttonIndex: -1 })) :
+    await CreateContextualIdentity.showInTab(activeTab.id, {
+      devicePixelRatio: window.devicePixelRatio,
+    }).catch(_error => ({ buttonIndex: -1 })) :
     await CreateContextualIdentity.show({}).catch(_error => ({ buttonIndex: -1 }));
   if (result.buttonIndex != 0)
     return;
