@@ -1292,9 +1292,13 @@ function onBackgroundMessage(message) {
       if (!mContextualIdentitySelector.ui)
         return;
       const anchor = document.querySelector(`
-        :root.contextual-identity-selectable .contextual-identities-selector-anchor,
-        #tabbar:not(.overflow) .after-tabs .newtab-button,
-        #tabbar.overflow ~ .after-tabs .newtab-button
+        :root.contextual-identity-selectable
+          :is(#tabbar:not(.overflow) .after-tabs,
+              #tabbar.overflow ~ .after-tabs)
+          .contextual-identities-selector-anchor,
+        :is(#tabbar:not(.overflow) .after-tabs,
+            #tabbar.overflow ~ .after-tabs)
+          .newtab-button
       `);
       mContextualIdentitySelector.ui.open({ anchor });
     }; break;
