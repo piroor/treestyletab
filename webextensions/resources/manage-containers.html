@@ -136,18 +136,39 @@
         }
       }
 
-      :root[data-style="proton"] {
-        .container-row:hover {
+      :root[data-style="proton"] .container-row {
+        &:hover {
           background: var(--in-content-box-background-hover);
         }
-        .container-row .identity-actions button:hover {
+
+        .identity-actions button:hover {
           background: var(--in-content-button-background-hover-mixed);
+        }
+
+        .drag-handle .icon-mask {
+          --icon-mask: url(/resources/icons/move-16.svg#proton);
+        }
+        .edit-button .icon-mask {
+          --icon-mask: url(/resources/icons/edit-outline.svg#proton);
+        }
+        .delete-button .icon-mask {
+          --icon-mask: url(/resources/icons/delete.svg#proton);
         }
       }
 
-      :root[data-style="nova"] {
-        .container-row .identity-actions button:hover {
+      :root[data-style="nova"] .container-row {
+        .identity-actions button:hover {
           background: var(--in-content-button-background-hover-mixed);
+        }
+
+        .drag-handle .icon-mask {
+          --icon-mask: url(/resources/icons/move-16.svg#nova);
+        }
+        .edit-button .icon-mask {
+          --icon-mask: url(/resources/icons/edit-outline.svg#nova);
+        }
+        .delete-button .icon-mask {
+          --icon-mask: url(/resources/icons/delete.svg#nova);
         }
       }
     --></style>

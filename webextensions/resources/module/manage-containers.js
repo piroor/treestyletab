@@ -12,6 +12,7 @@ import {
   configs,
   isRTL,
   sanitizeAccesskeyMark,
+  sanitizeForHTMLText,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
@@ -27,78 +28,35 @@ function styleSuffix() {
   return configs.style == 'nova' ? 'nova' : 'proton';
 }
 
-function iconURL(basename) {
-  return `/resources/icons/${basename}.svg#${styleSuffix()}`;
-}
-
 function applyStyle() {
   document.documentElement.dataset.style = styleSuffix();
 }
 
-function createIconMask(url) {
-  const icon = document.createElement('span');
-  icon.classList.add('icon-mask');
-  icon.style.setProperty('--icon-mask', `url(${url})`);
-  return icon;
-}
-
-function buildRow(identity) {
-  const row = document.createElement('li');
-  row.classList.add('container-row');
-  row.dataset.cookieStoreId = identity.cookieStoreId;
-
-  const handle = document.createElement('span');
-  handle.classList.add('drag-handle');
-  handle.title = browser.i18n.getMessage('manageContainers_dragHandle_tooltip');
-  handle.setAttribute('aria-label', handle.title);
-  handle.draggable = true;
-  handle.appendChild(createIconMask(iconURL('move-16')));
-  handle.addEventListener('dragstart', event => {
-    mDraggingRow = row;
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', row.dataset.cookieStoreId);
-    row.classList.add('dragging');
-  });
-  handle.addEventListener('dragend', () => {
-    row.classList.remove('dragging');
-    mDraggingRow = null;
-  });
-  row.appendChild(handle);
-
-  const badge = document.createElement('span');
-  badge.classList.add('identity-icon');
-  badge.style.backgroundColor = identity.colorCode || '';
-  if (identity.iconUrl)
-    badge.appendChild(createIconMask(identity.iconUrl));
-  row.appendChild(badge);
-
-  const name = document.createElement('span');
-  name.classList.add('identity-name');
-  name.textContent = identity.name;
-  row.appendChild(name);
-
-  const actions = document.createElement('span');
-  actions.classList.add('identity-actions');
-
-  const editButton = document.createElement('button');
-  editButton.type = 'button';
-  editButton.title = browser.i18n.getMessage('manageContainers_editButton_tooltip');
-  editButton.setAttribute('aria-label', editButton.title);
-  editButton.appendChild(createIconMask(iconURL('edit-outline')));
-  editButton.addEventListener('click', () => editContainer(identity));
-  actions.appendChild(editButton);
-
-  const deleteButton = document.createElement('button');
-  deleteButton.type = 'button';
-  deleteButton.title = browser.i18n.getMessage('manageContainers_deleteButton_tooltip');
-  deleteButton.setAttribute('aria-label', deleteButton.title);
-  deleteButton.appendChild(createIconMask(iconURL('delete')));
-  deleteButton.addEventListener('click', () => deleteContainer(identity));
-  actions.appendChild(deleteButton);
-
-  row.appendChild(actions);
-
-  return row;
+function buildRowHTML(identity) {
+  const dragHandleLabel = browser.i18n.getMessage('manageContainers_dragHandle_tooltip');
+  const editLabel       = browser.i18n.getMessage('manageContainers_editButton_tooltip');
+  const deleteLabel     = browser.i18n.getMessage('manageContainers_deleteButton_tooltip');
+  return `
+    <li class="container-row" data-cookie-store-id=${JSON.stringify(sanitizeForHTMLText(identity.cookieStoreId))}>
+      <span class="drag-handle" draggable="true"
+            title=${JSON.stringify(sanitizeForHTMLText(dragHandleLabel))}
+            aria-label=${JSON.stringify(sanitizeForHTMLText(dragHandleLabel))}
+           ><span class="icon-mask"></span></span>
+      <span class="identity-icon" style="background-color: ${sanitizeForHTMLText(identity.colorCode || '')};"
+           >${identity.iconUrl ? `<span class="icon-mask" style="--icon-mask: url(${sanitizeForHTMLText(identity.iconUrl)});"></span>` : ''}</span>
+      <span class="identity-name">${sanitizeForHTMLText(identity.name)}</span>
+      <span class="identity-actions">
+        <button type="button" class="edit-button"
+                title=${JSON.stringify(sanitizeForHTMLText(editLabel))}
+                aria-label=${JSON.stringify(sanitizeForHTMLText(editLabel))}
+               ><span class="icon-mask"></span></button>
+        <button type="button" class="delete-button"
+                title=${JSON.stringify(sanitizeForHTMLText(deleteLabel))}
+                aria-label=${JSON.stringify(sanitizeForHTMLText(deleteLabel))}
+               ><span class="icon-mask"></span></button>
+      </span>
+    </li>
+  `.trim().replace(/>\s+</g, '><');
 }
 
 async function renderList() {
@@ -108,14 +66,13 @@ async function renderList() {
   const range = document.createRange();
   range.selectNodeContents(list);
   range.deleteContents();
-
-  const fragment = document.createDocumentFragment();
-  for (const rawIdentity of identities) {
-    const identity = ContextualIdentities.get(rawIdentity.cookieStoreId) || rawIdentity;
-    fragment.appendChild(buildRow(identity));
-  }
-  range.insertNode(fragment);
   range.detach();
+
+  const rowsHTML = identities
+    .map(rawIdentity => ContextualIdentities.get(rawIdentity.cookieStoreId) || rawIdentity)
+    .map(buildRowHTML)
+    .join('');
+  list.insertAdjacentHTML('beforeend', rowsHTML);
 }
 
 async function addContainer() {
@@ -177,6 +134,43 @@ async function deleteContainer(identity) {
 
 function initList() {
   const list = document.querySelector('#containersList');
+
+  list.addEventListener('click', event => {
+    const row = event.target.closest('.container-row');
+    if (!row)
+      return;
+    const identity = ContextualIdentities.get(row.dataset.cookieStoreId);
+    if (!identity)
+      return;
+
+    if (event.target.closest('.edit-button')) {
+      editContainer(identity);
+      return;
+    }
+    if (event.target.closest('.delete-button')) {
+      deleteContainer(identity);
+      return;
+    }
+  });
+
+  list.addEventListener('dragstart', event => {
+    const handle = event.target.closest('.drag-handle');
+    if (!handle)
+      return;
+    const row = handle.closest('.container-row');
+    mDraggingRow = row;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', row.dataset.cookieStoreId);
+    row.classList.add('dragging');
+  });
+
+  list.addEventListener('dragend', event => {
+    const handle = event.target.closest('.drag-handle');
+    if (!handle)
+      return;
+    handle.closest('.container-row').classList.remove('dragging');
+    mDraggingRow = null;
+  });
 
   list.addEventListener('dragover', event => {
     if (!mDraggingRow)
