@@ -846,18 +846,18 @@ const mItems = [
             type:  'radio'
           },
           {
-            expert:  true,
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_parent'),
-            key:   'inheritContextualIdentityToNewTabMode',
-            value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
-            type:  'radio'
+            expert: true,
+            title:  browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_parent'),
+            key:    'inheritContextualIdentityToNewTabMode',
+            value:  Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+            type:   'radio'
           },
           {
-            expert:  true,
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_lastActive'),
-            key:   'inheritContextualIdentityToNewTabMode',
-            value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
-            type:  'radio'
+            expert: true,
+            title:  browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_lastActive'),
+            key:    'inheritContextualIdentityToNewTabMode',
+            value:  Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+            type:   'radio'
           },
           {
             title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_choose'),

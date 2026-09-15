@@ -40,7 +40,7 @@ export async function setup() {
     autoAttachOnOpenedFromExternal:                         Constants.kNEWTAB_DO_NOTHING,
     autoAttachOnAnyOtherTrigger:                            Constants.kNEWTAB_DO_NOTHING,
     guessNewOrphanTabAsOpenedByNewTabCommand:               false,
-    inheritContextualIdentityToNewTabMode:                Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    inheritContextualIdentityToNewTabMode:                  Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
     inheritContextualIdentityToSameSiteOrphanMode:          Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
     inheritContextualIdentityToTabsFromExternalMode:        Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
     inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
