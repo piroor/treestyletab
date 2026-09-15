@@ -1023,6 +1023,7 @@
     "message": "мс коли нове вікно відкрито у складі відкритих вкладок як \"домашня сторінка\".",
     "hash": "a6e268352f07d4449db8c955fca074d7"
   },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "&Вибирати контейнер для кожної нової вкладки" },
   "config_treeBehavior_caption": {
     "message": "Поведінка дерева",
     "hash": "048b4894caaceb748552f5e7e66385d9"

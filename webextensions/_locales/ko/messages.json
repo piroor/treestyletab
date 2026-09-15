@@ -1594,6 +1594,7 @@
         "message": "현재 탭에서 계승",
         "hash": "87bec10da4d93fb2f0f69e88003d8ed2"
     },
+    "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "새 탭마다 컨테이너 선택(&S)" },
     "config_treeBehavior_caption": {
         "message": "트리의 동작",
         "hash": "048b4894caaceb748552f5e7e66385d9"

@@ -662,6 +662,7 @@
   "config_inheritContextualIdentityToNewTabMode_default": { "message": "(не контролируется)" },
   "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
   "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Наследовать от текущей вкладки" },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "В&ыбирать контейнер для каждой новой вкладки" },
 
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },

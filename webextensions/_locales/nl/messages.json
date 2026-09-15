@@ -1978,6 +1978,7 @@
     "message": "Overnemen van huidig tabblad",
     "hash": "87bec10da4d93fb2f0f69e88003d8ed2"
   },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "&Selecteer een container voor elk nieuw tabblad" },
   "config_treeBehavior_caption": {
     "message": "Boomgedrag",
     "hash": "048b4894caaceb748552f5e7e66385d9"

@@ -707,6 +707,7 @@
   "config_inheritContextualIdentityToNewTabMode_default": { "message": "(bez ovládania)" },
   "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Zdediť z nadradenej karty v strome" },
   "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Zdediť z aktuálnej karty" },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "Zobraziť výber &kontajnera pri otvorení novej karty" },
 
 
   "config_treeBehavior_caption": { "message": "Správanie stromu" },

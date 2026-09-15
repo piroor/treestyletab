@@ -988,6 +988,7 @@
     "message": "Afficher les arbres dans les onglets de groupe",
     "hash": "a74d45640f37aba2c5820ab9db9dbeae"
   },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "&Sélectionner un conteneur pour chaque nouvel onglet" },
   "config_treeBehavior_caption": {
     "message": "Comportement de l'arbre",
     "hash": "048b4894caaceb748552f5e7e66385d9"

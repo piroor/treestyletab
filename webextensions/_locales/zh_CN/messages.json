@@ -1582,6 +1582,7 @@
   "config_inheritContextualIdentityToNewTabMode_lastActive": {
     "message": "继承当前标签页"
   },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "每次新建标签页时选择身份(&S)" },
   "config_treeBehavior_caption": {
     "message": "标签树行为"
   },

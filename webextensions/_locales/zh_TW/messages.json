@@ -573,6 +573,7 @@
     "config_inheritContextualIdentityToNewTabMode_default": { "message": "(不控制)" },
     "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
     "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "從目前分頁繼承" },
+    "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "選擇要分別使用哪個容器來開啟分頁 (&S)" },
   
 
     "config_treeBehavior_caption": { "message": "Tree Behavior" },

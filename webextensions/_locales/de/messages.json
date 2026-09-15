@@ -663,6 +663,7 @@
   "config_inheritContextualIdentityToNewTabMode_default": { "message": "(keine Steuerung)" },
   "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
   "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Vom aktuellen Tab erben" },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "Tab-Umgebung für jeden neuen Tab &wählen" },
 
 
   "config_treeBehavior_caption": { "message": "Verhalten der Zweige" },
