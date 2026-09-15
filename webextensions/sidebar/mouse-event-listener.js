@@ -604,6 +604,12 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       if (event.shiftKey && !lastMousedown.detail.isAccelClick) {
         browser.windows.create({});
       }
+      else if (configs.inheritContextualIdentityToNewTabMode == Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH) {
+        mContextualIdentitySelector.ui.open({
+          left: event.clientX,
+          top:  event.clientY,
+        });
+      }
       else {
         const activeTab = Tab.getActiveTab(mTargetWindow);
         const cookieStoreId = (actionForNewTabCommand == Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER) ? activeTab.cookieStoreId : null
