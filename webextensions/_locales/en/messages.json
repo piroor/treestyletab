@@ -710,10 +710,12 @@
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
   "config_groupTabTemporaryStateForAPI_label": { "message": "Opened to group tabs from other addons via API:" },
 
-  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },
-  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(no control)" },
-  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
-  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Inherit from the current tab" },
+  "config_inheritContextualIdentityToNewTabMode_label": { "message": "Container:" },
+  "config_inheritContextualIdentityToNewTabMode_default": { "message": "(no control)" },
+  "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
+  "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Inherit from the current tab" },
+  "config_inheritContextualIdentityToNewTabMode_choose": { "message": "Select for each new tab" },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "&Select a container for each new tab" },
 
 
   "config_treeBehavior_caption": { "message": "Tree Behavior" },

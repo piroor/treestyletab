@@ -658,10 +658,10 @@
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Для открытых одновременно не из закладок:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Открытую для замены закрытой родительской вкладки::" },
 
-  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Контейнер:" },
-  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(не контролируется)" },
-  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
-  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Наследовать от текущей вкладки" },
+  "config_inheritContextualIdentityToNewTabMode_label": { "message": "Контейнер:" },
+  "config_inheritContextualIdentityToNewTabMode_default": { "message": "(не контролируется)" },
+  "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
+  "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },

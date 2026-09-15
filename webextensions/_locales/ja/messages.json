@@ -706,10 +706,12 @@
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "閉じられた親タブを置き換える形で開かれた場合:" },
   "config_groupTabTemporaryStateForAPI_label": { "message": "他の拡張機能からAPI経由でタブをグループ化した場合:" },
 
-  "config_inheritContextualIdentityToChildTabMode_label": { "message": "コンテナー:" },
-  "config_inheritContextualIdentityToChildTabMode_default": { "message": "（制御しない）" },
-  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "ツリー上での親から継承" },
-  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "現在のタブから継承" },
+  "config_inheritContextualIdentityToNewTabMode_label": { "message": "コンテナー:" },
+  "config_inheritContextualIdentityToNewTabMode_default": { "message": "（制御しない）" },
+  "config_inheritContextualIdentityToNewTabMode_parent": { "message": "ツリー上での親から継承" },
+  "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "現在のタブから継承" },
+  "config_inheritContextualIdentityToNewTabMode_choose": { "message": "毎回選択する" },
+  "config_inheritContextualIdentityToNewTabMode_choose_inContainerManager": { "message": "新しいタブを開くコンテナーを毎回選択する(&S)" },
 
 
   "config_treeBehavior_caption": { "message": "ツリーの挙動" },

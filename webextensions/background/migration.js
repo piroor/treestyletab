@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 35;
+const kCONFIGS_VERSION = 36;
 const kFEATURES_VERSION = 9;
 
 let migrating = false;
@@ -204,7 +204,7 @@ export function migrateConfigs() {
 
     case 14:
       if (configs.inheritContextualIdentityToNewChildTab !== null) {
-        configs.inheritContextualIdentityToChildTabMode = configs.inheritContextualIdentityToNewChildTab ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+        configs.inheritContextualIdentityToNewTabMode = configs.inheritContextualIdentityToNewChildTab ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
         configs.inheritContextualIdentityToNewChildTab = null;
       }
       if (configs.inheritContextualIdentityToSameSiteOrphan !== null) {
@@ -393,6 +393,12 @@ export function migrateConfigs() {
       if (configs.autoExpandOnLongHoverRestoreIniitalState !== null) {
         configs.autoExpandOnLongHoverRestoreInitialState = configs.autoExpandOnLongHoverRestoreIniitalState;
         configs.autoExpandOnLongHoverRestoreIniitalState = null;
+      }
+
+    case 35:
+      if (configs.inheritContextualIdentityToChildTabMode !== null) {
+        configs.inheritContextualIdentityToNewTabMode = configs.inheritContextualIdentityToChildTabMode;
+        configs.inheritContextualIdentityToChildTabMode = null;
       }
   }
   configs.configsVersion = kCONFIGS_VERSION;

@@ -1578,19 +1578,19 @@
         "message": "닫힌 부모 탭을 바꾸는 형태로 열린 경우:",
         "hash": "e04ff7f4082526a3da223dcffcae8176"
     },
-    "config_inheritContextualIdentityToChildTabMode_label": {
+    "config_inheritContextualIdentityToNewTabMode_label": {
         "message": "컨테이너:",
         "hash": "48f5f68b143455d4572173474104e132"
     },
-    "config_inheritContextualIdentityToChildTabMode_default": {
+    "config_inheritContextualIdentityToNewTabMode_default": {
         "message": "(제어하지 않음)",
         "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
     },
-    "config_inheritContextualIdentityToChildTabMode_parent": {
+    "config_inheritContextualIdentityToNewTabMode_parent": {
         "message": "트리 위의 부모에서 계승",
         "hash": "1e5e8ec50c0559818d3eac7998869b02"
     },
-    "config_inheritContextualIdentityToChildTabMode_lastActive": {
+    "config_inheritContextualIdentityToNewTabMode_lastActive": {
         "message": "현재 탭에서 계승",
         "hash": "87bec10da4d93fb2f0f69e88003d8ed2"
     },

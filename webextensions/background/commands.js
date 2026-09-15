@@ -490,7 +490,7 @@ export async function openNewTabAs(options = {}) {
 
   log('options.cookieStoreId: ', options.cookieStoreId);
   if (!options.cookieStoreId) {
-    switch (configs.inheritContextualIdentityToChildTabMode) {
+    switch (configs.inheritContextualIdentityToNewTabMode) {
       case Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT:
         if (parent) {
           options.cookieStoreId = parent.cookieStoreId;

@@ -99,6 +99,7 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   context_closeTabOptions_closeTree // migrated to context_topLevel_closeTree
   fakeContextMenu // migrated to emulateDefaultContextMenu
   inheritContextualIdentityToNewChildTab // migrated to inheritContextualIdentityToChildTabMode
+  inheritContextualIdentityToChildTabMode // migrated to inheritContextualIdentityToNewTabMode
   inheritContextualIdentityToSameSiteOrphan // migrated to inheritContextualIdentityToSameSiteOrphanMode
   inheritContextualIdentityToTabsFromExternal // migrated to inheritContextualIdentityToTabsFromExternalMode
   moveDroppedTabToNewWindowForUnhandledDragEvent // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
@@ -399,7 +400,7 @@ export const configs = new Configs({
   guessNewOrphanTabAsOpenedByNewTabCommand:               true,
   guessNewOrphanTabAsOpenedByNewTabCommandTitle:          browser.i18n.getMessage('guessNewOrphanTabAsOpenedByNewTabCommandTitle'),
   guessNewOrphanTabAsOpenedByNewTabCommandUrl:            'about:newtab|about:privatebrowsing',
-  inheritContextualIdentityToChildTabMode:                Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+  inheritContextualIdentityToNewTabMode:                  Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToSameSiteOrphanMode:          Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
   inheritContextualIdentityToTabsFromExternalMode:        Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,

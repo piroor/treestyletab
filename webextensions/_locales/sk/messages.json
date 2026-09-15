@@ -703,10 +703,10 @@
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Otvorené na nahradenie zatvorenej nadradenej karty:" },
   "config_groupTabTemporaryStateForAPI_label": { "message": "Otvorené na zoskupenie kariet z iných doplnkov cez API:" },
 
-  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Kontajner:" },
-  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(bez ovládania)" },
-  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Zdediť z nadradenej karty v strome" },
-  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Zdediť z aktuálnej karty" },
+  "config_inheritContextualIdentityToNewTabMode_label": { "message": "Kontajner:" },
+  "config_inheritContextualIdentityToNewTabMode_default": { "message": "(bez ovládania)" },
+  "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Zdediť z nadradenej karty v strome" },
+  "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Zdediť z aktuálnej karty" },
 
 
   "config_treeBehavior_caption": { "message": "Správanie stromu" },

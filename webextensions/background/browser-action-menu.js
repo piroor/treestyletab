@@ -837,25 +837,32 @@ const mItems = [
         ]
       },
       {
-        title:    indent() + browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_label'),
-        expert:   true,
+        title:    indent() + browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_label'),
         children: [
           {
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_default'),
-            key:   'inheritContextualIdentityToChildTabMode',
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_default'),
+            key:   'inheritContextualIdentityToNewTabMode',
             value: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_parent'),
-            key:   'inheritContextualIdentityToChildTabMode',
+            expert:  true,
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_parent'),
+            key:   'inheritContextualIdentityToNewTabMode',
             value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_lastActive'),
-            key:   'inheritContextualIdentityToChildTabMode',
+            expert:  true,
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_lastActive'),
+            key:   'inheritContextualIdentityToNewTabMode',
             value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToNewTabMode_choose'),
+            key:   'inheritContextualIdentityToNewTabMode',
+            value: Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH,
             type:  'radio'
           }
         ]

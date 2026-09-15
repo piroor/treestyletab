@@ -30,7 +30,7 @@ export async function teardown() {
 export async function testAutoFixupForHiddenTabs() {
   await Utils.setConfigs({
     fixupTreeOnTabVisibilityChanged:               true,
-    inheritContextualIdentityToChildTabMode:       Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    inheritContextualIdentityToNewTabMode:       Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
     inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT
   });
 

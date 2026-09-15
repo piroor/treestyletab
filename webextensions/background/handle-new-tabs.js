@@ -109,7 +109,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
             autoAttachBehavior,
             dontMove,
             openedWithCookieStoreId:       info.openedWithCookieStoreId,
-            inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode,
+            inheritContextualIdentityMode: configs.inheritContextualIdentityToNewTabMode,
             context:                       TSTAPI.kNEWTAB_CONTEXT_NEWTAB_COMMAND,
           }).then(moved => !moved);
         }
@@ -526,7 +526,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       handleNewTabFromActiveTab(tab, {
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnNewTabCommand,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode,
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToNewTabMode,
         context:                       TSTAPI.kNEWTAB_CONTEXT_NEWTAB_COMMAND,
       });
       return;

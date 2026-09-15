@@ -659,10 +659,10 @@
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Für zeitgleich geöffnete Tabs, die nicht aus Lesezeichen geöffnet wurden:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Geöffnet, um einen geschlossenen übergeordneten Tab zu ersetzen:" },
 
-  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Tab-Umgebung:" },
-  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(keine Steuerung)" },
-  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
-  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Vom aktuellen Tab erben" },
+  "config_inheritContextualIdentityToNewTabMode_label": { "message": "Tab-Umgebung:" },
+  "config_inheritContextualIdentityToNewTabMode_default": { "message": "(keine Steuerung)" },
+  "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
+  "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "Vom aktuellen Tab erben" },
 
 
   "config_treeBehavior_caption": { "message": "Verhalten der Zweige" },

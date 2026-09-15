@@ -569,10 +569,10 @@
     "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": { "message": "For tabs opened from same pinned tab:" },
     "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
   
-    "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },
-    "config_inheritContextualIdentityToChildTabMode_default": { "message": "(不控制)" },
-    "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
-    "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "從目前分頁繼承" },
+    "config_inheritContextualIdentityToNewTabMode_label": { "message": "Container:" },
+    "config_inheritContextualIdentityToNewTabMode_default": { "message": "(不控制)" },
+    "config_inheritContextualIdentityToNewTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
+    "config_inheritContextualIdentityToNewTabMode_lastActive": { "message": "從目前分頁繼承" },
   
 
     "config_treeBehavior_caption": { "message": "Tree Behavior" },

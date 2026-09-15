@@ -33,7 +33,7 @@ export async function teardown() {
 
 export async function testInheritContainerFromAutoAttachedParent() {
   await Utils.setConfigs({
-    inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+    inheritContextualIdentityToNewTabMode: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
     autoAttachOnNewTabCommand:               Constants.kNEWTAB_OPEN_AS_CHILD
   });
 
@@ -69,7 +69,7 @@ export async function testInheritContainerFromAutoAttachedParent() {
 
 export async function testDoNotInheritContainerFromExplicitParent() {
   await Utils.setConfigs({
-    inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT
+    inheritContextualIdentityToNewTabMode: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT
   });
 
   const parent = await browser.tabs.create({

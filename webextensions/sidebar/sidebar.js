@@ -572,7 +572,7 @@ export async function updateContextualIdentitiesSelector() {
   await ContextualIdentities.init();
 
   const fragment = ContextualIdentities.generateMenuItems({
-    defaultItemLabel: configs.inheritContextualIdentityToChildTabMode == Constants.kCONTEXTUAL_IDENTITY_DEFAULT ?
+    defaultItemLabel: configs.inheritContextualIdentityToNewTabMode == Constants.kCONTEXTUAL_IDENTITY_DEFAULT ?
       browser.i18n.getMessage('tabbar_newTabButton_label') :
       browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default'),
   });
@@ -1102,7 +1102,7 @@ async function onConfigChange(changedKey) {
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
 
-    case 'inheritContextualIdentityToChildTabMode':
+    case 'inheritContextualIdentityToNewTabMode':
       await updateContextualIdentitiesSelector();
       break;
 
