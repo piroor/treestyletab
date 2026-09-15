@@ -330,7 +330,6 @@ function onMouseDown(event) {
     return;
   }
 
-  const target = event.target;
   const tab = EventUtils.getTreeItemFromEvent(event) || EventUtils.getTreeItemFromTabbarEvent(event);
   log('onMouseDown: found target tab: ', tab, event);
 
@@ -437,10 +436,9 @@ function onMouseDown(event) {
       mousedown.expired = true;
       const selector = document.getElementById(configs.longPressOnNewTabButton);
       if (selector) {
-        const anchor = target.parentNode.querySelector(`[data-menu-ui="${selector.id}"]`);
-        const anchorVisible = anchor && window.getComputedStyle(anchor, null).display != 'none';
         selector.ui.open({
-          anchor: anchorVisible && anchor || target
+          left: event.clientX,
+          top:  event.clientY,
         });
       }
       return;
