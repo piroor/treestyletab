@@ -914,6 +914,7 @@
   "config_link_startupPage_label": { "message": "初回起動時用のページ" },
   "config_link_groupPage_label":   { "message": "グループ化用タブのページ" },
   "config_link_tabbarPage_label":   { "message": "タブバーのページ" },
+  "config_link_manageContainersPage_label": { "message": "コンテナーの管理" },
 
   "config_runTests_label": { "message": "自動テストを実行" },
   "config_runTestsParameters_label": { "message": " / 実行するテストの指定（テスト名または正規表現の配列。例：「testInheritMutedState,/^testHidden/,...」）:" },
