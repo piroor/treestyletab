@@ -16,7 +16,7 @@ class EditContextualIdentityDialog extends RichConfirmDialog {
     super(params);
 
     this.params.buttons = [
-      browser.i18n.getMessage('createContextualIdentityDialog_accept'),
+      this.params.acceptLabel || browser.i18n.getMessage('createContextualIdentityDialog_accept'),
       browser.i18n.getMessage('createContextualIdentityDialog_cancel'),
     ];
     this.params.type  = 'dialog'; // for popup

@@ -116,7 +116,9 @@ async function renderList() {
 }
 
 async function addContainer() {
-  const result = await EditContextualIdentity.show({}).catch(_error => ({ buttonIndex: -1 }));
+  const result = await EditContextualIdentity.show({
+    acceptLabel: browser.i18n.getMessage('editContextualIdentityDialog_accept'),
+  }).catch(_error => ({ buttonIndex: -1 }));
   if (result.buttonIndex != 0)
     return;
 
@@ -131,8 +133,9 @@ async function addContainer() {
 
 async function editContainer(identity) {
   const result = await EditContextualIdentity.show({
-    title:  browser.i18n.getMessage('editContextualIdentityDialog_title'),
-    values: {
+    title:       browser.i18n.getMessage('editContextualIdentityDialog_title', [identity.name]),
+    acceptLabel: browser.i18n.getMessage('editContextualIdentityDialog_accept'),
+    values:      {
       name:  identity.name,
       color: identity.color,
       icon:  identity.icon,

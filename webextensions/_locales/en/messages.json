@@ -231,11 +231,15 @@
   "createContextualIdentityDialog_accept":             { "message": "Done" },
   "createContextualIdentityDialog_cancel":             { "message": "Cancel" },
 
-  "editContextualIdentityDialog_title":                { "message": "Edit Container" },
+  "editContextualIdentityDialog_title":                { "message": "$CONTAINER$ Container Settings",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Save" },
 
   "manageContainers_title":                   { "message": "Manage Containers" },
   "manageContainers_dragHandle_tooltip":      { "message": "Drag to reorder" },
-  "manageContainers_editButton_tooltip":      { "message": "Edit" },
+  "manageContainers_editButton_tooltip":      { "message": "Settings" },
   "manageContainers_deleteButton_tooltip":    { "message": "Delete" },
 
   "syncDeviceDefaultName": { "message": "$BROWSER$ on $PLATFORM$",
