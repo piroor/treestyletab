@@ -6,6 +6,7 @@
 'use strict';
 
 import '/extlib/l10n.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
   configs,
@@ -15,6 +16,8 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import EditContextualIdentity from '/resources/dialog/EditContextualIdentity.js';
+
+RichConfirm.init('/extlib/RichConfirmDialog.html');
 
 document.documentElement.classList.toggle('rtl', isRTL());
 
@@ -154,6 +157,21 @@ async function editContainer(identity) {
 }
 
 async function deleteContainer(identity) {
+  const tabs = await browser.tabs.query({ cookieStoreId: identity.cookieStoreId }).catch(ApiTabs.createErrorHandler()) || [];
+  if (tabs.length > 0) {
+    const result = await RichConfirm.show({
+      type:    'common-dialog',
+      title:   browser.i18n.getMessage('manageContainers_removeConfirm_title'),
+      message: browser.i18n.getMessage('manageContainers_removeConfirm_message', [tabs.length]),
+      buttons: [
+        browser.i18n.getMessage('manageContainers_removeConfirm_ok'),
+        browser.i18n.getMessage('manageContainers_removeConfirm_cancel'),
+      ],
+    }).catch(_error => ({ buttonIndex: -1 }));
+    if (result.buttonIndex != 0)
+      return;
+  }
+
   await browser.contextualIdentities.remove(identity.cookieStoreId).catch(ApiTabs.createErrorHandler());
 }
 

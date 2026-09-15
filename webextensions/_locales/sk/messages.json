@@ -115,6 +115,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Nastavenia" },
   "manageContainers_deleteButton_tooltip":    { "message": "Odstrániť" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Odstrániť tento kontajner?" },
+  "manageContainers_removeConfirm_message":   { "message": "Ak teraz odstránite tento kontajner, zavrie sa $COUNT$ kontajnerových kariet. Naozaj chcete tento kontajner odstrániť?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Odstrániť tento kontajner" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Neodstraňovať tento kontajner" },
+
   "groupTab_label": { "message": "$TITLE$ a ďalšie",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

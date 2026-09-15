@@ -105,6 +105,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Настройки" },
   "manageContainers_deleteButton_tooltip":    { "message": "Удалить" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Удалить этот контейнер?" },
+  "manageContainers_removeConfirm_message":   { "message": "Если вы удалите сейчас этот контейнер, $COUNT$ вкладок в контейнере будут закрыты. Вы уверены, что хотите удалить этот контейнер?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Удалить этот контейнер" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Не удалять этот контейнер" },
+
   "groupTab_label": { "message": "$TITLE$ и больше",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

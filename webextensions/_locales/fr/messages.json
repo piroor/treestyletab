@@ -224,6 +224,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Paramètres" },
   "manageContainers_deleteButton_tooltip":    { "message": "Supprimer" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Supprimer ce conteneur ?" },
+  "manageContainers_removeConfirm_message":   { "message": "Si vous supprimez ce conteneur maintenant, $COUNT$ onglets conteneurs seront fermés. Voulez-vous vraiment supprimer ce conteneur ?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Supprimer ce conteneur" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Ne pas supprimer ce conteneur" },
+
   "groupTab_label": {
     "message": "$TITLE$ et plus",
     "placeholders": {

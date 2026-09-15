@@ -242,6 +242,14 @@
   "manageContainers_editButton_tooltip":      { "message": "設定" },
   "manageContainers_deleteButton_tooltip":    { "message": "削除" },
 
+  "manageContainers_removeConfirm_title":     { "message": "このコンテナーを削除しますか？" },
+  "manageContainers_removeConfirm_message":   { "message": "このコンテナーを削除すると $COUNT$ 個のコンテナータブが閉じられます。このコンテナーを削除してもよろしいですか？",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "このコンテナーを削除する" },
+  "manageContainers_removeConfirm_cancel":    { "message": "削除しない" },
+
   "syncDeviceDefaultName": { "message": "$PLATFORM$ の $BROWSER$",
     "placeholders": {
       "PLATFORM": { "content": "$1", "example": "Firefox" },

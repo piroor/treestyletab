@@ -235,6 +235,14 @@
   "manageContainers_editButton_tooltip":      { "message": "设置" },
   "manageContainers_deleteButton_tooltip":    { "message": "删除" },
 
+  "manageContainers_removeConfirm_title":     { "message": "移除此身份？" },
+  "manageContainers_removeConfirm_message":   { "message": "如果您现在移除此身份，$COUNT$ 个身份标签页将被关闭。您是否确定要移除此身份？",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "移除此身份" },
+  "manageContainers_removeConfirm_cancel":    { "message": "不移除此身份" },
+
   "groupTab_label": {
     "message": "$TITLE$ 等多项",
     "placeholders": {

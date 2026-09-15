@@ -226,6 +226,16 @@
     "manageContainers_editButton_tooltip":      { "message": "설정" },
     "manageContainers_deleteButton_tooltip":    { "message": "삭제" },
 
+    "manageContainers_removeConfirm_title":     { "message": "이 컨테이너를 삭제하시겠습니까?" },
+    "manageContainers_removeConfirm_message": {
+        "message": "이 컨테이너를 삭제하면 $COUNT$ 컨테이너 탭이 닫힙니다. 이 컨테이너를 정말로 삭제하시겠습니까?",
+        "placeholders": {
+            "COUNT": { "content": "$1", "example": "3" }
+        }
+    },
+    "manageContainers_removeConfirm_ok":        { "message": "이 컨테이너 삭제" },
+    "manageContainers_removeConfirm_cancel":    { "message": "이 컨테이너 삭제하지 않음" },
+
     "groupTab_label": {
         "message": "$TITLE$ 등",
         "placeholders": {

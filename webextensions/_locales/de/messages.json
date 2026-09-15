@@ -105,6 +105,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Einstellungen" },
   "manageContainers_deleteButton_tooltip":    { "message": "Löschen" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Diese Umgebung löschen?" },
+  "manageContainers_removeConfirm_message":   { "message": "Wenn diese Umgebung jetzt gelöscht wird, so werden $COUNT$ Tabs aus dieser Umgebung geschlossen. Soll diese Umgebung wirklich gelöscht werden?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Umgebung löschen" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Umgebung behalten" },
+
   "groupTab_label": { "message": "$TITLE$ und mehr",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }

@@ -242,6 +242,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Settings" },
   "manageContainers_deleteButton_tooltip":    { "message": "Delete" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Remove This Container?" },
+  "manageContainers_removeConfirm_message":   { "message": "If you remove this Container now, $COUNT$ container tabs will be closed. Are you sure you want to remove this Container?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Remove this Container" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Don’t remove this Container" },
+
   "syncDeviceDefaultName": { "message": "$BROWSER$ on $PLATFORM$",
     "placeholders": {
       "PLATFORM": { "content": "$1", "example": "Firefox" },

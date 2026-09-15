@@ -96,6 +96,14 @@
     "manageContainers_editButton_tooltip":      { "message": "設定" },
     "manageContainers_deleteButton_tooltip":    { "message": "刪除" },
 
+    "manageContainers_removeConfirm_title":     { "message": "要移除這個容器嗎？" },
+    "manageContainers_removeConfirm_message":   { "message": "若您現在移除此容器，將關閉 $COUNT$ 個容器分頁。您確定要移除此容器嗎？",
+      "placeholders": {
+        "COUNT": { "content": "$1", "example": "3" }
+      }},
+    "manageContainers_removeConfirm_ok":        { "message": "移除此容器" },
+    "manageContainers_removeConfirm_cancel":    { "message": "不要移除此容器" },
+
     "groupTab_label": { "message": "$TITLE$ 等",
       "placeholders": {
         "title": { "content": "$1", "example": "標題" }

@@ -183,6 +183,14 @@
   "manageContainers_editButton_tooltip":      { "message": "Налаштування" },
   "manageContainers_deleteButton_tooltip":    { "message": "Видалити" },
 
+  "manageContainers_removeConfirm_title":     { "message": "Вилучити цей контейнер?" },
+  "manageContainers_removeConfirm_message":   { "message": "Якщо ви вилучите цей контейнер зараз, закриються $COUNT$ вкладок контейнера. Ви дійсно хочете вилучити цей контейнер?",
+    "placeholders": {
+      "COUNT": { "content": "$1", "example": "3" }
+    }},
+  "manageContainers_removeConfirm_ok":        { "message": "Вилучити цей контейнер" },
+  "manageContainers_removeConfirm_cancel":    { "message": "Не вилучати цей контейнер" },
+
   "groupTab_label": {
     "message": "$TITLE$ і більше",
     "placeholders": {
