@@ -175,6 +175,7 @@ export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 export const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
 export const kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_CREATE_NEW = 'create-new-contextual-identity';
+export const kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_MANAGE      = 'manage-contextual-identities';
 export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 export const kTABBAR_SPACER   = 'tabs-spacer';
 
@@ -429,12 +430,13 @@ export const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${brows
 export const kSHORTHAND_CUSTOM_URI = /^ext\+treestyletab:([^:?#]+)(?:[:?]([^#]*))?(#.*)?$/;
 export const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^?]+)/;
 export const kSHORTHAND_URIS = {
-  tabbar:        browser.runtime.getURL('sidebar/sidebar.html'),
-  group:         kGROUP_TAB_URI,
-  options:       browser.runtime.getURL('options/options.html?independent=true'),
-  startup:       browser.runtime.getURL('resources/startup.html'),
-  testRunner:    browser.runtime.getURL('tests/runner.html'),
-  'test-runner': browser.runtime.getURL('tests/runner.html')
+  tabbar:           browser.runtime.getURL('sidebar/sidebar.html'),
+  group:            kGROUP_TAB_URI,
+  options:          browser.runtime.getURL('options/options.html?independent=true'),
+  startup:          browser.runtime.getURL('resources/startup.html'),
+  manageContainers: browser.runtime.getURL('resources/manage-containers.html'),
+  testRunner:       browser.runtime.getURL('tests/runner.html'),
+  'test-runner':    browser.runtime.getURL('tests/runner.html')
 };
 
 export const kINSERTION_CONTEXT_MOVED = 1;

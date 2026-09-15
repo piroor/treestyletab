@@ -420,8 +420,7 @@ export async function init() {
   }
   onTSTItemClick.addListener(onClick);
 
-  await ContextualIdentities.init();
-  updateContextualIdentities();
+  await updateContextualIdentities();
   ContextualIdentities.onUpdated.addListener(() => {
     updateContextualIdentities();
   });
@@ -522,7 +521,11 @@ function getEffectiveTabGroups(windowId) {
 }
 
 const mContextualIdentityItems = new Set();
-function updateContextualIdentities() {
+async function updateContextualIdentities() {
+  // browser.contextualIdentities.move() fires no event, so the cached order
+  // can go stale. Refetch it every time this submenu is (re)built.
+  await ContextualIdentities.init();
+
   for (const item of mContextualIdentityItems) {
     const id = item.id;
     if (id in mItemsById)
@@ -1062,6 +1065,7 @@ async function onShown(info, contextTab) {
 
     let showContextualIdentities = false;
     if (contextTab && !contextTab.incognito) {
+      await updateContextualIdentities();
       for (const item of mContextualIdentityItems.values()) {
         const id = item.id;
         let visible;

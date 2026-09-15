@@ -505,7 +505,11 @@ async function onHidden() {
 }
 
 
-function updateContextualIdentitiesSelector() {
+async function updateContextualIdentitiesSelector() {
+  // browser.contextualIdentities.move() fires no event, so the cached order
+  // can go stale. Refetch it every time this selector is (re)built.
+  await ContextualIdentities.init();
+
   const disabled = document.documentElement.classList.contains('incognito') || ContextualIdentities.getCount() == 0;
 
   const range    = document.createRange();
@@ -739,6 +743,7 @@ async function onContextMenu(event) {
     log('onContextMenu: on new tab button');
     event.stopPropagation();
     event.preventDefault();
+    await updateContextualIdentitiesSelector();
     mNewTabButtonUI.open({
       left: event.clientX,
       top:  event.clientY,

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./16x16.svg">
+    <title></title>
+    <link rel="stylesheet" href="/resources/ui-color.css">
+    <style type="text/css"><!--
+      :root > * {
+        transition: opacity 0.25s ease-out;
+      }
+      :root:not(.initialized) > * {
+        opacity: 0;
+      }
+
+      :root.rtl {
+        direction: rtl;
+      }
+
+      body {
+        background: var(--bg-color);
+        color: var(--text-color);
+        font: message-box;
+        font-size: medium;
+        margin: 0 auto;
+        max-width: 40em;
+        padding-block: 2em;
+        padding-inline: 5%;
+      }
+
+      h1 {
+        font-size: 1.4em;
+      }
+
+      #addNewContainerRow {
+        margin-block-end: 1em;
+      }
+
+      #addNewContainer {
+        border-radius: 1em;
+        padding-block: 0.5em;
+        padding-inline: 1.2em;
+      }
+
+      #containersList {
+        background: var(--in-content-box-background);
+        border: thin solid var(--in-content-box-border-color-mixed);
+        border-radius: 0.6em;
+        list-style: none;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .container-row {
+        align-items: center;
+        display: flex;
+        gap: 0.6em;
+        padding-block: 0.5em;
+        padding-inline: 0.4em;
+
+        &.dragging {
+          opacity: 0.4;
+        }
+
+        .icon-mask {
+          background-color: currentColor;
+          display: inline-block;
+          flex: none;
+          height: 1em;
+          width: 1em;
+          mask: var(--icon-mask) no-repeat center / 100%;
+        }
+
+        .drag-handle {
+          color: var(--in-content-deemphasized-text);
+          cursor: grab;
+          flex: none;
+
+          .icon-mask {
+            height: 1.2em;
+            width: 1.2em;
+          }
+        }
+        &.dragging .drag-handle {
+          cursor: grabbing;
+        }
+
+        .identity-icon {
+          border-radius: 50%;
+          flex: none;
+          height: 1.8em;
+          position: relative;
+          width: 1.8em;
+
+          .icon-mask {
+            background-color: #fff;
+            height: 100%;
+            inset: 0;
+            mask-size: 55%;
+            position: absolute;
+            width: 100%;
+          }
+        }
+
+        .identity-name {
+          flex: 1 1 auto;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .identity-actions {
+          display: flex;
+          flex: none;
+          gap: 0.2em;
+
+          button {
+            align-items: center;
+            background: transparent;
+            border-radius: 50%;
+            display: flex;
+            height: 2em;
+            justify-content: center;
+            padding: 0;
+            width: 2em;
+          }
+        }
+      }
+
+      :root[data-style="proton"] {
+        .container-row + .container-row {
+          border-top: thin solid var(--in-content-box-border-color-mixed);
+        }
+        .container-row:hover {
+          background: var(--in-content-box-background-hover);
+        }
+        .container-row .identity-actions button {
+          border: thin solid var(--in-content-box-border-color-mixed);
+
+          &:hover {
+            background: var(--in-content-button-background-hover-mixed);
+          }
+        }
+      }
+
+      :root[data-style="nova"] {
+        .container-row + .container-row {
+          border-top: thin solid var(--in-content-border-color-mixed);
+        }
+        .container-row .identity-actions button {
+          border: 0 none;
+
+          &:hover {
+            background: var(--in-content-button-background-hover-mixed);
+          }
+        }
+      }
+    --></style>
+    <script type="module" src="./module/manage-containers.js"></script>
+  </head>
+  <body>
+    <h1 id="title">__MSG_manageContainers_title__</h1>
+    <p id="addNewContainerRow"><button id="addNewContainer" type="button"></button></p>
+    <ul id="containersList"></ul>
+  </body>
+</html>

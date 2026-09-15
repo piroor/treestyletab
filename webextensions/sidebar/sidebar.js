@@ -275,7 +275,7 @@ export async function init() {
     MetricsData.addAsync('parallel initialization: contextual identities', async () => {
       await promisedInitializedContextualIdentities;
       updateContextualIdentitiesStyle();
-      updateContextualIdentitiesSelector();
+      await updateContextualIdentitiesSelector();
       ContextualIdentities.startObserve();
     }),
     MetricsData.addAsync('parallel initialization: TabContextMenu', async () => {
@@ -548,7 +548,7 @@ function reloadAllMaskImages() {
 }
 
 
-function updateContextualIdentitiesSelector() {
+export async function updateContextualIdentitiesSelector() {
   const disabled = document.documentElement.classList.contains('incognito');
 
   const anchors = document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`);
@@ -567,6 +567,10 @@ function updateContextualIdentitiesSelector() {
   if (disabled)
     return;
 
+  // browser.contextualIdentities.move() fires no event, so the cached order
+  // can go stale. Refetch it every time this selector is (re)built.
+  await ContextualIdentities.init();
+
   const fragment = ContextualIdentities.generateMenuItems({
     defaultItemLabel: configs.inheritContextualIdentityToChildTabMode == Constants.kCONTEXTUAL_IDENTITY_DEFAULT ?
       browser.i18n.getMessage('tabbar_newTabButton_label') :
@@ -581,6 +585,11 @@ function updateContextualIdentitiesSelector() {
   createNewItem.dataset.command   = Constants.kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_CREATE_NEW;
   createNewItem.textContent       = browser.i18n.getMessage('contextualIdentitySelector_createNew');
   fragment.appendChild(createNewItem);
+
+  const manageItem = document.createElement('li');
+  manageItem.dataset.command = Constants.kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_MANAGE;
+  manageItem.textContent     = browser.i18n.getMessage('contextualIdentitySelector_manage');
+  fragment.appendChild(manageItem);
 
   range.insertNode(fragment);
   range.detach();
@@ -1094,7 +1103,7 @@ async function onConfigChange(changedKey) {
       break;
 
     case 'inheritContextualIdentityToChildTabMode':
-      updateContextualIdentitiesSelector();
+      await updateContextualIdentitiesSelector();
       break;
 
     case 'showContextualIdentitiesSelector':

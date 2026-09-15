@@ -11,7 +11,7 @@ import {
   sanitizeForHTMLText,
 } from '/common/common.js';
 
-class CreateContextualIdentityDialog extends RichConfirmDialog {
+class EditContextualIdentityDialog extends RichConfirmDialog {
   constructor(params) {
     super(params);
 
@@ -20,7 +20,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
       browser.i18n.getMessage('createContextualIdentityDialog_cancel'),
     ];
     this.params.type  = 'dialog'; // for popup
-    this.params.title = browser.i18n.getMessage('createContextualIdentityDialog_title'); // for popup
+    this.params.title = this.params.title || browser.i18n.getMessage('createContextualIdentityDialog_title'); // for popup
   }
 
   generateStyleDefinitions() {
@@ -42,92 +42,92 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
         text-align: center;
       }
 
-      .${this.commonClass} .cci-heading {
-        font-size: 1.1em;
-        font-weight: bold;
-        margin: 0 0 1em;
-        text-align: center;
-      }
+      .${this.commonClass} {
+        .cci-heading {
+          font-size: 1.1em;
+          font-weight: bold;
+          margin: 0 0 1em;
+          text-align: center;
+        }
 
-      .${this.commonClass} .cci-field {
-        margin-block-end: 1em;
-        text-align: start;
-      }
+        .cci-field {
+          margin-block-end: 1em;
+          text-align: start;
+        }
 
-      .${this.commonClass} .cci-field-label {
-        display: block;
-        font-weight: bold;
-        margin-block-end: 0.4em;
-      }
+        .cci-field-label {
+          display: block;
+          font-weight: bold;
+          margin-block-end: 0.4em;
+        }
 
-      .${this.commonClass} .cci-name-field {
-        box-sizing: border-box;
-        display: block;
-        font-size: 100%;
-        padding: 0.4em 0.6em;
-        width: 100%;
-      }
+        .cci-name-field {
+          box-sizing: border-box;
+          display: block;
+          font-size: 100%;
+          padding: 0.4em 0.6em;
+          width: 100%;
+        }
 
-      .${this.commonClass} .cci-swatches {
-        display: flex;
-        flex-flow: row wrap;
-        gap: 0.6em;
-        justify-content: space-between;
-      }
+        .cci-swatches {
+          display: flex;
+          flex-flow: row wrap;
+          gap: 0.6em;
+          justify-content: space-between;
+        }
 
-      .${this.commonClass} .cci-swatch-label {
-        display: inline-flex;
-      }
+        .cci-swatch-label {
+          display: inline-flex;
+        }
 
-      .${this.commonClass} .cci-visually-hidden {
-        clip-path: inset(50%);
-        height: 1px;
-        overflow: hidden;
-        position: absolute;
-        width: 1px;
-      }
+        .cci-visually-hidden {
+          clip-path: inset(50%);
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          width: 1px;
+        }
 
-      .${this.commonClass} .cci-color-swatch,
-      .${this.commonClass} .cci-icon-swatch,
-      .${this.commonClass} .cci-icon-swatch-icon {
-        appearance: none;
-        background-clip: content-box;
-        border: calc(2px / var(--in-content-ui-scale)) solid transparent !important /* required to override dark color scheme */;
-        border-radius: 50%;
-        box-sizing: content-box;
-        height: calc(1.6em / var(--in-content-ui-scale));
-        margin: 0;
-        outline-offset: calc(2px / var(--in-content-ui-scale));
-        padding: calc(2px / var(--in-content-ui-scale));
-        width: calc(1.6em / var(--in-content-ui-scale));
-      }
+        .cci-color-swatch,
+        .cci-icon-swatch,
+        .cci-icon-swatch-icon {
+          appearance: none;
+          background-clip: content-box;
+          border: calc(2px / var(--in-content-ui-scale)) solid transparent !important /* required to override dark color scheme */;
+          border-radius: 50%;
+          box-sizing: content-box;
+          height: calc(1.6em / var(--in-content-ui-scale));
+          margin: 0;
+          outline-offset: calc(2px / var(--in-content-ui-scale));
+          padding: calc(2px / var(--in-content-ui-scale));
+          width: calc(1.6em / var(--in-content-ui-scale));
 
-      .${this.commonClass} .cci-color-swatch {
-        background-color: var(--cci-swatch-color, transparent) !important /* required to override dark color scheme */;
-      }
+          &:checked {
+            border-color: var(--in-content-border-active) !important;
+          }
 
-      .${this.commonClass} .cci-icon-swatch {
-        background-color: transparent;
-      }
-      .${this.commonClass} .cci-icon-swatch-icon {
-        background-color: currentColor;
-        content: " ";
-        display: inline-block;
-        height: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
-        margin-left: calc(0px - ((2px * 2 /*border of two elements*/) + (2px * 2 /*padding of two elements*/) + 1px) / var(--in-content-ui-scale) - 1.8em);
-        mask: var(--cci-icon-mask) no-repeat center / 60%;
-        padding: 0;
-        width: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
-      }
+          &:focus-visible {
+            outline: calc(2px / var(--in-content-ui-scale)) solid var(--in-content-border-active);
+          }
+        }
 
-      .${this.commonClass} .cci-color-swatch:checked,
-      .${this.commonClass} .cci-icon-swatch:checked {
-        border-color: var(--in-content-border-active);
-      }
+        .cci-color-swatch {
+          background-color: var(--cci-swatch-color, transparent) !important /* required to override dark color scheme */;
+        }
 
-      .${this.commonClass} .cci-color-swatch:focus-visible,
-      .${this.commonClass} .cci-icon-swatch:focus-visible {
-        outline: calc(2px / var(--in-content-ui-scale)) solid var(--in-content-border-active);
+        .cci-icon-swatch {
+          background-color: transparent;
+        }
+        .cci-icon-swatch-icon {
+          background-color: currentColor;
+          content: " ";
+          display: inline-block;
+          height: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
+          margin-left: calc(0px - ((2px * 2 /*border of two elements*/) + (2px * 2 /*padding of two elements*/) + 1px) / var(--in-content-ui-scale) - 1.8em);
+          mask: var(--cci-icon-mask) no-repeat center / 60%;
+          padding: 0;
+          width: calc((2px * 2 /*padding*/ / var(--in-content-ui-scale)) + 1.8em);
+        }
       }
     `.trim();
   }
@@ -143,7 +143,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
     const values = this.params.values || {};
 
     this.content.insertAdjacentHTML('beforeend', `
-      <h1 class="cci-heading">${sanitizeForHTMLText(browser.i18n.getMessage('createContextualIdentityDialog_title'))}</h1>
+      <h1 class="cci-heading">${sanitizeForHTMLText(this.params.title)}</h1>
       <div class="cci-field cci-name-container">
         <label>
           <span class="cci-field-label">${sanitizeForHTMLText(browser.i18n.getMessage('createContextualIdentityDialog_name_label'))}</span>
@@ -225,7 +225,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
     if (initialColor)
       selectColor(initialColor);
 
-    const initialIcon = this.icons.includes(iconHiddenField.value) ?
+    const initialIcon = this.icons.some(icon => iconHiddenField.value == icon.icon) ?
       iconHiddenField.value : this.icons[0].icon;
     if (initialIcon)
       selectIcon(initialIcon);
@@ -243,7 +243,7 @@ class CreateContextualIdentityDialog extends RichConfirmDialog {
     nameField.select();
   }
 };
-window.CreateContextualIdentityDialog = CreateContextualIdentityDialog;
-window.RICH_CONFIRM_DIALOG_CLASS_NAME = 'CreateContextualIdentityDialog';
+window.EditContextualIdentityDialog = EditContextualIdentityDialog;
+window.RICH_CONFIRM_DIALOG_CLASS_NAME = 'EditContextualIdentityDialog';
 
-export default CreateContextualIdentityDialog;
+export default EditContextualIdentityDialog;

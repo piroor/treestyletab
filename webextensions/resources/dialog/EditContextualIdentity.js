@@ -11,7 +11,7 @@ import {
   configs,
 } from '/common/common.js';
 
-class CreateContextualIdentity extends RichConfirm {
+class EditContextualIdentity extends RichConfirm {
   // browser.contextualIdentities is not available to a script injected into
   // a content page (see RichConfirm.showInTab()), so the list of supported
   // colors/icons must be resolved here, where this class is always loaded
@@ -87,7 +87,7 @@ class CreateContextualIdentity extends RichConfirm {
     return super.showInTab(tabId, await this.withColorsAndIcons(params), onDialogOpened);
   }
 }
-CreateContextualIdentity.Dialog = null;
-CreateContextualIdentity.init('/resources/dialog/CreateContextualIdentityDialog.html');
+EditContextualIdentity.Dialog = null;
+EditContextualIdentity.init('/resources/dialog/EditContextualIdentityDialog.html');
 
-export default CreateContextualIdentity;
+export default EditContextualIdentity;

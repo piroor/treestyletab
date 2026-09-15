@@ -50,7 +50,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import MetricsData from '/common/MetricsData.js';
 import { Tab, TabGroup, TreeItem } from '/common/TreeItem.js';
 
-import CreateContextualIdentity from '/resources/dialog/CreateContextualIdentity.js';
+import EditContextualIdentity from '/resources/dialog/EditContextualIdentity.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as EventUtils from './event-utils.js';
@@ -96,13 +96,23 @@ Sidebar.onBuilt.addListener(async () => {
   browser.runtime.onMessage.addListener(onMessage);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
 
-  if (!mRootClasses.contains('incognito'))
+  if (!mRootClasses.contains('incognito')) {
     mContextualIdentitySelector.ui = new MenuUI({
       root:              mContextualIdentitySelector,
       appearance:        'panel',
       onCommand:         onContextualIdentitySelect,
       animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
     });
+    // browser.contextualIdentities.move() fires no event, so the order
+    // cached by the ContextualIdentities module can go stale. Refresh it
+    // every time this selector is actually about to be shown, regardless
+    // of which code path triggered the open() call.
+    const openContextualIdentitySelector = mContextualIdentitySelector.ui.open.bind(mContextualIdentitySelector.ui);
+    mContextualIdentitySelector.ui.open = async (...args) => {
+      await Sidebar.updateContextualIdentitiesSelector();
+      return openContextualIdentitySelector(...args);
+    };
+  }
 
   mNewTabActionSelector.ui = new MenuUI({
     root:              mNewTabActionSelector,
@@ -1204,6 +1214,11 @@ function onContextualIdentitySelect(item, event) {
     return;
   }
 
+  if (item.dataset.command == Constants.kCONTEXTUAL_IDENTITY_SELECTOR_COMMAND_MANAGE) {
+    browser.tabs.create({ url: Constants.kSHORTHAND_URIS.manageContainers });
+    return;
+  }
+
   if (item.dataset.value) {
     const action = EventUtils.isAccelAction(event) ?
       configs.autoAttachOnNewTabButtonMiddleClick :
@@ -1220,10 +1235,10 @@ async function createContextualIdentityWithDialog() {
   const showInActiveTab = await Permissions.canInjectScriptToTab(activeTab);
 
   const result = showInActiveTab ?
-    await CreateContextualIdentity.showInTab(activeTab.id, {
+    await EditContextualIdentity.showInTab(activeTab.id, {
       devicePixelRatio: window.devicePixelRatio,
     }).catch(_error => ({ buttonIndex: -1 })) :
-    await CreateContextualIdentity.show({}).catch(_error => ({ buttonIndex: -1 }));
+    await EditContextualIdentity.show({}).catch(_error => ({ buttonIndex: -1 }));
   if (result.buttonIndex != 0)
     return;
 
