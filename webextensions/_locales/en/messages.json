@@ -914,6 +914,7 @@
   "config_link_startupPage_label": { "message": "Page for Initial Startup" },
   "config_link_groupPage_label":   { "message": "Page for Group Tab" },
   "config_link_tabbarPage_label":   { "message": "Page for Tab Bar" },
+  "config_link_manageContainersPage_label": { "message": "Page for Container Management" },
 
   "config_runTests_label": { "message": "Run Automated Tests" },
   "config_runTestsParameters_label": { "message": " / Tests to run (array of test names or regular expressions, like \"testInheritMutedState,/^testHidden/,...\"):" },

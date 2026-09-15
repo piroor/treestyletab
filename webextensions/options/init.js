@@ -705,6 +705,7 @@ function initLinks() {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);
+  document.getElementById('link-manageContainersPage').setAttribute('href', Constants.kSHORTHAND_URIS.manageContainers);
   const runTestLink = document.getElementById('link-runTests');
   const runTestParameters = document.getElementById('runTestsParameters');
   runTestLink.setAttribute('href', '#');
