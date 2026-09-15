@@ -62,6 +62,10 @@
         padding-block: 0.5em;
         padding-inline: 0.4em;
 
+        & + .container-row {
+          border-top: thin solid var(--in-content-box-border-color-mixed);
+        }
+
         &.dragging {
           opacity: 0.4;
         }
@@ -121,6 +125,7 @@
           button {
             align-items: center;
             background: transparent;
+            border: thin solid var(--in-content-box-border-color-mixed);
             border-radius: 50%;
             display: flex;
             height: 2em;
@@ -132,31 +137,17 @@
       }
 
       :root[data-style="proton"] {
-        .container-row + .container-row {
-          border-top: thin solid var(--in-content-box-border-color-mixed);
-        }
         .container-row:hover {
           background: var(--in-content-box-background-hover);
         }
-        .container-row .identity-actions button {
-          border: thin solid var(--in-content-box-border-color-mixed);
-
-          &:hover {
-            background: var(--in-content-button-background-hover-mixed);
-          }
+        .container-row .identity-actions button:hover {
+          background: var(--in-content-button-background-hover-mixed);
         }
       }
 
       :root[data-style="nova"] {
-        .container-row + .container-row {
-          border-top: thin solid var(--in-content-border-color-mixed);
-        }
-        .container-row .identity-actions button {
-          border: 0 none;
-
-          &:hover {
-            background: var(--in-content-button-background-hover-mixed);
-          }
+        .container-row .identity-actions button:hover {
+          background: var(--in-content-button-background-hover-mixed);
         }
       }
     --></style>
