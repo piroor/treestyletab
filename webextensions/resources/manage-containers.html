@@ -125,8 +125,6 @@
           button {
             align-items: center;
             background: transparent;
-            border: thin solid var(--in-content-box-border-color-mixed);
-            border-radius: 50%;
             display: flex;
             height: 2em;
             justify-content: center;
@@ -141,8 +139,13 @@
           background: var(--in-content-box-background-hover);
         }
 
-        .identity-actions button:hover {
-          background: var(--in-content-button-background-hover-mixed);
+        .identity-actions button {
+          background: var(--in-content-button-background);
+          border-radius: 0.5em;
+
+          &:hover {
+            background: var(--in-content-button-background-hover-mixed);
+          }
         }
 
         .drag-handle .icon-mask {
@@ -157,8 +160,13 @@
       }
 
       :root[data-style="nova"] .container-row {
-        .identity-actions button:hover {
-          background: var(--in-content-button-background-hover-mixed);
+        .identity-actions button {
+          border: thin solid var(--in-content-box-border-color-mixed);
+          border-radius: 50%;
+
+          &:hover {
+            background: var(--in-content-button-background-hover-mixed);
+          }
         }
 
         .drag-handle .icon-mask {
