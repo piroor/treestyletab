@@ -1231,6 +1231,63 @@ export function sanitizeAccesskeyMark(label) {
   return String(label || '').replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
 
+export function updateAccessKey(element) {
+  const ACCESS_KEY_MATCHER = /(&([^\s]))/i;
+  const label = element.textContent || (/^(button|submit|reset)$/i.test(element.type) && element.value) || '';
+  const matchedKey = element.accessKey ?
+    label.match(new RegExp(`((${element.accessKey}))`, 'i')) :
+    label.match(ACCESS_KEY_MATCHER);
+  const accessKey = element.accessKey || (matchedKey && matchedKey[2]);
+  if (!accessKey)
+    return;
+
+  element.accessKey = element.dataset.accessKey = accessKey.toLowerCase();
+  if (!matchedKey ||
+      /^(input|textarea)$/i.test(element.localName))
+    return;
+
+  const textNode = evaluateXPath(
+    `descendant::node()[contains(self::text(), "${matchedKey[1]}")]`,
+    element,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
+  if (!textNode)
+    return;
+
+  const range = document.createRange();
+  const startPosition = textNode.nodeValue.indexOf(matchedKey[1]);
+  range.setStart(textNode, startPosition);
+  range.setEnd(textNode, startPosition + matchedKey[1].length);
+  range.deleteContents();
+  const accessKeyNode = document.createElement('span');
+  accessKeyNode.classList.add('accesskey');
+  accessKeyNode.textContent = matchedKey[2];
+  range.insertNode(accessKeyNode);
+  range.detach();
+}
+export function evaluateXPath(expression, context, type) {
+  if (!type)
+    type = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+  try {
+    return (context.ownerDocument || context).evaluate(
+      expression,
+      (context || document),
+      null,
+      type,
+      null
+    );
+  }
+  catch(_e) {
+    return {
+      singleNodeValue: null,
+      snapshotLength:  0,
+      snapshotItem:    function() {
+        return null
+      }
+    };
+  }
+}
+
 export function getWindowParamsFromSource(sourceWindow, { left, top, width, height } = {}) {
   const params = {
     // inherit properties of the source window

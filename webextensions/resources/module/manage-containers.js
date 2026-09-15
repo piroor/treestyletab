@@ -13,8 +13,10 @@ import {
   isRTL,
   sanitizeAccesskeyMark,
   sanitizeForHTMLText,
+  updateAccessKey,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from '/common/constants.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import EditContextualIdentity from '/resources/dialog/EditContextualIdentity.js';
 
@@ -212,6 +214,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   const addNewContainerButton = document.querySelector('#addNewContainer');
   addNewContainerButton.textContent = sanitizeAccesskeyMark(browser.i18n.getMessage('contextualIdentitySelector_createNew'));
   addNewContainerButton.addEventListener('click', addContainer);
+
+  const inheritContextualIdentityToNewTabModeLabel = document.querySelector('#inheritContextualIdentityToNewTabMode_label');
+  updateAccessKey(inheritContextualIdentityToNewTabModeLabel);
+  inheritContextualIdentityToNewTabModeLabel.querySelector('input').addEventListener('change', event => {
+    configs.inheritContextualIdentityToNewTabMode = event.target.checked ?
+      Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH :
+      Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+  });
 
   initList();
 
