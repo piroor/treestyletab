@@ -1,0 +1,14 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg width="16" height="16" fill="context-fill" fill-opacity="context-fill-opacity" xmlns="http://www.w3.org/2000/svg">
+<style>
+  g:not(:target) {
+    display: none;
+  }
+</style>
+<g class="proton" id="proton"><path d="M7 14H5v-2h2v2zM11 14H9v-2h2v2zM7 9H5V7h2v2zM11 9H9V7h2v2zM7 4H5V2h2v2zM11 2v2H9V2h2z"/></g>
+<g class="nova" id="nova">
+  <path d="M6 12a1 1 0 1 1 0 2 1 1 0 0 1 0-2m4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2M6 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2m4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2M6 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2m4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</g>
+</svg>
