@@ -214,6 +214,16 @@
   "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Icône" },
   "createContextualIdentityDialog_accept":             { "message": "Terminer" },
   "createContextualIdentityDialog_cancel":             { "message": "Annuler" },
+
+  "editContextualIdentityDialog_title":                { "message": "Paramètres du conteneur « $CONTAINER$ »",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Enregistrer" },
+
+  "manageContainers_editButton_tooltip":      { "message": "Paramètres" },
+  "manageContainers_deleteButton_tooltip":    { "message": "Supprimer" },
+
   "groupTab_label": {
     "message": "$TITLE$ et plus",
     "placeholders": {

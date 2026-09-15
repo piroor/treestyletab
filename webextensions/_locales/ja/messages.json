@@ -231,6 +231,15 @@
   "createContextualIdentityDialog_accept":             { "message": "完了" },
   "createContextualIdentityDialog_cancel":             { "message": "キャンセル" },
 
+  "editContextualIdentityDialog_title":                { "message": "$CONTAINER$ コンテナーの設定",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "保存" },
+
+  "manageContainers_editButton_tooltip":      { "message": "設定" },
+  "manageContainers_deleteButton_tooltip":    { "message": "削除" },
+
   "syncDeviceDefaultName": { "message": "$PLATFORM$ の $BROWSER$",
     "placeholders": {
       "PLATFORM": { "content": "$1", "example": "Firefox" },

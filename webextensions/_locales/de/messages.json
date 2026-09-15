@@ -96,6 +96,15 @@
   "createContextualIdentityDialog_accept":             { "message": "Fertig" },
   "createContextualIdentityDialog_cancel":             { "message": "Abbrechen" },
 
+  "editContextualIdentityDialog_title":                { "message": "Einstellungen für Umgebung \"$CONTAINER$\"",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Speichern" },
+
+  "manageContainers_editButton_tooltip":      { "message": "Einstellungen" },
+  "manageContainers_deleteButton_tooltip":    { "message": "Löschen" },
+
   "groupTab_label": { "message": "$TITLE$ und mehr",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }

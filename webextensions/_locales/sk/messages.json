@@ -106,6 +106,15 @@
   "createContextualIdentityDialog_accept":             { "message": "Hotovo" },
   "createContextualIdentityDialog_cancel":             { "message": "Zrušiť" },
 
+  "editContextualIdentityDialog_title":                { "message": "Nastavenia kontajnera $CONTAINER$",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Uložiť" },
+
+  "manageContainers_editButton_tooltip":      { "message": "Nastavenia" },
+  "manageContainers_deleteButton_tooltip":    { "message": "Odstrániť" },
+
   "groupTab_label": { "message": "$TITLE$ a ďalšie",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

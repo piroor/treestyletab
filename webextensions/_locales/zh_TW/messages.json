@@ -87,6 +87,15 @@
     "createContextualIdentityDialog_accept":             { "message": "完成" },
     "createContextualIdentityDialog_cancel":             { "message": "取消" },
 
+    "editContextualIdentityDialog_title":                { "message": "$CONTAINER$ 容器設定",
+      "placeholders": {
+        "CONTAINER": { "content": "$1", "example": "Personal" }
+      }},
+    "editContextualIdentityDialog_accept":               { "message": "儲存" },
+
+    "manageContainers_editButton_tooltip":      { "message": "設定" },
+    "manageContainers_deleteButton_tooltip":    { "message": "刪除" },
+
     "groupTab_label": { "message": "$TITLE$ 等",
       "placeholders": {
         "title": { "content": "$1", "example": "標題" }

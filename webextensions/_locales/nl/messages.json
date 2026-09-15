@@ -295,6 +295,16 @@
   "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "Pictogram" },
   "createContextualIdentityDialog_accept":             { "message": "Gereed" },
   "createContextualIdentityDialog_cancel":             { "message": "Annuleren" },
+
+  "editContextualIdentityDialog_title":                { "message": "Instellingen van container $CONTAINER$",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Opslaan" },
+
+  "manageContainers_editButton_tooltip":      { "message": "Instellingen" },
+  "manageContainers_deleteButton_tooltip":    { "message": "Verwijderen" },
+
   "groupTab_label": {
     "message": "$TITLE$ en meer",
     "placeholders": {

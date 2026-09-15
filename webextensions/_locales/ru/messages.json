@@ -96,6 +96,15 @@
   "createContextualIdentityDialog_accept":             { "message": "Готово" },
   "createContextualIdentityDialog_cancel":             { "message": "Отмена" },
 
+  "editContextualIdentityDialog_title":                { "message": "Настройки контейнера $CONTAINER$",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "Сохранить" },
+
+  "manageContainers_editButton_tooltip":      { "message": "Настройки" },
+  "manageContainers_deleteButton_tooltip":    { "message": "Удалить" },
+
   "groupTab_label": { "message": "$TITLE$ и больше",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

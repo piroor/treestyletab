@@ -225,6 +225,16 @@
   "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "图标" },
   "createContextualIdentityDialog_accept":             { "message": "完成" },
   "createContextualIdentityDialog_cancel":             { "message": "取消" },
+
+  "editContextualIdentityDialog_title":                { "message": "“$CONTAINER$”身份设置",
+    "placeholders": {
+      "CONTAINER": { "content": "$1", "example": "Personal" }
+    }},
+  "editContextualIdentityDialog_accept":               { "message": "保存" },
+
+  "manageContainers_editButton_tooltip":      { "message": "设置" },
+  "manageContainers_deleteButton_tooltip":    { "message": "删除" },
+
   "groupTab_label": {
     "message": "$TITLE$ 等多项",
     "placeholders": {

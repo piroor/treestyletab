@@ -214,6 +214,18 @@
     "createContextualIdentityDialog_icon_selector_aria_label":  { "message": "아이콘" },
     "createContextualIdentityDialog_accept":             { "message": "완료" },
     "createContextualIdentityDialog_cancel":             { "message": "취소" },
+
+    "editContextualIdentityDialog_title": {
+        "message": "$CONTAINER$ 컨테이너 설정",
+        "placeholders": {
+            "CONTAINER": { "content": "$1", "example": "Personal" }
+        }
+    },
+    "editContextualIdentityDialog_accept":               { "message": "저장" },
+
+    "manageContainers_editButton_tooltip":      { "message": "설정" },
+    "manageContainers_deleteButton_tooltip":    { "message": "삭제" },
+
     "groupTab_label": {
         "message": "$TITLE$ 등",
         "placeholders": {
