@@ -1293,7 +1293,8 @@ function onBackgroundMessage(message) {
         return;
       const anchor = document.querySelector(`
         :root.contextual-identity-selectable .contextual-identities-selector-anchor,
-        .newtab-button
+        #tabbar:not(.overflow) .after-tabs .newtab-button,
+        #tabbar.overflow ~ .after-tabs .newtab-button
       `);
       mContextualIdentitySelector.ui.open({ anchor });
     }; break;
