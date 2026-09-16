@@ -9,6 +9,7 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   configs,
+  wait,
   log as internalLogger,
 } from './common.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -116,6 +117,7 @@ export function endObserve() {
 export async function init() {
   if (!browser.contextualIdentities)
     return;
+  try {
   const identities = await browser.contextualIdentities.query({}).catch(ApiTabs.createErrorHandler());
   // Re-populate from scratch instead of reusing the existing map, because
   // Map.set() on an already-existing key never changes its iteration
@@ -127,7 +129,18 @@ export async function init() {
   for (const identity of identities) {
     mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   }
+  }
+  catch(error) {
+    if (init.retryCount > 10) {
+      console.log('Fatal error: failed to list contextual identities on initialization.', error);
+      return;
+    }
+    console.log('Failed to list contextual identities on initialization. Retrying... ', error);
+    init.retryCount++;
+    wait(1000).then(init);
+  }
 }
+init.retryCount = 0;
 
 function fixupIcon(identity) {
   if (identity.icon && identity.color) {
