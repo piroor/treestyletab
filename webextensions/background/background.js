@@ -845,7 +845,7 @@ async function updateIconForBrowserTheme(theme) {
     }));
   }
   else {
-    const styleSuffix = configs.style == 'nova' ? 'nova' : 'proton';
+    const styleSuffix = configs.colorScheme != 'system-color' && configs.style == 'nova' ? 'nova' : 'proton';
     for (const [size, url] of Object.entries(BASE_ICONS)) {
       toolbarIcons[size] = `${url}#toolbar-${styleSuffix}`;
       menuIcons[size] = sidebarIcons[size] = `${url}#default-${styleSuffix}`;
