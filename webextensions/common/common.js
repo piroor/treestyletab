@@ -401,6 +401,7 @@ export const configs = new Configs({
   guessNewOrphanTabAsOpenedByNewTabCommandTitle:          browser.i18n.getMessage('guessNewOrphanTabAsOpenedByNewTabCommandTitle'),
   guessNewOrphanTabAsOpenedByNewTabCommandUrl:            'about:newtab|about:privatebrowsing',
   inheritContextualIdentityToNewTabMode:                  Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+  inheritContextualIdentityToNewTabModeLastNonSelectForEach: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToSameSiteOrphanMode:          Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
   inheritContextualIdentityToTabsFromExternalMode:        Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,

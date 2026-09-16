@@ -400,6 +400,8 @@ export function migrateConfigs() {
         configs.inheritContextualIdentityToNewTabMode = configs.inheritContextualIdentityToChildTabMode;
         configs.inheritContextualIdentityToChildTabMode = null;
       }
+      if (configs.inheritContextualIdentityToNewTabMode != Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH)
+        configs.inheritContextualIdentityToNewTabModeLastNonSelectForEach = configs.inheritContextualIdentityToNewTabMode;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 

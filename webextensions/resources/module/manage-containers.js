@@ -227,7 +227,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   inheritContextualIdentityToNewTabModeLabel.querySelector('input').addEventListener('change', event => {
     configs.inheritContextualIdentityToNewTabMode = event.target.checked ?
       Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH :
-      Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+      configs.inheritContextualIdentityToNewTabModeLastNonSelectForEach == Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH ?
+        Constants.kCONTEXTUAL_IDENTITY_DEFAULT :
+        configs.inheritContextualIdentityToNewTabModeLastNonSelectForEach;
   });
 
   initList();

@@ -907,6 +907,11 @@ configs.$addObserver(key => {
         value: configs.testKey
       });
       break;
+
+    case 'inheritContextualIdentityToNewTabMode':
+      if (configs[key] != Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH)
+        configs.inheritContextualIdentityToNewTabModeLastNonSelectForEach = configs[key];
+      break;
   }
 });
 
