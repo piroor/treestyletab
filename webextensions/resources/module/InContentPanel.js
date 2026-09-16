@@ -274,6 +274,14 @@ export default class InContentPanel {
     `;
   }
 
+  // The selector every rule of the user's custom style rules is scoped
+  // under, so that they cannot leak out and affect the host document
+  // (this matters for the SIDEBAR case, where `this.root` is a plain
+  // element in the sidebar's own DOM instead of a shadow-isolated one).
+  get userStylesScope() {
+    return '.in-content-panel-root';
+  }
+
   constructor(givenRoot, ...args) {
     this.lastTimestamp = 0;
     this.lastTimestampFor = new Map();
@@ -308,6 +316,182 @@ export default class InContentPanel {
     browser.runtime.onMessage.addListener(this.onMessageSelf);
     window.addEventListener('unload', this.destroySelf, { once: true });
     window.addEventListener('pagehide', this.destroySelf, { once: true });
+  }
+
+  // Reflects the user's custom style rules (configured at the
+  // "Development" section of the options page, see loadUserStyleRules()
+  // in /common/common.js) into the panel. Since this class is loaded into
+  // arbitrary web pages via content script injection (see
+  // InContentPanelController#preparePlaygroundTab()), it cannot import
+  // and call loadUserStyleRules() directly - instead the already-loaded
+  // rules are delivered as the "userStyles" field of "show" messages sent
+  // by InContentPanelController, mirroring the "userStyles" parameter of
+  // RichConfirm.
+  applyUserStyleRules(userStyles) {
+    if (!this.userStyleElement) {
+      this.userStyleElement = document.createElement('style');
+      this.userStyleElement.setAttribute('type', 'text/css');
+      this.root.appendChild(this.userStyleElement);
+    }
+    this.userStyleElement.textContent = userStyles ?
+      this.constructor.scopeCSS(userStyles, this.userStylesScope) :
+      '';
+  }
+
+  // Rewrites every selector in the given CSS so that it can only match
+  // elements placed under (a descendant of) `scopeSelector`, to avoid
+  // leaking user-supplied styles to the rest of the host document. Known
+  // grouping at-rules (@media, @supports, @layer, @container, @scope) are
+  // scoped recursively; other at-rules (@keyframes, @font-face, @page,
+  // @import, ...) are passed through as-is, because their bodies are not
+  // selector lists.
+  // (Kept in sync with RichConfirmDialog.scopeCSS() in
+  // /extlib/RichConfirmDialog.js - this class cannot import it because
+  // its source is injected into content pages via Function#toString().)
+  static scopeCSS(cssText, scopeSelector) {
+    const GROUPING_AT_RULES = new Set(['media', 'supports', 'layer', 'container', 'scope']);
+
+    const splitTopLevel = (text, delimiter) => {
+      const parts = [];
+      let depth = 0;
+      let current = '';
+      for (const ch of text) {
+        if (ch == '(' || ch == '[')
+          depth++;
+        else if (ch == ')' || ch == ']')
+          depth--;
+        if (ch == delimiter && depth <= 0) {
+          parts.push(current);
+          current = '';
+        }
+        else {
+          current += ch;
+        }
+      }
+      parts.push(current);
+      return parts;
+    };
+
+    const scopeSelectorList = selectorText => splitTopLevel(selectorText, ',')
+      .map(part => part.trim())
+      .filter(part => part.length > 0)
+      .map(part => `${scopeSelector} ${part}`)
+      .join(', ');
+
+    const processBlock = css => {
+      let result = '';
+      let i = 0;
+      const n = css.length;
+      while (i < n) {
+        const chunkStart = i;
+        while (i < n && /\s/.test(css[i])) {
+          i++;
+        }
+        if (i >= n) {
+          result += css.slice(chunkStart, i);
+          break;
+        }
+        if (css[i] == '/' && css[i + 1] == '*') {
+          const end = css.indexOf('*/', i + 2);
+          const commentEnd = end == -1 ? n : end + 2;
+          result += css.slice(chunkStart, commentEnd);
+          i = commentEnd;
+          continue;
+        }
+        result += css.slice(chunkStart, i);
+
+        if (css[i] == '@') {
+          const atStart = i;
+          let j = i + 1;
+          while (j < n && /[a-zA-Z-]/.test(css[j])) {
+            j++;
+          }
+          const atName = css.slice(i + 1, j).toLowerCase();
+          let k = j;
+          let depth = 0;
+          let terminator = null;
+          while (k < n) {
+            const ch = css[k];
+            if (ch == '(')
+              depth++;
+            else if (ch == ')')
+              depth--;
+            else if (depth <= 0 && ch == ';') {
+              terminator = ';';
+              break;
+            }
+            else if (depth <= 0 && ch == '{') {
+              terminator = '{';
+              break;
+            }
+            k++;
+          }
+          if (terminator != '{') {
+            const end = k >= n ? n : k + 1;
+            result += css.slice(atStart, end);
+            i = end;
+            continue;
+          }
+          const prelude = css.slice(j, k);
+          let braceDepth = 1;
+          let m = k + 1;
+          while (m < n && braceDepth > 0) {
+            if (css[m] == '{')
+              braceDepth++;
+            else if (css[m] == '}')
+              braceDepth--;
+            if (braceDepth == 0)
+              break;
+            m++;
+          }
+          if (GROUPING_AT_RULES.has(atName)) {
+            const innerBlock = css.slice(k + 1, m);
+            result += `@${atName}${prelude}{${processBlock(innerBlock)}}`;
+          }
+          else {
+            result += css.slice(atStart, m + 1);
+          }
+          i = m + 1;
+          continue;
+        }
+
+        let k = i;
+        let depth = 0;
+        while (k < n) {
+          const ch = css[k];
+          if (ch == '(')
+            depth++;
+          else if (ch == ')')
+            depth--;
+          else if (depth <= 0 && ch == '{')
+            break;
+          k++;
+        }
+        if (k >= n) {
+          result += css.slice(i);
+          i = n;
+          break;
+        }
+        const selectorText = css.slice(i, k);
+        let braceDepth = 1;
+        let m = k + 1;
+        while (m < n && braceDepth > 0) {
+          if (css[m] == '{')
+            braceDepth++;
+          else if (css[m] == '}')
+            braceDepth--;
+          if (braceDepth == 0)
+            break;
+          m++;
+        }
+        const declarationBlock = css.slice(k + 1, m);
+        result += `${scopeSelectorList(selectorText)}{${declarationBlock}}`;
+        i = m + 1;
+      }
+      return result;
+    };
+
+    return processBlock(String(cssText));
   }
 
   log(...messages) {
@@ -450,8 +634,9 @@ export default class InContentPanel {
   onCompleteUpdate() {} // this can be overridden by subclasses
   onShown() {} // this can be overridden by subclasses
 
-  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, style, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
+  updateUI({ targetId, anchorTabRect, offsetTop, align, rtl, scale, style, userStyles, animation, backgroundColor, borderColor, color, widthInOuterWorld, fixedOffsetTop, ...params }) {
     this.root.classList.toggle('in-sidebar', this.inSidebar);
+    this.applyUserStyleRules(userStyles);
 
     if (!this.panel)
       return;

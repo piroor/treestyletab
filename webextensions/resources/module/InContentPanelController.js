@@ -56,6 +56,7 @@
 
 import {
   configs,
+  loadUserStyleRules,
   shouldApplyAnimation,
   isRTL,
   isRightside,
@@ -587,6 +588,7 @@ export default class InContentPanelController {
         rtl:        isRTL(),
         scale:      1 / window.devicePixelRatio,
         style:      configs.style,
+        userStyles: loadUserStyleRules(),
         // Don't call Date.now() here, because it can become larger than
         // the timestamp on mouseleave.
         timestamp,
