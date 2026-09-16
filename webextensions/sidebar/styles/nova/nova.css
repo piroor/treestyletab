@@ -11,6 +11,7 @@
 @import url("./tab.tokens.css");
 @import url("./tabs.css");
 @import url("./browser-shared.css");
+@import url("./browser-colors.css");
 
 :root {
   --color-animation: 0s ease-out;
@@ -296,11 +297,11 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background:not(.base)
   --tab-visual-padding: 0;
 }
 
-:root:not(.lwtheme-applied) tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
+:root:not(.lwtheme-applied):not([color-scheme="system-color"]) tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
   /* background: var(--tab-border-color-accent) border-box border-area, var(--tab-surface) padding-box; */
   background: var(--tab-border-color-accent);
 }
-:root:not(.lwtheme-applied) tab-item-substance:is(.active, .bundled-active) .background:not(.base)::before {
+:root:not(.lwtheme-applied):not([color-scheme="system-color"]) tab-item-substance:is(.active, .bundled-active) .background:not(.base)::before {
   --tab-border-width: 1px;
   --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--toolbar-background-color)));
   background: var(--tab-surface);

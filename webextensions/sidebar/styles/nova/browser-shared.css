@@ -4,7 +4,7 @@
 /* https://searchfox.org/firefox-main/rev/186bc03087eca966915e5e6471209d98324d1199/browser/themes/shared/browser-shared.css */
 
 :root {
-  &/*@media not (forced-colors)*/ {
+  &:not(.forced-colors)/*@media not (forced-colors)*/ {
     accent-color: var(--color-accent-primary);
   }
 

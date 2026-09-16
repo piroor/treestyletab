@@ -1,0 +1,68 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* https://searchfox.org/firefox-main/rev/186bc03087eca966915e5e6471209d98324d1199/browser/themes/shared/browser-colors.css */
+
+:root {
+  --warning-icon-bgcolor: light-dark(#ffa436, #ffbd4f);
+
+  --content-area-shadow: var(--card-box-shadow);
+  --chrome-content-separator-color: var(--card-border-color);
+
+  &[color-scheme="system-color"], &.forced-colors/*@media (-moz-native-theme) or (forced-colors)*/ {
+    /* "-moz-headerbar*" colors are not available in addons! */
+    --toolbox-background-color: /*-moz-headerbar*/ActiveCaption;
+    --toolbox-text-color: /*-moz-headerbartext*/CaptionText;
+    --toolbox-background-color-inactive: /*-moz-headerbarinactive*/InactiveCaption;
+    --toolbox-text-color-inactive: /*-moz-headerbarinactivetext*/InactiveCaptionText;
+
+    &:where([customtitlebar]) {
+      --toolbox-background-color: ActiveCaption;
+      --toolbox-text-color: CaptionText;
+      --toolbox-background-color-inactive: InactiveCaption;
+      --toolbox-text-color-inactive: InactiveCaptionText;
+    }
+  }
+
+  &:not([color-scheme="system-color"])/*@media -moz-pref("browser.nova.enabled") and (not ((forced-colors) or (-moz-native-theme)))*/ {
+    &/*&:is([theme-in-app], :not([lwtheme]))*/ {
+      --chrome-content-separator-color: light-dark(rgba(201, 192, 227, 0.5), rgba(63, 62, 66, 0.5));
+
+      /* We can assume that panels and toolbars have reasonably similar colors
+       * for non-lwthemes. */
+      --panel-icon-fill: var(--toolbarbutton-icon-fill);
+    }
+  }
+
+  /**
+   * These colors are for when an AMO LWT is installed, we force blue/cyan for
+   * the link/focus colors. We probably don't want to change this to purple for
+   * Nova but there could be a case for using --color-accent-primary instead.
+   * Any change will affect contrasts for LWTs but using --color-accent-primary
+   * would allow the user to change the color at least.
+   */
+  &.lwtheme-applied/*[lwtheme]:not([theme-in-app])*/ {
+    --link-color: light-dark(var(--color-blue-60), var(--color-cyan-30));
+    --link-color-hover: light-dark(var(--color-blue-70), var(--color-cyan-20));
+    --link-color-active: light-dark(var(--color-blue-80), var(--color-cyan-10));
+    --tabs-navbar-separator-color: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+    --color-accent-attention: light-dark(#2ac3a2, #54ffbd);
+
+    @media not (prefers-contrast) {
+      --focus-outline-color: light-dark(#0061e0, #00ddff);
+    }
+  }
+}
+
+/**
+ * We intentionally do not use the custom colors on linux or macOS with system
+ * theme enabled, instead choosing to fall back to system colors and
+ * transparencies in order to look more native.
+ */
+:root[color-scheme="system-color"]/*@media not ((forced-colors) or (-moz-native-theme))*/ {
+  &:not(.lwtheme-applied)/*:root:not([lwtheme])*/ {
+    &:where([customtitlebar]) {
+      --toolbox-background-color-inactive: light-dark(rgb(235, 235, 239), rgb(31, 30, 37));
+    }
+  }
+}

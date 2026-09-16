@@ -4,7 +4,32 @@
 /* https://searchfox.org/firefox-main/rev/8a99ef927ea16827f2089e2bdf6a1188ddf645e7/browser/themes/shared/tabbrowser/tabs.css */
 
 :root {
+  &[color-scheme="system-color"]/*@media (-moz-native-theme)*/ {
+    --tab-box-shadow-selected: var(--box-shadow-level-1);
+  }
+
+  &.forced-colors/*@media (forced-colors)*/ {
+    &:not(.lwtheme-applied/*[lwtheme]*/) {
+      --tab-outline-color: ButtonText;
+      --tab-hover-outline-color: SelectedItem;
+      --tab-selected-outline-color: SelectedItem;
+    }
+  }
   &/*[lwtheme]*/.lwtheme-applied {
     --tab-selected-outline-color: var(--lwt-tab-line-color, currentColor);
   }
+  --tab-dragover-transition: transform 200ms var(--animation-easing-function);
+  --tab-dragover-outline-color: var(--focus-outline-color);
+  --tab-vertical-scrollbar-color: auto;
+  &.mac/*@media (-moz-platform: macos)*/ {
+    --tab-vertical-scrollbar-color: color-mix(in srgb, currentColor 26%, transparent) transparent;
+  }
 }
+
+/*.tab-background {*/
+  tab-item-substance:is(.active, .highlighted, .bundled-active)/* &:is([selected], [multiselected]) */ .background:not(.base) {
+    background-color: var(--tab-background-color-selected);
+    outline-color: var(--tab-selected-outline-color);
+    box-shadow: var(--tab-box-shadow-selected);
+  }
+/*}*/

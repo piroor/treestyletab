@@ -18,7 +18,7 @@
 
 :root {
   /*@media (forced-colors) {*/
-    &/*[lwtheme]*/.lwtheme-applied {
+    &.forced-colors/*[lwtheme]*/.lwtheme-applied {
       --toolbarbutton-outline-color: currentColor;
     }
   /*}*/
