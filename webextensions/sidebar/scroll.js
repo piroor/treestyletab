@@ -94,6 +94,11 @@ export function clearItemRectCache() {
 
 let mScrollingInternallyCount = 0;
 
+let mResolveInitialized;
+const mPromisedInitialized = new Promise((resolve, _reject) => {
+  mResolveInitialized = resolve;
+});
+
 export function init(scrollPosition) {
   // We should cache scroll positions, because accessing those properties is slow.
   mPinnedScrollBox.$scrollTop    = 0;
@@ -132,6 +137,8 @@ export function init(scrollPosition) {
     mNormalScrollBox.$offsetHeight = mNormalScrollBox.offsetHeight;
     reserveToRenderVirtualScrollViewport({ trigger: 'resized', force: true });
   });
+
+  mResolveInitialized();
 
   reserveToRenderVirtualScrollViewport({ trigger: 'initialize' });
   if (typeof scrollPosition != 'number')
@@ -284,7 +291,9 @@ export function getLastRenderableTreeItems() {
 
 renderVirtualScrollViewport.triggers = new Set();
 
-function renderVirtualScrollViewport(scrollPosition = undefined) {
+async function renderVirtualScrollViewport(scrollPosition = undefined) {
+  await mPromisedInitialized;
+
   renderVirtualScrollViewport.invoked = false;
   const triggers = new Set(renderVirtualScrollViewport.triggers);
   renderVirtualScrollViewport.triggers.clear();
@@ -296,7 +305,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   if (!win ||
       !win.containerElement)
     return; // not initialized yet
-
 
   const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
   const staticRendering  = outOfScreenPages < 0;
@@ -821,6 +829,8 @@ async function smoothScrollTo(params = {}) {
   smoothScrollTo.stopped = false;
 
   const scrollBox = params.scrollBox || getScrollBoxFor(params.item, { allowFallback: true });
+
+  await mPromisedInitialized;
 
   let delta, startPosition, endPosition;
   if (params.item) {
