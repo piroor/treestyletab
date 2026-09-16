@@ -118,17 +118,17 @@ export async function init() {
   if (!browser.contextualIdentities)
     return;
   try {
-  const identities = await browser.contextualIdentities.query({}).catch(ApiTabs.createErrorHandler());
-  // Re-populate from scratch instead of reusing the existing map, because
-  // Map.set() on an already-existing key never changes its iteration
-  // order. Without this, a reordering made via
-  // browser.contextualIdentities.move() (which fires no event at all)
-  // would never be reflected by forEach()/generateMenuItems() even after
-  // calling init() again.
-  mContextualIdentities.clear();
-  for (const identity of identities) {
-    mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
-  }
+    const identities = await browser.contextualIdentities.query({}).catch(ApiTabs.createErrorHandler());
+    // Re-populate from scratch instead of reusing the existing map, because
+    // Map.set() on an already-existing key never changes its iteration
+    // order. Without this, a reordering made via
+    // browser.contextualIdentities.move() (which fires no event at all)
+    // would never be reflected by forEach()/generateMenuItems() even after
+    // calling init() again.
+    mContextualIdentities.clear();
+    for (const identity of identities) {
+      mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
+    }
   }
   catch(error) {
     if (init.retryCount > 10) {
