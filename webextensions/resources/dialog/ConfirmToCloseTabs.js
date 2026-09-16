@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import RichConfirm from '/extlib/RichConfirm.js';
+import RichConfirm from '/resources/dialog/RichConfirmWithUserStyles.js';
 
 class ConfirmToCloseTabs extends RichConfirm {
 }

@@ -7,7 +7,7 @@
 
 import Options from '/extlib/Options.js';
 import '/extlib/l10n.js';
-import RichConfirm from '/extlib/RichConfirm.js';
+import RichConfirm from '/resources/dialog/RichConfirmWithUserStyles.js';
 
 import {
   DEVICE_SPECIFIC_CONFIG_KEYS,
@@ -30,8 +30,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Sync from '/common/sync.js';
 
 log.context = 'Options';
-
-RichConfirm.init(browser.runtime.getURL('/extlib/RichConfirmDialog.html'));
 
 const options = new Options(configs, {
   steps: {

@@ -10,15 +10,26 @@ import '/extlib/l10n.js';
 import {
   configs,
   isRTL,
+  loadUserStyleRules,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
 
 document.documentElement.classList.toggle('rtl', isRTL());
 
+function applyUserStyleRules() {
+  document.querySelector('#user-style-rules').textContent = loadUserStyleRules();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
   document.querySelector('#syncTabsToDeviceOptionsLink').href = `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`;
+
+  applyUserStyleRules();
+  configs.$addObserver(changedKey => {
+    if (changedKey.startsWith('chunkedUserStyleRules'))
+      applyUserStyleRules();
+  });
 
   Permissions.bindToCheckbox(
     Permissions.ALL_URLS,

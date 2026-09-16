@@ -5,8 +5,6 @@
 */
 'use strict';
 
-import RichConfirm from '/extlib/RichConfirm.js';
-
 import {
   log,
   configs
@@ -40,8 +38,6 @@ window.dumpMetricsData = () => {
 window.dumpLogs = () => {
   return log.logs.join('\n');
 };
-
-RichConfirm.init(browser.runtime.getURL('/extlib/RichConfirmDialog.html'));
 
 // for old debugging method
 window.log = log;

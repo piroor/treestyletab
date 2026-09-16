@@ -6,7 +6,7 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
-import RichConfirm from '/extlib/RichConfirm.js';
+import RichConfirm from '/resources/dialog/RichConfirmWithUserStyles.js';
 
 import {
   log as internalLogger,

@@ -6,11 +6,12 @@
 'use strict';
 
 import '/extlib/l10n.js';
-import RichConfirm from '/extlib/RichConfirm.js';
+import RichConfirm from '/resources/dialog/RichConfirmWithUserStyles.js';
 
 import {
   configs,
   isRTL,
+  loadUserStyleRules,
   sanitizeAccesskeyMark,
   sanitizeForHTMLText,
   updateAccessKey,
@@ -19,8 +20,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import EditContextualIdentity from '/resources/dialog/EditContextualIdentity.js';
-
-RichConfirm.init('/extlib/RichConfirmDialog.html');
 
 document.documentElement.classList.toggle('rtl', isRTL());
 
@@ -32,6 +31,10 @@ function styleSuffix() {
 
 function applyStyle() {
   document.documentElement.dataset.style = styleSuffix();
+}
+
+function applyUserStyleRules() {
+  document.querySelector('#user-style-rules').textContent = loadUserStyleRules();
 }
 
 function buildRowHTML(identity) {
@@ -202,6 +205,10 @@ function initList() {
 }
 
 function onConfigChange(changedKey) {
+  if (changedKey.startsWith('chunkedUserStyleRules')) {
+    applyUserStyleRules();
+    return;
+  }
   if (changedKey != 'style')
     return;
   applyStyle();
@@ -227,6 +234,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   await configs.$loaded;
   applyStyle();
+  applyUserStyleRules();
   configs.$addObserver(onConfigChange);
 
   await ContextualIdentities.init();
