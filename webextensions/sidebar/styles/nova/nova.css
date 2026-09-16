@@ -10,6 +10,7 @@
 @import url("./toolbar.css");
 @import url("./tab.tokens.css");
 @import url("./tabs.css");
+@import url("./browser-shared.css");
 
 :root {
   --color-animation: 0s ease-out;

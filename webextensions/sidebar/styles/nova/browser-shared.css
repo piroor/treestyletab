@@ -1,0 +1,120 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* https://searchfox.org/firefox-main/rev/186bc03087eca966915e5e6471209d98324d1199/browser/themes/shared/browser-shared.css */
+
+:root {
+  &/*@media not (forced-colors)*/ {
+    accent-color: var(--color-accent-primary);
+  }
+
+  --lwt-additional-images: none;
+  --lwt-background-tiling: no-repeat;
+  --lwt-background-alignment: right top;
+  --lwt-background-size: auto;
+
+  --toolbox-background-image: none;
+  --toolbox-background-repeat: no-repeat;
+  --toolbox-background-position: /*right top*/ right calc(0px - (var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset))) top calc(0px - var(--browser-sidebar-y-offset));
+  --toolbox-background-size: /*auto*/ var(--browser-window-width) calc(100% + var(--browser-sidebar-y-offset));
+
+  &/*@media -moz-pref("browser.nova.enabled")*/ {
+    --toolbox-background-image: var(--toolbox-background-gradient);
+  }
+
+  &.lwthenme-applied/*[lwtheme]*/ {
+    --toolbox-background-image: var(--lwt-additional-images);
+    --toolbox-background-repeat: var(--lwt-background-tiling);
+    --toolbox-background-position: var(--lwt-background-alignment);
+    --toolbox-background-size: var(--lwt-background-size);
+  }
+
+  &.lwthenme-applied/*[lwtheme-image]*/ {
+    /* When a theme defines both theme_frame and additional_backgrounds, show
+       the latter atop the former. */
+    --toolbox-background-image: var(--lwt-header-image), var(--lwt-additional-images);
+    --toolbox-background-repeat: no-repeat, var(--lwt-background-tiling);
+    --toolbox-background-position: right top, var(--lwt-background-alignment);
+    --toolbox-background-size: auto, var(--lwt-background-size);
+  }
+
+  --ext-theme-background-transition: background-color 0.1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+
+  --inactive-window-transition: 0.2s ease;
+  --inactive-titlebar-opacity: var(--opacity-deemphasized-strong);
+  /**
+   * On macOS and Linux, fading the whole titlebar is the native behavior.
+   *
+   * On Windows there's no particular standard, but the default .6 opacity
+   * feels like too much, specially because Windows "fades" the titlebar of
+   * unresponsive applications. Fade substantially less the titlebar on windows
+   * to account for this platform difference.
+   */
+  &.windows/*@media (-moz-platform: windows)*/ {
+    --inactive-titlebar-opacity: 0.75;
+  }
+  &:not(.animation)/*@media (prefers-reduced-motion)*/ {
+    --inactive-window-transition: 0s;
+  }
+
+  &.lwthenme-applied/*[lwtheme]*/ {
+    /* Theme colors don't need to use design tokens. */
+    /* stylelint-disable-next-line stylelint-plugin-mozilla/use-design-tokens */
+    color: var(--lwt-text-color);
+  }
+}
+
+
+body,
+#background {
+  background-color: var(--toolbox-background-color);
+  color: var(--toolbox-text-color);
+
+  will-change: background-color;
+  transition: background-color var(--inactive-window-transition);
+
+  :root:-moz-window-inactive & {
+    background-color: var(--toolbox-background-color-inactive);
+    color: var(--toolbox-text-color-inactive);
+  }
+
+  :root[customizing] & {
+    border-bottom-style: none;
+  }
+
+  :root.mac:not(.lwtheme-applied) & /*@media (-moz-platform: macos) and (-moz-native-theme)*/ {
+    /* This is conceptually a background, but putting this on a pseudo-element
+     * avoids it from suppressing the chrome-content separator border, etc.
+     *
+     * We make this exist unconditionally to prevent dynamic changes from
+     * reframing the whole toolbox when adding or removing it.
+     *
+     * See bug 1949528 and bug 1476281 (which would make this unnecessary). */
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    /* Don't make the toolbox vibrant when in full-screen. macOS fullscreen has a
+     * native titlebar outside of the window (revealed on hover) anyways. */
+    /*:root[customtitlebar]:not([lwtheme], [macOSNativeFullscreen])*/ & {
+      background-color: transparent;
+
+      &::after {
+        -moz-default-appearance: -moz-window-titlebar;
+        appearance: auto;
+      }
+    }
+  }
+}
+
+:root:not(.lwtheme-applied/*[theme-image-in-toolbox]*/) :is(body, #background),
+:root[theme-image-in-toolbox] #navigator-toolbox {
+  background-image: var(--toolbox-background-image);
+  background-repeat: var(--toolbox-background-repeat);
+  background-position: var(--toolbox-background-position);
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-design-tokens */
+  background-size: var(--toolbox-background-size);
+}
