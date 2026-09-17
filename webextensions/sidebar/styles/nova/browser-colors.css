@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/186bc03087eca966915e5e6471209d98324d1199/browser/themes/shared/browser-colors.css */
+/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/browser/themes/shared/browser-colors.css */
 
 :root {
   --warning-icon-bgcolor: light-dark(#ffa436, #ffbd4f);

@@ -30,7 +30,7 @@
   --tab-surface-regular: var(--toolbar-background-color);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
   --tab-surface-hover: var(--tab-background-color-hover);
-  --tabbar-bg: var(--toolbar-background-color);
+  --tabbar-bg: var(--toolbox-background-color);
 
   --tab-group-color-blue: var(--tab-group-blue);
   --tab-group-color-blue-invert: var(--tab-group-blue-invert);
@@ -183,7 +183,7 @@ tab-item.split-view:hover tab-item-substance.split-substances-container,
 :root.mutiple-highlighted tab-item-substance.highlighted,
 :root.mutiple-highlighted tab-item-substance.highlighted:hover {
   --tab-surface: var(--tab-surface-active);
-  --tab-text: var(--browser-selected-tab-text, var(--tab-selected-textcolor, var(--toolbox-text-color)));
+  --tab-text: var(--browser-selected-tab-text, var(--tab-text-color-selected, var(--toolbox-text-color)));
 }
 
 tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized {
@@ -303,7 +303,7 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background:not(.base)
 }
 :root:not(.lwtheme-applied):not([color-scheme="system-color"]) tab-item-substance:is(.active, .bundled-active) .background:not(.base)::before {
   --tab-border-width: 1px;
-  --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--toolbar-background-color)));
+  --tab-surface: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-background-color-selected)));
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
   content: " ";
@@ -315,8 +315,8 @@ tab-item-substance:not(.split-view-sub:not(.highlighted)) .background:not(.base)
   position: absolute;
 }
 :root.lwtheme-applied tab-item-substance:is(.active, .bundled-active) .background:not(.base) {
-  outline: var(--tab-outline);
-  outline-color: var(--browser-tab-highlighter, var(--tab-selected-outline-color));
+  outline: var(--tab-border);
+  outline-color: var(--browser-tab-highlighter, var(--tab-border-color-selected));
   outline-offset: var(--tab-outline-offset);
 }
 
@@ -354,7 +354,7 @@ tab-item-substance.split-substances-container .background {
 :root.mutiple-highlighted tab-item-substance.highlighted {
   .background:not(.base),
   &:hover .background:not(.base) {
-    outline: var(--tab-outline);
+    outline: var(--tab-border);
     outline-color: var(--focus-outline-color);
     outline-offset: var(--tab-outline-offset);
   }
@@ -453,7 +453,7 @@ tab-item {
   }
 
   .burster {
-    --throbber-color: var(--tab-loading-fill);
+    --throbber-color: var(--tab-icon-fill-loading);
   }
 }
 

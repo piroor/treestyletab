@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/8a99ef927ea16827f2089e2bdf6a1188ddf645e7/browser/themes/shared/tabbrowser/tab.tokens.css */
+/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/browser/themes/shared/tabbrowser/tab.tokens.css */
 
 @layer
   base-ui-colors,
@@ -12,11 +12,27 @@
 @layer tokens-foundation {
   :root {
     --tab-attention-dot-color: var(--color-accent-attention);
+    --tab-background-color: transparent;
     --tab-background-color-hover: color-mix(in srgb, currentColor 11%, transparent);
     --tab-background-color-selected: var(--toolbar-background-color);
+    --tab-background-width-pinned-expanded: 40px;
+    --tab-border: var(--border-width) solid var(--tab-border-color);
+    --tab-border-color: var(--toolbarbutton-outline-color);
+    --tab-border-color-hover: var(--toolbarbutton-outline-color-hover);
+    --tab-border-color-selected: var(--toolbarbutton-outline-color-selected);
     --tab-border-radius: var(--toolbarbutton-border-radius);
     --tab-box-shadow-selected: var(--box-shadow-level-1);
+    --tab-close-button-background-color: var(--button-background-color-ghost);
+    --tab-close-button-background-color-hover: var(--toolbarbutton-background-color-hover);
+    --tab-close-button-background-color-active: var(--toolbarbutton-background-color-active);
+    --tab-close-button-border-color: var(--tab-border-color);
+    --tab-close-button-border-color-hover: var(--tab-border-color);
+    --tab-close-button-border-color-active: var(--tab-border-color);
     --tab-close-button-padding: 6px;
+    --tab-close-button-text-color: var(--tab-text-color);
+    --tab-close-button-text-color-hover: var(--tab-text-color);
+    --tab-close-button-text-color-active: var(--tab-text-color);
+    --tab-container-margin-inline-pinned-expanded: var(--space-small);
     --tab-group-blue: light-dark(var(--color-blue-50), var(--color-blue-10));
     --tab-group-blue-hover: light-dark(var(--color-blue-60), var(--color-blue-20));
     --tab-group-blue-invert: light-dark(var(--color-blue-10), var(--color-blue-50));
@@ -62,44 +78,59 @@
     --tab-group-yellow-invert: light-dark(var(--color-yellow-10), var(--color-yellow-50));
     --tab-group-yellow-text: light-dark(var(--color-white), var(--color-yellow-60));
     --tab-group-yellow-text-invert: light-dark(var(--color-yellow-60), var(--color-white));
-    --tab-hover-outline-color: transparent;
-    --tab-icon-end-margin: 5.5px;
-    --tab-inline-padding: 8px;
-    --tab-inner-inline-margin: var(--space-medium);
+    --tab-icon-fill-loading: var(--color-blue-50);
+    --tab-icon-margin-inline-end: 5.5px;
     --tab-label-line-height: 1.7;
-    --tab-loading-fill: var(--color-blue-50);
     --tab-margin-block: 4px;
-    --tab-outline: var(--border-width) solid var(--tab-outline-color);
-    --tab-outline-color: transparent;
+    --tab-margin-block-vertical: 2px;
+    --tab-margin-inline-inner: var(--space-medium);
+    --tab-margin-inline-pinned-expanded: var(--space-xsmall);
+    --tab-margin-overflow-clip: 2px;
     --tab-outline-offset: calc(-1 * var(--border-width));
-    --tab-overflow-clip-margin: 2px;
-    --tab-pinned-container-margin-inline-expanded: var(--space-small);
-    --tab-pinned-expanded-background-width: 40px;
-    --tab-pinned-margin-inline-expanded: var(--space-xsmall);
-    --tab-selected-outline-color: transparent;
-    --tab-selected-textcolor: var(--toolbar-text-color);
-    --tab-vertical-block-margin: 2px;
-    --tab-vertical-inline-padding: var(--space-medium);
+    --tab-padding-inline: 8px;
+    --tab-padding-inline-vertical: var(--space-medium);
+    --tab-text-color: var(--toolbox-text-color-current);
+    --tab-text-color-hover: var(--toolbox-text-color-current);
+    --tab-text-color-selected: var(--toolbar-text-color);
   }
 }
 
 @layer tokens-prefers-contrast {
   @media (prefers-contrast) {
     :root {
-      --tab-hover-outline-color: currentColor;
-      --tab-selected-outline-color: currentColor;
+      --tab-close-button-border-color-hover: var(--button-border-color-hover);
+      --tab-close-button-border-color-active: var(--button-border-color-active);
     }
   }
 }
 
+@layer tokens-forced-colors {
+  /*@media (forced-colors) {*/
+    :root.forced-colors {
+      --tab-background-color: var(--button-background-color);
+      --tab-background-color-hover: var(--button-background-color-hover);
+      --tab-background-color-selected: SelectedItem;
+      --tab-close-button-text-color-hover: var(--button-text-color-hover);
+      --tab-close-button-text-color-active: var(--button-text-color-active);
+      --tab-text-color: var(--button-text-color);
+      --tab-text-color-hover: var(--button-text-color-hover);
+      --tab-text-color-selected: SelectedItemText;
+    }
+  /*}*/
+}
+
 @layer tokens-foundation-nova {
   :root {
+    --tab-background-color: transparent;
     --tab-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
     --tab-background-color-selected: var(--toolbar-background-color);
+    --tab-border-color: transparent;
+    --tab-border-color-hover: transparent;
     --tab-border-color-accent: linear-gradient(96deg, var(--tab-border-color-selected-leading) 20.68%, var(--tab-border-color-selected-trailing) 79.34%);
     --tab-border-color-selected-leading: var(--color-violet-30);
     --tab-border-color-selected-trailing: var(--color-orange-30);
     --tab-box-shadow-selected: none;
+    --tab-container-margin-inline-pinned-expanded: 4px;
     --tab-group-blue: light-dark(var(--color-blue-50), var(--color-blue-30));
     --tab-group-blue-hover: light-dark(var(--color-blue-60), var(--color-blue-40));
     --tab-group-blue-text: light-dark(var(--color-white), var(--color-blue-90));
@@ -124,17 +155,21 @@
     --tab-group-yellow: light-dark(var(--color-yellow-50), var(--color-yellow-30));
     --tab-group-yellow-hover: light-dark(var(--color-yellow-60), var(--color-yellow-40));
     --tab-group-yellow-text: light-dark(var(--color-white), var(--color-yellow-90));
-    --tab-loading-fill: var(--color-accent-primary);
+    --tab-icon-fill-loading: var(--color-accent-primary);
     --tab-margin-block: 6px;
     --tab-outline-offset: -1px;
+    --tab-text-color-selected: var(--toolbar-text-color);
   }
 }
 
 @layer tokens-forced-colors-nova {
   /*@media (forced-colors) {*/
     :root.forced-colors {
-      --tab-border-color-selected-leading: var(--border-color);
-      --tab-border-color-selected-trailing: var(--border-color);
+      --tab-background-color-selected: var(--button-background-color-selected);
+      --tab-border-color: var(--button-border-color);
+      --tab-border-color-hover: var(--button-border-color-hover);
+      --tab-border-color-selected-leading: var(--tab-border-color-selected);
+      --tab-border-color-selected-trailing: var(--tab-border-color-selected);
     }
   /*}*/
 }
@@ -142,8 +177,9 @@
 @layer tokens-browser-theme {
   /*@media not ((forced-colors) or (-moz-native-theme)) {*/
     :root:not([color-scheme="system-color"])/*:is([theme-in-app], :not([lwtheme]))*/:not(.lwtheme-applied) {
+      --tab-background-color: transparent;
       --tab-background-color-selected: light-dark(var(--color-white), rgba(106, 106, 120, 0.7));
-      --tab-selected-textcolor: light-dark(rgb(21, 20, 26), var(--color-white));
+      --tab-text-color-selected: light-dark(rgb(21, 20, 26), var(--color-white));
     }
   /*}*/
 }
@@ -151,8 +187,10 @@
 @layer tokens-browser-theme-nova {
   /*@media not ((forced-colors) or (-moz-native-theme)) {*/
     :root:not([color-scheme="system-color"])/*:is([theme-in-app], :not([lwtheme]))*/:not(.lwtheme-applied) {
+      --tab-background-color: var(--button-background-color);
       --tab-background-color-hover: var(--toolbarbutton-background-color-hover);
       --tab-background-color-selected: var(--background-color-box);
+      --tab-text-color-selected: var(--toolbox-text-color);
     }
   /*}*/
 }
