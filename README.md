@@ -356,21 +356,6 @@ Please remind that some existing features or options may violate this policy due
   Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
   After that please right-click on the bookmark folder and choose "Open All as a Tree", then you'll get tabs with restored tree structure.
   </details>
-* <details id="feature-requests-better-compatibility-with-session-manager-extensions-or-add-high-power-session-management-feature"><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
-  
-  TST should work well with any other session manager extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
-  [Tab Session Manager (aka TSM)](https://addons.mozilla.org/firefox/addon/tab-session-manager/) is one of examples.
-  (Moreover, TST also provides an [API to open tabs with structure more safely](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior).
-  TST and the session manager extension will work together more smoothly, if it opens tabs via the API.)
-  
-  In other words, TST can't collaborate with any other extension if it does not give `openerTabId` as a hint to construct trees.
-  On such cases it is required to improve the other collaborator extension itself.
-  Sadly [it beyonds my power and needs a cooperation by the extension's author](https://github.com/piroor/treestyletab/issues/2914).
-  
-  As a workaround, you can use TST's bookmarking feature to save trees of tabs.
-  Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
-  After that please right-click on the bookmark folder and choose "Open All as a Tree", then you'll get tabs with restored tree structure.
-  </details>
 * <details id="feature-requests-how-to-open-new-group-folder-tab-intentionally"><summary>How to open new "group (folder) tab" intentionally?</summary>
   
   A helper addon [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/) provides a context menu command to create a new "group" from multiselected tabs.
