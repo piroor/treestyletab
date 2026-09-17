@@ -166,7 +166,7 @@ export async function init() {
           browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
-      updateTabbarDimensionsForLightWeightTheme(win);
+      updateTabbarDimensionsForTabBGImages(win);
       if (win.focused)
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
@@ -860,7 +860,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow, startup } = {})
       Size.updateContainers();
     updateTabbarLayout.lastSizes.initialized = true;
 
-    updateTabbarDimensionsForLightWeightTheme();
+    updateTabbarDimensionsForTabBGImages();
   }
 
   const sidebarWidthInWindow = { ...configs.sidebarWidthInWindow };
@@ -903,7 +903,20 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow, startup } = {})
 updateTabbarLayout.lastUpdateReasons = 0;
 updateTabbarLayout.lastScrollbarAutohideUpdatedAt = 0;
 
-async function updateTabbarDimensionsForLightWeightTheme(win) {
+// Third-party lightweight themes (and TST's own Nova style, which uses the
+// same "#background" gradient mechanism to look seamless behind the window
+// even without a lwtheme, as long as the color scheme is not synced with
+// the OS) need these background position information to be applied to
+// sticky tabs too, so their background images look seamlessly connected to
+// the "#background" element behind the tab bar.
+function shouldUpdateTabBGImages() {
+  return (
+    document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED) ||
+    (configs.style == 'nova' && configs.colorScheme != 'system-color')
+  );
+}
+
+async function updateTabbarDimensionsForTabBGImages(win) {
   if (!win)
     win = await browser.windows.get(mTargetWindow);
 
@@ -913,15 +926,14 @@ async function updateTabbarDimensionsForLightWeightTheme(win) {
   style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
   style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
 
-  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
-  if (shouldUpdateBG) {
+  if (shouldUpdateTabBGImages()) {
     for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
-      updateTabDimensionsForLightWeightTheme(tab);
+      updateTabDimensionsForTabBGImages(tab);
     }
   }
 }
 
-function updateTabDimensionsForLightWeightTheme(tab) {
+function updateTabDimensionsForTabBGImages(tab) {
   if (!tab?.$TST?.element)
     return;
 
@@ -938,10 +950,9 @@ function updateTabDimensionsForLightWeightTheme(tab) {
 }
 
 SidebarItems.onStickyTabsChanged.addListener(() => {
-  const shouldUpdateBG = document.documentElement.classList.contains(Constants.kTABBAR_STATE_LWTHEME_APPLIED);
-  if (shouldUpdateBG) {
+  if (shouldUpdateTabBGImages()) {
     for (const tab of document.querySelectorAll(`.sticky-tabs-container tab-item`)) {
-      updateTabDimensionsForLightWeightTheme(tab);
+      updateTabDimensionsForTabBGImages(tab);
     }
   }
 });

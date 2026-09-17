@@ -15,8 +15,16 @@
 
   --toolbox-background-image: none;
   --toolbox-background-repeat: no-repeat;
-  --toolbox-background-position: /*right top*/ right calc(0px - (var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset))) top calc(0px - var(--browser-sidebar-y-offset));
-  --toolbox-background-size: /*auto*/ var(--browser-window-width) calc(100% + var(--browser-sidebar-y-offset));
+  --toolbox-background-position: /*right top*/
+    right calc(0px - (var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset)))
+    top calc(0px - var(--browser-sidebar-y-offset));
+  --browser-bg-position-definition: "\
+    right calc(0px - (var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset))) \
+    top calc(0px - var(--browser-sidebar-y-offset)) \
+  ";
+  --toolbox-background-size: /*auto*/
+    var(--browser-window-width)
+    calc(100% + var(--browser-sidebar-y-offset));
 
   &/*@media -moz-pref("browser.nova.enabled")*/ {
     --toolbox-background-image: var(--toolbox-background-gradient);
@@ -34,8 +42,14 @@
        the latter atop the former. */
     --toolbox-background-image: var(--lwt-header-image), var(--lwt-additional-images);
     --toolbox-background-repeat: no-repeat, var(--lwt-background-tiling);
-    --toolbox-background-position: right top, var(--lwt-background-alignment);
-    --toolbox-background-size: auto, var(--lwt-background-size);
+    --toolbox-background-position: /*right top*/
+      right calc(0px - (var(--browser-window-width) - var(--browser-sidebar-width) - var(--browser-sidebar-x-offset)))
+      top calc(0px - var(--browser-sidebar-y-offset)),
+      var(--lwt-background-alignment);
+    --toolbox-background-size: /*auto*/
+      var(--browser-window-width)
+      calc(100% + var(--browser-sidebar-y-offset)),
+      var(--lwt-background-size);
   }
 
   --ext-theme-background-transition: background-color 0.1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
@@ -112,9 +126,14 @@ body,
 
 :root:not(.lwtheme-applied/*[theme-image-in-toolbox]*/) :is(body, #background),
 :root[theme-image-in-toolbox] #navigator-toolbox {
-  background-image: var(--toolbox-background-image);
-  background-repeat: var(--toolbox-background-repeat);
-  background-position: var(--toolbox-background-position);
+  --browser-bg-images:   var(--toolbox-background-image);
+  --browser-bg-repeat:   var(--toolbox-background-repeat);
+  --browser-bg-position: var(--toolbox-background-position);
   /* stylelint-disable-next-line stylelint-plugin-mozilla/use-design-tokens */
-  background-size: var(--toolbox-background-size);
+  --browser-bg-size:     var(--toolbox-background-size);
+
+  background-image:    var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size:     var(--browser-bg-size, auto);
+  background-repeat:   var(--browser-bg-repeat, none);
 }
