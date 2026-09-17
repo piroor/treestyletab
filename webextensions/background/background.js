@@ -894,6 +894,7 @@ configs.$addObserver(key => {
   switch (key) {
     case 'style':
       updatePanelUrl();
+    case 'colorScheme':
       updateIconForBrowserTheme();
       break;
 
