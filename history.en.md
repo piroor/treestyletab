@@ -1,6 +1,15 @@
 # History
 
  - trunk/HEAD
+ - 4.4.5 (2026.9.18)
+   * Update Nova theme based on latest Nightly.
+   * Support system color scheme with Nova.
+   * Add a new choice of the default action of the "New Tab" button, to show the container selector always.
+   * Container selector and new tab relation menu are now shown near the cursor, when they are not anchored.
+   * Simulate "Add new container" and "Manage container" commands from the container selector on the "new tab" button.
+   * Appy user styles to more in-content UIs: tab previews, tab groups menu, and more.
+   * Fix failure of initial rendering of tabs in new windows.
+   * Fix broken "circle" icon for containers.
  - 4.4.4 (2026.9.2)
    * Dimension new windows opened by "Move (tab) to New Window" commands more smartly by Firefox itself.
    * Never produce scrolling for pinned tabs with only one row, to prevent unexpected "jumping" of pinned tabs.
