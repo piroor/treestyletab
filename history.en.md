@@ -7,7 +7,7 @@
    * Add a new choice of the default action of the "New Tab" button, to show the container selector always.
    * Container selector and new tab relation menu are now shown near the cursor, when they are not anchored.
    * Simulate "Add new container" and "Manage container" commands from the container selector on the "new tab" button.
-   * Appy user styles to more in-content UIs: tab previews, tab groups menu, and more.
+   * Apply user styles to more in-content UIs: tab previews, tab groups menu, and more.
    * Fix failure of initial rendering of tabs in new windows.
    * Fix broken "circle" icon for containers.
  - 4.4.4 (2026.9.2)
