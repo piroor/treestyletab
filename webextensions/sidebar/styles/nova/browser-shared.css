@@ -81,14 +81,14 @@
 
 body,
 #background {
-  background-color: var(--toolbox-background-color);
+  --tabbar-bg/*background-color*/: var(--toolbox-background-color);
   color: var(--toolbox-text-color);
 
   will-change: background-color;
   transition: background-color var(--inactive-window-transition);
 
   :root:-moz-window-inactive & {
-    background-color: var(--toolbox-background-color-inactive);
+    --tabbar-bg/*background-color*/: var(--toolbox-background-color-inactive);
     color: var(--toolbox-text-color-inactive);
   }
 
@@ -114,7 +114,7 @@ body,
     /* Don't make the toolbox vibrant when in full-screen. macOS fullscreen has a
      * native titlebar outside of the window (revealed on hover) anyways. */
     /*:root[customtitlebar]:not([lwtheme], [macOSNativeFullscreen])*/ & {
-      background-color: transparent;
+      --tabbar-bg/*background-color*/: transparent;
 
       &::after {
         -moz-default-appearance: -moz-window-titlebar;
