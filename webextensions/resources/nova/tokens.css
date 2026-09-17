@@ -1,0 +1,26 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+/*
+ Design tokens (custom properties) of the Nova design, for non-sidebar
+ in-content pages such as options.html and manage-containers.html.
+
+ Unlike /sidebar/styles/nova/nova.css, this file only pulls in the files
+ under this directory which exclusively define custom properties (colors,
+ sizes, etc.) and never apply any visible style to real elements like
+ "body" or "#background". tab.tokens.css and tabs.css are intentionally
+ excluded because they only define tab-strip specific tokens which are
+ meaningless outside of the sidebar.
+
+ This must be loaded after /resources/ui-color.css, so that the
+ "tokens-*" layers defined by these files are registered later than the
+ "base-ui-colors" layer defined by ui-color.css and win the cascade for
+ any custom property defined by both.
+*/
+@import url("./tokens-shared.css");
+@import url("./tokens-platform.css");
+@import url("./toolbar.css");
+@import url("./browser-colors.css");

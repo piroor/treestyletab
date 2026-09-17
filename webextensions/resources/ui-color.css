@@ -40,10 +40,10 @@
   --in-content-category-background-selected-hover: rgba(12,12,13,0.15);
   --in-content-category-background-selected-active: rgba(12,12,13,0.2);
   --in-content-tab-color: #424f5a;
-  --in-content-link-color: var(--blue-60);
-  --in-content-link-color-hover: var(--blue-70);
-  --in-content-link-color-active: var(--blue-80);
-  --in-content-link-color-visited: var(--blue-60);
+  --link-color: var(--blue-60);
+  --link-color-hover: var(--blue-70);
+  --link-color-active: var(--blue-80);
+  --link-color-visited: var(--blue-60);
   --in-content-button-background: var(--grey-90-a10);
   --in-content-button-background-mixed: color-mix(in srgb, var(--in-content-button-background) 100%, var(--in-content-page-background));
   --in-content-button-background-hover: var(--grey-90-a20);
@@ -287,23 +287,23 @@
 }
 
 :link {
-  color: var(--in-content-link-color);
+  color: var(--link-color);
 
   &:hover {
-    color: var(--in-content-link-color-hover);
+    color: var(--link-color-hover);
   }
   &:active {
-    color: var(--in-content-link-color-active);
+    color: var(--link-color-active);
   }
 }
 :visited {
-  color: var(--in-content-link-color-visited);
+  color: var(--link-color-visited);
 
   &:hover {
-    color: var(--in-content-link-color-hover);
+    color: var(--link-color-hover);
   }
   &:active {
-    color: var(--in-content-link-color-active);
+    color: var(--link-color-active);
   }
 }
 
@@ -389,9 +389,9 @@ hr {
     --in-content-button-background-active: rgba(249,249,250,0.2);
     --in-content-button-background-active-mixed: color-mix(in srgb, var(--in-content-button-background-active) 100%, var(--in-content-page-background));
 
-    --in-content-link-color: var(--blue-40);
-    --in-content-link-color-hover: var(--blue-50);
-    --in-content-link-color-active: var(--blue-60);
+    --link-color: var(--blue-40);
+    --link-color-hover: var(--blue-50);
+    --link-color-active: var(--blue-60);
 
     --focus-outline-color: #00DDFF; /* https://searchfox.org/mozilla-central/rev/f60e5304300b286376664b25143cdc6b38a0f0d7/browser/themes/shared/browser-shared.css#129 */
 

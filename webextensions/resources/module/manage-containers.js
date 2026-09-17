@@ -31,6 +31,12 @@ function styleSuffix() {
 
 function applyStyle() {
   document.documentElement.dataset.style = styleSuffix();
+  // Colors and other design tokens of the Nova style are defined by files
+  // under /resources/nova/, so that they can be shared with the sidebar's
+  // own Nova style (/sidebar/styles/nova/nova.css). They only override
+  // custom properties defined by /resources/ui-color.css, so it is safe to
+  // load them only while the Nova style is active.
+  document.querySelector('#nova-tokens-loader').href = configs.style == 'nova' ? '/resources/nova/tokens.css' : '';
 }
 
 function applyUserStyleRules() {

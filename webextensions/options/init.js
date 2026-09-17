@@ -143,9 +143,23 @@ let mShowExpertOptionsTemporarily = false;
 
 let mThrottledApplyChangedUserStyles = null;
 
+function applyStyle() {
+  // Colors and other design tokens of the Nova style are defined by files
+  // under /resources/nova/, so that they can be shared with the sidebar's
+  // own Nova style (/sidebar/styles/nova/nova.css). They only override
+  // custom properties defined by /resources/ui-color.css (imported from
+  // options.css), so it is safe to load them only while the Nova style is
+  // active.
+  document.getElementById('nova-tokens-loader').href = configs.style == 'nova' ? '/resources/nova/tokens.css' : '';
+}
+
 function onConfigChanged(key) {
   const value = configs[key];
   switch (key) {
+    case 'style':
+      applyStyle();
+      break;
+
     case 'successorTabControlLevel': {
       const checkbox = document.getElementById('simulateSelectOwnerOnClose');
       const label = checkbox.parentNode;
@@ -608,6 +622,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   await configs.$loaded;
+
+  applyStyle();
 
   let focusedItem;
   try {

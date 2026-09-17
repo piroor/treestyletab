@@ -5,13 +5,13 @@
 */
 
 @import url("/resources/ui-color.css");
-@import url("./tokens-shared.css");
-@import url("./tokens-platform.css");
-@import url("./toolbar.css");
+@import url("/resources/nova/tokens-shared.css");
+@import url("/resources/nova/tokens-platform.css");
+@import url("/resources/nova/toolbar.css");
 @import url("./tab.tokens.css");
 @import url("./tabs.css");
 @import url("./browser-shared.css");
-@import url("./browser-colors.css");
+@import url("/resources/nova/browser-colors.css");
 
 :root {
   --color-animation: 0s ease-out;

@@ -1,29 +1,64 @@
-# nova/ ディレクトリの更新方針
+# Nova デザインのトークンの更新方針
 
-このディレクトリには、Firefox 本体(Nova デザイン)の CSS をそのまま、または部分的に改変して取り込んだファイルと、
-Tree Style Tab (TST) 独自の CSS が混在している。
+Firefox 本体(Nova デザイン)の CSS は、誰がそれを読み込む必要があるかによって、2 か所に分けて流用されている。
 
-- **`nova.css` だけは TST 独自ファイル。Firefox 本体からの流用ではない。**
-- それ以外の全ファイルは Firefox 本体のソースを流用したもの。各ファイル冒頭に
+- `webextensions/resources/nova/` ── カスタムプロパティ(色・サイズなど)の定義だけを行っており、どのページで
+  読み込んでも安全なファイル。これらは `webextensions/resources/nova/tokens.css` という TST 独自の小さな
+  集約ファイル(後述「`tokens.css` 集約ファイル」参照)から `@import` されており、`tokens.css` 自体は
+  `options.html`/`manage-containers.html` のようなサイドバー以外の in-content ページから読み込まれる。
+- `webextensions/sidebar/styles/nova/` ── `nova.css` 自体(TST 独自、サイドバーの Nova スタイルシート)と、
+  タブバー固有(サイドバー以外では意味を持たない)か、`body`/`#background` のような要素に実際の見た目の
+  ルールを適用しており(他のページに漏れ出してはいけない)Firefox から流用したファイル。これらは
+  `nova.css` からしか `@import` されず、`tokens.css` からは読み込まれない。
+
+- **`nova.css`(`webextensions/sidebar/styles/nova/nova.css`)は TST 独自ファイル。Firefox 本体からの流用では
+  ない。** 以下に挙げる Firefox 流用ファイルを(どちらのディレクトリに置かれていても)すべて `@import` して
+  おり、それに加えてタブバー固有のルールを持つ。
+- 以下に挙げるその他のファイルは、すべて Firefox 本体のソースを流用したもの。各ファイル冒頭に
   `/* https://searchfox.org/firefox-main/rev/<リビジョンハッシュ>/<元ファイルパス> */`
   という形式で、取得時点の permalink がコメントとして記載されている。
+- `tokens.css` と `CLAUDE.md`/`CLAUDE.ja.md`(このドキュメント)── いずれも `resources/nova/` にある ── は、
+  両ディレクトリの中で Firefox からの流用ではない唯一のファイル群である。`tokens.css` が何のためのファイルかは、
+  後述の「`tokens.css` 集約ファイル」を参照。
 
 このドキュメントは、その流用ファイル群を最新の Firefox 本体のソースに追従させて更新する際の手順を、
 Claude Code などの AI エージェントが再現できるようにまとめたものである。
 
 ## 対象ファイルと流用元
 
-| ローカルファイル | 流用元(mozilla-firefox/firefox 上のパス) |
-| --- | --- |
-| `tokens-shared.css` | `toolkit/themes/shared/design-system/dist/tokens-shared.css` |
-| `toolbar.css` | `toolkit/themes/shared/design-system/src/toolbar.css` |
-| `tabs.css` | `browser/themes/shared/tabbrowser/tabs.css` |
-| `tab.tokens.css` | `browser/themes/shared/tabbrowser/tab.tokens.css` |
-| `browser-shared.css` | `browser/themes/shared/browser-shared.css` |
-| `browser-colors.css` | `browser/themes/shared/browser-colors.css` |
-| `tokens-platform.css` | `toolkit/themes/shared/design-system/dist/tokens-platform.css` |
+| ローカルファイル | ディレクトリ | `tokens.css` から読み込まれるか | 流用元(mozilla-firefox/firefox 上のパス) |
+| --- | --- | --- | --- |
+| `tokens-shared.css` | `resources/nova/` | Yes | `toolkit/themes/shared/design-system/dist/tokens-shared.css` |
+| `toolbar.css` | `resources/nova/` | Yes | `toolkit/themes/shared/design-system/src/toolbar.css` |
+| `browser-colors.css` | `resources/nova/` | Yes | `browser/themes/shared/browser-colors.css` |
+| `tokens-platform.css` | `resources/nova/` | Yes | `toolkit/themes/shared/design-system/dist/tokens-platform.css` |
+| `tabs.css` | `sidebar/styles/nova/` | No | `browser/themes/shared/tabbrowser/tabs.css` |
+| `tab.tokens.css` | `sidebar/styles/nova/` | No | `browser/themes/shared/tabbrowser/tab.tokens.css` |
+| `browser-shared.css` | `sidebar/styles/nova/` | No | `browser/themes/shared/browser-shared.css` |
 
-`nova.css` はこの表に含まれない。ただし更新作業の影響を受けることがある(後述)。
+(どちらのディレクトリも `webextensions/<上記のパス>` である。)`nova.css` 自体はこの表に含まれない。前述の
+通り。
+
+## `tokens.css` 集約ファイル
+
+`webextensions/resources/nova/tokens.css` は、Firefox からの流用ではない TST 独自の小さなファイルで、上記の
+うち実際に `resources/nova/` に置かれているファイル ── すなわちカスタムプロパティの定義だけを行っていて、
+実要素に実際の見た目を適用することのないファイル ── だけを `@import` している。`tab.tokens.css` と
+`tabs.css` は、タブバー固有でサイドバー以外では意味を持たないため、`browser-shared.css` は他とは違い
+`body`/`#background` に実際の見た目のルールも適用しており広く読み込むと無関係なページに漏れ出してしまうため、
+それぞれ `nova.css` と同じ `sidebar/styles/nova/` に置いたままにしてある。
+
+`tokens.css` は、サイドバー以外の in-content ページ ── 現状では `webextensions/options/options.html` と
+`webextensions/resources/manage-containers.html` ── が、`nova.css` が持つサイドバー/タブバー用のルールを
+巻き込まずに、Nova の色・サイズのトークンだけを取り込んで
+`webextensions/resources/ui-base.css`/`ui-color.css` を上書きできるようにするために存在する。これらのページは、
+`configs.style == 'nova'` のときだけ(JavaScript で `href` を切り替える `<link>` 要素経由で)`tokens.css` を
+読み込む。具体的な仕組みは `webextensions/options/init.js` と
+`webextensions/resources/module/manage-containers.js` を参照。
+
+**Firefox から流用したファイルに手を入れるときは、`tokens.css` から読み込むべきかどうか(上の表と
+「見た目のルールが漏れ出さないか」という懸念に従う)に応じて正しいディレクトリに置いたままにし、`tokens.css`
+と `nova.css` それぞれの `@import` リストを、各ファイルの実際の置き場所と一致させておくこと。**
 
 ## 重要: Firefox のソース取得元
 
@@ -124,14 +159,39 @@ Firefox 側でカスタムプロパティ名がリネーム/再設計される�
    (例: 過去の更新で `tab.tokens.css` の `--tab-outline` → `--tab-border`、
    `--tab-loading-fill` → `--tab-icon-fill-loading`、`--tab-selected-textcolor` → `--tab-text-color-selected`、
    `--tab-selected-outline-color` → `--tab-border-color-selected` 等の大規模なリネームが発生した)。
-2. `nova.css` を含む `nova/` 配下の全ファイルに対して、リネーム前の変数名を
-   `grep -n -- '--old-name'` で検索し、参照している箇所をすべて新しい名前に書き換える。
-   `nova.css` は流用元ファイルではないが、これらのトークンの**消費者**であるため、参照の書き換えは
-   必要な追従作業であり、「nova.css には手を入れない」という原則の例外である。
+2. これらのトークンを利用しているすべての箇所を対象に、リネーム前の変数名を `grep -n -- '--old-name'` で検索し、
+   参照している箇所をすべて新しい名前に書き換える。最低限、`resources/nova/` と `sidebar/styles/nova/` の
+   両ディレクトリ内の全ファイル(`nova.css` を含む)、そして(後述の「`ui-base.css`/`ui-color.css` との名前の
+   整合」の通り `resources/ui-base.css`/`ui-color.css` やその利用側も同じトークン名を参照している場合がある
+   ため)それらも対象に含める。`nova.css`・`ui-base.css`・`ui-color.css` はいずれも Firefox からの流用
+   ファイルではないが、これらのトークンの**消費者**であるため、参照の書き換えは必要な追従作業であり、
+   「Firefox からの流用ファイル以外には手を入れない」という原則の例外である。
 3. 逆に、ある流用ファイルの forced-colors 系セクションから特定の変数の明示的な上書きが**削除**されている
    場合、それは「他のトークン経由の参照チェーンで自動的に正しい値になるよう再設計された」ためであることが
    多い。安易に「削除された値を復元する」のではなく、削除後の参照チェーン(他のファイルの同名トークン定義)を
    たどって、意図通りの値になるか確認すること。
+
+## `ui-base.css`/`ui-color.css` との名前の整合
+
+`webextensions/resources/ui-base.css` と `ui-color.css` は、このドキュメントで扱っている Nova デザイン
+トークンとは独立に、一般的な「in-content ページ」の見た目(`webextensions/options/options.html` や
+`webextensions/resources/manage-containers.html` などサイドバー以外のページで使われる)を定義している。
+`ui-color.css` のカスタムプロパティが、これら Nova トークンのいずれかと同じ用途でありながら別名になっている
+場合(例えば `ui-color.css` の `--in-content-link-color`/`-hover`/`-active`/`-visited` は、`tokens-shared.css`
+の `--link-color`/`-hover`/`-active`/`-visited` に対応していた)は、変換用のレイヤーを追加するのではなく、
+`ui-color.css` 側の名前(とそれを参照しているすべての箇所)を Nova 側の名前に合わせてリネームしてある。
+これにより、`tokens.css` を `ui-color.css` の後に読み込みさえすれば(前述「`tokens.css` 集約ファイル」参照)、
+通常の CSS のカスケードだけで Nova 側の値が `ui-color.css` の既定値を上書きするようになり、変換のための
+コードは一切不要になる。
+
+Nova トークンに手を入れるときは、`ui-base.css`/`ui-color.css` に同じ用途で別名のプロパティが
+定義されていないか確認し、あれば同じ方針で揃えること: `ui-base.css`/`ui-color.css` 側(とその利用側すべて。
+洗い出し方は前述の「リネームされた変数の伝播」と同じ)を、Nova 側の名前に合わせてリネームする。
+リネームするのは、対応関係が曖昧でなく、かつバリエーションの集合がきれいに一致する場合だけに限ること
+(例えば `ui-color.css` の `--tab-group-color-*` は `-pale` というバリエーションを持つが、`tab.tokens.css` の
+`--tab-group-*` には対応するものがなく、バリエーションの構成自体が異なる ── これは単純なリネームではなく
+構造的な不一致なので、あえて手を付けずに残してある)。判断に迷う場合は、多対一やロスのある対応関係を
+無理に作るより、既存の名前をそのまま残すこと。
 
 ## 文字コード/改行コードの注意
 
@@ -144,7 +204,9 @@ Firefox 側でカスタムプロパティ名がリネーム/再設計される�
 1. 各ファイルについて `{` と `}` の出現数が一致することを確認する(構文的に閉じ忘れがないか)。
 2. 組み立てたファイル内容を、更新前のローカルファイルおよび新リビジョンの Firefox 側ファイルと突き合わせ、
    意図した差分だけが含まれていることを確認する(想定外の内容欠落・重複がないか)。
-3. `nova/` 配下の全ファイルに対して、リネームされた変数の旧名が残っていないか最終的に `grep` で確認する。
+3. 最終確認として、前述の「リネームされた変数の伝播」に挙げたすべての利用箇所(`resources/nova/`、
+   `sidebar/styles/nova/`、`ui-base.css`/`ui-color.css` とその利用側)に対して `grep` を行い、リネームした
+   変数の旧名が残っていないか確認する。
 4. `git diff --stat` で変更されたファイル・行数の概要を確認し、想定より大きく変わっているファイルがあれば
    改行コード等の問題を疑う。
 5. 可能であれば実際に拡張機能を起動し、nova テーマの見た目(タブの背景色、選択タブのアウトライン、
