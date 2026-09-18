@@ -691,6 +691,7 @@ function onMessageExternal(message, sender) {
           TSTAPI.getTargetTabs(message, sender));
         const cache = {};
         const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
+          addonId:  sender.id,
           interval: message.interval,
           cache,
         }));
@@ -715,6 +716,7 @@ function onMessageExternal(message, sender) {
           TSTAPI.getTargetTabs(message, sender));
         const cache = {};
         const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
+          addonId:  sender.id,
           light:    true,
           interval: message.interval,
           cache,
