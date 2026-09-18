@@ -67,7 +67,7 @@ install_extlib: install_dependency
 	sed -i -e "s/(this, (function () { 'use strict';/(this || self, (function () { 'use strict';/" $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.js
 	echo 'window["codemirror-picker"] = self["codemirror-picker"];' >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.js
 	cat node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.css >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.css
-	cp node_modules/dompurify/dist/purify.es.mjs* $(EXTERNAL_LIB_DIR)/
+	cp node_modules/dompurify/dist/purify.es.mjs $(EXTERNAL_LIB_DIR)/
 	cp node_modules/morphdom/dist/morphdom-esm.js $(EXTERNAL_LIB_DIR)/
 
 fix_locale_errors:
