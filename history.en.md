@@ -1,6 +1,8 @@
 # History
 
  - trunk/HEAD
+ - 4.4.6 (2026.9.18)
+   * Fix vulnerability of `get-tree` and `get-light-tree`: they bypassed permission model and exposed tabs information to other addons unexpectedly. It was regressed since 4.0.0, and all releases until 4.4.5 are affected.
  - 4.4.5 (2026.9.18)
    * Update Nova theme based on latest Nightly.
    * Support system color scheme with Nova.
