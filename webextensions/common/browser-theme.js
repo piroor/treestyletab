@@ -27,7 +27,7 @@ export function normalizeThemeColor(color) {
   return `rgb(${red}, ${green}, ${blue})`;
 }
 
-export function normalizeThemeImage(image) {
+function normalizeThemeImage(image) {
   if (!image ||
       typeof image != 'object' ||
       Array.isArray(image))
@@ -49,7 +49,7 @@ function toCSSImage(image) {
   return `url(${JSON.stringify(image)})`;
 }
 
-export function normalizeTheme(theme) {
+function normalizeTheme(theme) {
   if (!theme)
     return theme;
 
