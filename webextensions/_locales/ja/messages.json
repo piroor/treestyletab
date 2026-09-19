@@ -467,6 +467,9 @@
   "config_style_none": { "message": "装飾無し" },
   "config_style_none_info": { "message": "（※「詳細設定」→「ユーザースタイルシート」でお好みの装飾を設定してください)" },
 
+  "config_applyBrowserThemeColors_label": { "message": "ブラウザーのテーマの配色をサイドバーに反映する" },
+  "config_applyBrowserThemeColors_description": { "message": "※Bug 1542044のため、システムテーマ以外のテーマを暗い配色で使用するとサイドバー内だけが明るい配色になる場合があります。その場合はこのチェックを外してください。" },
+
   "config_colorScheme_caption": { "message": "配色:" },
   "config_colorScheme_photon": { "message": "Photon" },
   "config_colorScheme_systemColor": { "message": "システムカラー" },
