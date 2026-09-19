@@ -15,6 +15,7 @@ import {
   stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as BrowserTheme from '/common/browser-theme.js';
 import * as Constants from '/common/constants.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Dialog from '/common/dialog.js';
@@ -821,6 +822,7 @@ async function updateIconForBrowserTheme(theme) {
     const win = await browser.windows.getLastFocused();
     theme = await browser.theme.getCurrent(win.id);
   }
+  theme = BrowserTheme.getApplicableTheme(theme);
 
   log('updateIconForBrowserTheme: ', theme);
   if (theme.colors) {
@@ -895,6 +897,7 @@ configs.$addObserver(key => {
     case 'style':
       updatePanelUrl();
     case 'colorScheme':
+    case 'applyBrowserThemeColors':
       updateIconForBrowserTheme();
       break;
 

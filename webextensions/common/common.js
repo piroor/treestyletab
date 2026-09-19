@@ -474,6 +474,7 @@ export const configs = new Configs({
   acceleratedTabCreation:                                 false,
   enableWorkaroundForBug1548949:                          true,
   enableWorkaroundForBug1763420_reloadMaskImage:          true, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
+  applyBrowserThemeColors:                                true, // see https://bugzilla.mozilla.org/show_bug.cgi?id=1542044
   maximumDelayForBug1561879:                              500,
   workaroundForBug1548949DroppedItems:                    null,
   heartbeatInterval:                                      5000,

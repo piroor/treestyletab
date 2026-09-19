@@ -1109,6 +1109,10 @@ async function onConfigChange(changedKey) {
       window.location.reload();
       break;
 
+    case 'applyBrowserThemeColors':
+      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
+      break;
+
     case 'colorScheme':
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
