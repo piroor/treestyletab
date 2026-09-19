@@ -262,8 +262,7 @@ export async function init() {
       // We need to re-calculate mixed colors when the system color scheme is changed.
       // See also: https://github.com/piroor/treestyletab/issues/2314
       window.matchMedia('(prefers-color-scheme: dark)').addListener(async _event => {
-        const theme = await browser.theme.getCurrent(mTargetWindow);
-        applyBrowserTheme(theme);
+        applyBrowserTheme();
       });
 
       browser.runtime.onMessage.addListener(onMessage);
@@ -466,7 +465,8 @@ function processAllStyleRulesIn(sheetOrRule, processor) {
 }
 
 
-async function applyBrowserTheme(theme) {
+async function applyBrowserTheme(theme = null) {
+  theme ||= await browser.theme.getCurrent(mTargetWindow);
   log('applying theme ', theme);
 
   const browserThemeStyle = await BrowserTheme.generateThemeDeclarations(theme);
@@ -1110,7 +1110,7 @@ async function onConfigChange(changedKey) {
       break;
 
     case 'applyBrowserThemeColors':
-      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
+      applyBrowserTheme();
       break;
 
     case 'colorScheme':
