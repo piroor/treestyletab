@@ -93,6 +93,11 @@ const mItems = [
         ]
       },
       {
+        title: browser.i18n.getMessage('config_applyBrowserThemeColors_label'),
+        key:   'applyBrowserThemeColors',
+        type:  'checkbox'
+      },
+      {
         title: browser.i18n.getMessage('config_animation_label'),
         key:   'animation',
         type:  'checkbox'
