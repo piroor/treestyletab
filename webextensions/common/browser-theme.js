@@ -11,7 +11,90 @@ import {
 import * as Color from './color.js';
 import * as Constants from './constants.js';
 
+// Values returned by browser.theme.getCurrent() are raw values from the
+// theme's manifest.json, so they can be not only CSS strings but also:
+//  * colors: RGB(A) arrays like [245, 236, 255] or [0, 0, 0, 0.16]
+//  * images: gradient objects like { "linear-gradient": "135deg, ..." }
+//    (Firefox 153 and later, used by the "Firefox themes" like "Dusk")
+// This converts them to CSS values we can handle.
+// https://searchfox.org/mozilla-central/source/toolkit/components/extensions/schemas/theme.json
+export function normalizeThemeColor(color) {
+  if (!Array.isArray(color))
+    return color;
+  const [red, green, blue, alpha] = color;
+  if (typeof alpha == 'number')
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  return `rgb(${red}, ${green}, ${blue})`;
+}
+
+export function normalizeThemeImage(image) {
+  if (!image ||
+      typeof image != 'object' ||
+      Array.isArray(image))
+    return image;
+  // https://searchfox.org/firefox-main/rev/f35f2f1f3ae810c36ac678d269129d54040d6994/toolkit/modules/LightweightThemeConsumer.sys.mjs#652-661
+  const [gradient, args] = Object.entries(image)[0] || [];
+  if (!gradient)
+    return null;
+  return `${gradient}(${args})`;
+}
+
+function isCSSGradient(image) {
+  return typeof image == 'string' && /^[a-z-]*gradient\(/i.test(image);
+}
+
+function toCSSImage(image) {
+  if (isCSSGradient(image))
+    return image;
+  return `url(${JSON.stringify(image)})`;
+}
+
+export function normalizeTheme(theme) {
+  if (!theme)
+    return theme;
+
+  const normalized = { ...theme };
+
+  if (theme.colors) {
+    normalized.colors = {};
+    for (const [key, value] of Object.entries(theme.colors)) {
+      normalized.colors[key] = normalizeThemeColor(value);
+    }
+  }
+
+  if (theme.images) {
+    normalized.images = {};
+    for (const [key, value] of Object.entries(theme.images)) {
+      normalized.images[key] = Array.isArray(value) ?
+        value.map(normalizeThemeImage).filter(image => !!image) :
+        normalizeThemeImage(value);
+    }
+  }
+
+  return normalized;
+}
+
+// A theme can have both "theme" and "dark_theme" definitions (Firefox 153
+// and later, e.g. "Dusk" and other "Firefox themes", and "Alpenglow"), and
+// Firefox applies the "dark_theme" variant when the system color scheme is
+// dark. However browser.theme.getCurrent() and browser.theme.onUpdated
+// always return only the "theme" (light) variant, so we cannot know actual
+// colors applied to the browser window in such cases, and the sidebar
+// would be rendered with light colors in a dark window. There is no way to
+// detect this reliably from an extension, so we just provide an option to
+// ignore the browser theme and use our own colors for the current color
+// scheme instead.
+// See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1542044
+export function getApplicableTheme(theme) {
+  theme = normalizeTheme(theme);
+  if (theme &&
+      !configs.applyBrowserThemeColors)
+    return { ...theme, colors: null, images: null };
+  return theme;
+}
+
 export function generateThemeRules(theme) {
+  theme = normalizeTheme(theme);
   const rules = [];
   const generateCustomRule = (theme, prefix = '') => {
     for (const key of Object.keys(theme)) {
@@ -27,6 +110,8 @@ export function generateThemeRules(theme) {
           if (/^[^:]+:\/\//.test(value))
             value = `url(${JSON.stringify(value)})`;
           rules.push(`--theme-${propertyKey}: ${value};`);
+          if (!Color.isParsable(value))
+            break;
           for (let alpha = 10; alpha < 100; alpha += 10) {
             rules.push(`--theme-${propertyKey}-${alpha}: ${Color.overrideCSSAlpha(value, alpha / 100)};`);
           }
@@ -43,6 +128,7 @@ const BG_POSITION_LEFT_OFFSET  = 'var(--browser-sidebar-x-offset) - var(--elemen
 const BG_POSITION_RIGHT_OFFSET = 'calc(var(--browser-sidebar-width) - var(--browser-window-width) + var(--browser-sidebar-x-offset) - var(--element-x-end-offset, 0px))';
 
 export async function generateThemeDeclarations(theme) {
+  theme = getApplicableTheme(theme);
   if (!theme ||
       !theme.colors) {
     return `
@@ -88,6 +174,7 @@ export async function generateThemeDeclarations(theme) {
 
     const positions = theme.properties?.additional_backgrounds_alignment || [];
     const repeats = theme.properties?.additional_backgrounds_tiling || [];
+    const sizes = theme.properties?.additional_backgrounds_size || [];
     if (Array.isArray(theme.images.additional_backgrounds) &&
         theme.images.additional_backgrounds.length > 0) {
       const leftImageCount = positions.filter(position => position.includes('left')).length;
@@ -97,6 +184,7 @@ export async function generateThemeDeclarations(theme) {
         const image = theme.images.additional_backgrounds[i];
         const position = positions.length > 0 && positions[Math.min(i, positions.length - 1)] || 'default';
         const repeat = repeats.length > 0 && repeats[Math.min(i, repeats.length - 1)] || 'default';
+        const size = sizes.length > 0 && sizes[Math.min(i, sizes.length - 1)] || 'auto';
         if (repeatableImageCount > 0 &&
             repeat.includes('no-repeat'))
           continue;
@@ -121,8 +209,7 @@ export async function generateThemeDeclarations(theme) {
             }
           }),
           repeat,
-          size: 'auto',
-          //size: repeat == 'reepat-y' ? 'auto' : 'auto 100%',
+          size,
         });
       }
       bgAlpha = 0.75;
@@ -167,7 +254,7 @@ export async function generateThemeDeclarations(theme) {
     */
 
     if (hasImage) {
-      extraColors.push('--browser-bg-images: ' + images.map(image => `url(${JSON.stringify(image.url)})`).join(','));
+      extraColors.push('--browser-bg-images: ' + images.map(image => toCSSImage(image.url)).join(','));
       extraColors.push('--browser-bg-position: ' + images.map(image => image.position).join(','));
       extraColors.push('--browser-bg-position-definition: "' + images.map(image => image.position).join(',') + '"');
       extraColors.push('--browser-bg-repeat: ' + images.map(image => image.repeat).join(','));

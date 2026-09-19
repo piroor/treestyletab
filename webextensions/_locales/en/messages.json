@@ -472,6 +472,8 @@
   "config_style_none_info": { "message": " (*Please decorate everything by yourself via \"Advanced\" => \"User Style Sheet\")" },
 
   "config_colorScheme_caption": { "message": "Color scheme:" },
+  "config_applyBrowserThemeColors_label": { "message": "Apply colors of the browser theme to the sidebar" },
+  "config_applyBrowserThemeColors_description": { "message": "(Some themes like \"Dusk\" and other Firefox themes have a separate dark variant, but Firefox exposes only the light variant to addons, so the sidebar may look light in a dark window. Turn this off to use Tree Style Tab's own colors for the current color scheme instead.)" },
   "config_colorScheme_photon": { "message": "Photon" },
   "config_colorScheme_systemColor": { "message": "System Color" },
 
