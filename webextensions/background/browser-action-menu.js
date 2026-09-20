@@ -2342,9 +2342,9 @@ const mItems = [
         enabled: false
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_APIEnabled_label'),
-        key:    'APIEnabled',
-        type:   'checkbox',
+        title: indent() + browser.i18n.getMessage('config_APIEnabled_label'),
+        key:   'APIEnabled',
+        type:  'checkbox',
       },
       { type: 'separator' },
       {
