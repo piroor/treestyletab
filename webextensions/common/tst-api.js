@@ -427,7 +427,8 @@ function notifyPermissionChanged(addon) {
     id:   addon.id,
     permissions
   });
-  if (addon.id == browser.runtime.id)
+  if (!configs.APIEnabled ||
+      addon.id == browser.runtime.id)
     return;
   browser.runtime.sendMessage(addon.id, {
     type:                 kNOTIFY_PERMISSIONS_CHANGED,
@@ -575,7 +576,8 @@ export async function initAsBackend() {
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
   log('initAsBackend: notifyAddons = ', notifyAddons);
   await Promise.all(notifyAddons.map(async id => {
-    if (id in notifiedAddons)
+    if (!configs.APIEnabled ||
+        id in notifiedAddons)
       return;
     notifiedAddons[id] = true;
     try {
@@ -842,21 +844,25 @@ function onBackendCommand(message, sender) {
                   addon.lastRegistered != lastRegistered)
                 return;
               // otherwise it is uninstalled.
+              if (configs.APIEnabled) {
               browser.runtime.sendMessage({
                 type: kCOMMAND_BROADCAST_API_UNREGISTERED,
                 sender
               }).catch(ApiTabs.createErrorSuppressor());
+              }
               unregisterAddon(sender.id);
               configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
             }, 350);
           };
           const promisedShutdown = (async () => {
             try {
+              if (configs.APIEnabled) {
               const shouldUninit = await browser.runtime.sendMessage(sender.id, {
                 type: kWAIT_FOR_SHUTDOWN
               });
               if (!shouldUninit)
                 return;
+              }
             }
             catch(_error) {
               // Extension was disabled.
@@ -1098,6 +1104,9 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
 }
 
 export async function sendMessage(addonId, message, { tabProperties, cache, isContextTab } = {}) {
+  if (!configs.APIEnabled)
+    return undefined;
+
   if (mPromisedInitialized)
     await mPromisedInitialized;
 
@@ -1207,6 +1216,12 @@ function* spawnMessages(targets, { message, tabProperties, cache, isContextTab }
   }
 }
 async function directSendMessage(id, message) {
+  if (!configs.APIEnabled) {
+    return {
+      id,
+      result: undefined,
+    };
+  }
   try {
     const result = await (id == browser.runtime.id ?
       browser.runtime.sendMessage(
