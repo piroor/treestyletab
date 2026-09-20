@@ -845,10 +845,10 @@ function onBackendCommand(message, sender) {
                 return;
               // otherwise it is uninstalled.
               if (configs.APIEnabled) {
-              browser.runtime.sendMessage({
-                type: kCOMMAND_BROADCAST_API_UNREGISTERED,
-                sender
-              }).catch(ApiTabs.createErrorSuppressor());
+                browser.runtime.sendMessage({
+                  type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+                  sender
+                }).catch(ApiTabs.createErrorSuppressor());
               }
               unregisterAddon(sender.id);
               configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
@@ -857,11 +857,11 @@ function onBackendCommand(message, sender) {
           const promisedShutdown = (async () => {
             try {
               if (configs.APIEnabled) {
-              const shouldUninit = await browser.runtime.sendMessage(sender.id, {
-                type: kWAIT_FOR_SHUTDOWN
-              });
-              if (!shouldUninit)
-                return;
+                const shouldUninit = await browser.runtime.sendMessage(sender.id, {
+                  type: kWAIT_FOR_SHUTDOWN
+                });
+                if (!shouldUninit)
+                  return;
               }
             }
             catch(_error) {
