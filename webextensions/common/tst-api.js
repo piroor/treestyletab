@@ -61,6 +61,8 @@ export const onMessageExternal = {
     this.$listeners.delete(listener);
   },
   dispatch(...args) {
+    if (!configs.APIEnabled)
+      return [];
     return Array.from(this.$listeners, listener => listener(...args));
   }
 };
@@ -508,6 +510,8 @@ if (Constants.IS_BACKGROUND) {
     const sender = port.sender;
     mConnections.set(sender.id, port);
     port.onMessage.addListener(message => {
+      if (!configs.APIEnabled)
+        return;
       const messages = message.messages || [message];
       for (const oneMessage of messages) {
         onMessageExternal.dispatch(oneMessage, sender);
@@ -781,7 +785,8 @@ function onBackendCommand(message, sender) {
       message.messages.map(oneMessage => onBackendCommand(oneMessage, sender))
     );
 
-  if (!mInitialized ||
+  if (!configs.APIEnabled ||
+      !mInitialized ||
       !message ||
       typeof message != 'object' ||
       typeof message.type != 'string')
