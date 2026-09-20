@@ -2338,6 +2338,16 @@ const mItems = [
       },
       { type: 'separator' },
       {
+        title:   browser.i18n.getMessage('config_addons_caption'),
+        enabled: false
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_APIEnabled_label'),
+        key:    'APIEnabled',
+        type:   'checkbox',
+      },
+      { type: 'separator' },
+      {
         title:   browser.i18n.getMessage('config_debug_caption'),
         enabled: false
       },

@@ -901,6 +901,8 @@
 
   "config_addons_caption": { "message": "他の拡張機能による機能追加" },
 
+  "config_APIEnabled_label": { "message": "他の拡張機能向けのAPIを有効化する" },
+
   "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他の拡張機能" },
   "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加できます。" },
