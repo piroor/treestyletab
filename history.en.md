@@ -1,6 +1,11 @@
 # History
 
  - trunk/HEAD
+ - 4.4.7 (2026.9.25)
+   * Tabs are never become out-of-viewport and robustly become sticky, when they are newly opened at the end of the tab list.
+   * Add new option to stop applying the browser theme's colors to the sidebar, as a workaround for the [bug 1542044](https://bugzilla.mozilla.org/show_bug.cgi?id=1542044), to prevent applying light color scheme mismatching on a dark window. ([by Robertof, thanks!](https://github.com/piroor/treestyletab/pull/3972))
+   * Better handling of colors and gradients used by the Nova theme of the browser itself. ([by Robertof, thanks!](https://github.com/piroor/treestyletab/pull/3972))
+   * Expose the option "Enable API for other addons" as a regular option, for a workaround of API-related vulnerabilities.
  - 4.4.6 (2026.9.18)
    * Fix vulnerability of `get-tree` and `get-light-tree`: they bypassed permission model and exposed tabs information to other addons unexpectedly. It was regressed since 4.0.0, and all releases until 4.4.5 are affected.
  - 4.4.5 (2026.9.18)
