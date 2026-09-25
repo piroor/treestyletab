@@ -221,14 +221,29 @@ restoreScrollPosition.scrollPosition = -1;
 /* virtual scrolling */
 
 export function reserveToRenderVirtualScrollViewport({ trigger, force } = {}) {
+  // Record the trigger even while we are going to ignore it for now (see
+  // below), so it is not lost forever - it will be picked up later by
+  // scheduleReservedRenderVirtualScrollViewportIfNeeded() once the internal
+  // scroll operation which is in progress finishes.
+  if (trigger)
+    renderVirtualScrollViewport.triggers.add(trigger);
+
   if (!force &&
       mScrollingInternallyCount > 0)
     return;
 
-  if (trigger)
-    renderVirtualScrollViewport.triggers.add(trigger);
+  scheduleReservedRenderVirtualScrollViewportIfNeeded();
+}
 
-  if (renderVirtualScrollViewport.invoked)
+// This must be called simply to (re)schedule a rendering reserved by
+// reserveToRenderVirtualScrollViewport(), so it must not be called with
+// any new trigger. If there is nothing reserved, this is a no-op - this
+// matters for the case it is called after mScrollingInternallyCount
+// becomes 0, to avoid needless re-rendering for a common case that
+// nothing is reserved while the internal scroll operation is running.
+function scheduleReservedRenderVirtualScrollViewportIfNeeded() {
+  if (renderVirtualScrollViewport.triggers.size == 0 ||
+      renderVirtualScrollViewport.invoked)
     return;
   renderVirtualScrollViewport.invoked = true;
   window.requestAnimationFrame(renderVirtualScrollViewport.bind(null, undefined));
@@ -745,6 +760,11 @@ function scrollTo(params = {}) {
   window.requestAnimationFrame(() => {
     if (mScrollingInternallyCount > 0)
       mScrollingInternallyCount--;
+    // If any trigger arrived and got ignored while we were internally
+    // scrolling (see reserveToRenderVirtualScrollViewport()), catch up
+    // with it now, instead of leaving it lost forever.
+    if (mScrollingInternallyCount == 0)
+      scheduleReservedRenderVirtualScrollViewportIfNeeded();
   });
 }
 
