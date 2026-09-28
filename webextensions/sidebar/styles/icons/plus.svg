@@ -1,0 +1,16 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="context-fill" fill-opacity="context-fill-opacity">
+<style>
+  g:not(:target) {
+    display: none;
+  }
+</style>
+<g id="proton">
+  <path d="M7 9.75 7 14a.625.625 0 0 0 1.25 0l0-4.25.5-.5 4.25 0A.625.625 0 0 0 13 8L8.75 8l-.5-.5 0-4.25a.625.625 0 0 0-1.25 0L7 7.5l-.5.5-4.25 0a.625.625 0 0 0 0 1.25l4.137 0z"/>
+</g>
+<g id="nova">
+  <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2" />
+</g>
+</svg>

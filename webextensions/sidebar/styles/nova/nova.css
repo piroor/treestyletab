@@ -499,8 +499,21 @@ tab-item.faviconized .contextual-identity-marker {
   margin-inline: calc(var(--toolbarbutton-border-radius) * 0.65 / 2);
 }
 
-.newtab-button .label {
-  margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
+.newtab-button {
+  .label::before {
+    background-image: url("../icons/plus.svg#nova");
+    fill: var(--toolbarbutton-icon-fill);
+    opacity: 1;
+  }
+  :root.simulate-svg-context-fill & .label::before {
+    background: var(--toolbarbutton-icon-fill);
+    mask-image: url("../icons/plus.svg#nova");
+  }
+
+  .label {
+    color: var(--toolbarbutton-icon-fill);
+    margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
+  }
 }
 
 /* split view separator */

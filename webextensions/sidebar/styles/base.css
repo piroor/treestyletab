@@ -1439,24 +1439,25 @@ tab-item[type="group-collapsed-members-counter"] {
 
   .label {
     --icon-margin: calc(var(--twisty-size) + ((var(--favicon-size) - 1em) / 2));
+    align-items: center;
     margin-inline-start: var(--icon-margin);
   }
 
   .label::before {
     -moz-context-properties: fill;
-    background: url("./icons/new-16.svg") no-repeat center / 100%;
+    background: url("./icons/plus.svg#proton") no-repeat center / 100%;
     content: "";
     display: inline-block;
     fill: var(--tab-text);
-    height: 1em;
+    height: var(--favicon-size);
     margin: 0;
-    margin-inline-end: calc(((var(--favicon-size) - 1em) / 2) + 0.25em);
+    margin-inline-end: 0.25em;
     opacity: var(--button-opacity);
-    width: 1em;
+    width: var(--favicon-size);
   }
   :root.simulate-svg-context-fill & .label::before {
     background: var(--tab-text);
-    mask: url("./icons/new-16.svg") no-repeat center / 100%;
+    mask: url("./icons/plus.svg#proton") no-repeat center / 100%;
   }
 
   &:hover::before {

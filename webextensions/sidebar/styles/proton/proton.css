@@ -470,8 +470,18 @@ tab-item .contextual-identity-marker {
   }
 }
 
-.newtab-button .label {
-  margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
+.newtab-button {
+  .label::before {
+    fill: var(--toolbarbutton-icon-fill);
+    opacity: 1;
+  }
+  :root.simulate-svg-context-fill & .label::before {
+    background: var(--toolbarbutton-icon-fill);
+  }
+
+  .label {
+    margin-inline-start: calc(0.25em/* padding-inline of tab-item-substance */ + var(--icon-margin));
+  }
 }
 
 /* split view separator */
