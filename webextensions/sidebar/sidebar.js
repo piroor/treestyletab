@@ -235,6 +235,7 @@ export async function init() {
     MetricsData.addAsync('parallel initialization: main', async () => {
       await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedWindow));
       Size.init(); // this must be called after rebuildAll()
+      PinnedTabs.reposition(); // this must be called here to determine pinned tabs container size, before BackgroundConnection.start() starts receiving kCOMMAND_NOTIFY_TAB_ACTIVATED message which triggers scrolling to the active tab out of visible area.
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
