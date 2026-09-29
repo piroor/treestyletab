@@ -183,14 +183,12 @@ export const configs = new Configs({
   rtl:                                      isRTL(),
 
   style: (() => {
-    if (/^Mac/i.test(navigator.platform))
-      return 'sidebar';
-    /*
     const matched = navigator.userAgent.match(/Firefox\/(\d+)\.\d+/);
     const version = matched ? parseInt(matched[1]) : 0;
-    if (version >= 155)
+    if (version >= 157)
       return 'nova';
-    */
+    if (/^Mac/i.test(navigator.platform))
+      return 'sidebar';
     return 'proton';
   })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon',
