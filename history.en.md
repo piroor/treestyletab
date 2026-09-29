@@ -1,6 +1,11 @@
 # History
 
  - trunk/HEAD
+ - 4.4.8 (2026.9.29)
+   * Prevent tree breakage after moving of a tree which is internally processed as "move multiple tabs to the end of tabs".
+   * Prevent needless scroll of the pinned tabs container after reloading of TST itself.
+   * Don't make background color of hovered tabs transparent, on the combination of the Photon theme and the Dark mode.
+   * Match appearance of the "New Tab" button (icon and label) more to Firefox's one.
  - 4.4.7 (2026.9.25)
    * Tabs are never become out-of-viewport and robustly become sticky, when they are newly opened at the end of the tab list.
    * Add new option to stop applying the browser theme's colors to the sidebar, as a workaround for the [bug 1542044](https://bugzilla.mozilla.org/show_bug.cgi?id=1542044), to prevent applying light color scheme mismatching on a dark window. ([by Robertof, thanks!](https://github.com/piroor/treestyletab/pull/3972))
