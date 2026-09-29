@@ -240,11 +240,11 @@ Tab.onMoved.addListener((tab, moveInfo = {}) => {
   if (moveInfo.byInternalOperation ||
       !moveInfo.movedInBulk ||
       tab.$TST.duplicating) {
-    log('internal move');
+    log('internal move ', tab.id, moveInfo);
     tab.$TST.nativeTabGroup?.$TST.reindex();
   }
   else {
-    log('process moved tab');
+    log('process moved tab ', tab.id, moveInfo);
     tryFixupTreeForInsertedTab(tab, moveInfo).then(() => {
       tab.$TST.nativeTabGroup?.$TST.reindex();
     });

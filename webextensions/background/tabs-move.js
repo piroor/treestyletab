@@ -421,8 +421,11 @@ async function syncToNativeTabsInternal(windowId) {
         log(`syncToNativeTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (let i = 0; i < moveTabIds.length; i++) {
           const movedId = moveTabIds[i];
-          win.trackInternalMoving(movedId, toIndex + i);
-          win.trackAlreadyMoved(movedId, toIndex + i);
+          // All moved tabs will be notified as "moved to the end position"
+          // when multiple tabs are moved to the end position.
+          const expectedMovedIndex = Math.min(internalOrder.length - 1, toIndex + i);
+          win.trackInternalMoving(movedId, expectedMovedIndex);
+          win.trackAlreadyMoved(movedId, expectedMovedIndex);
           movedTabs.add(movedId);
         }
         logApiTabs(`tabs-move:syncToNativeTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
