@@ -41,7 +41,8 @@
       "20": "/resources/20x20.svg#toolbar-proton",
       "24": "/resources/24x24.svg#toolbar-proton",
       "32": "/resources/32x32.svg#toolbar-proton"
-    }
+    },
+    "default_area": "navbar"
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
