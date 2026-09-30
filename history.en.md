@@ -1,6 +1,10 @@
 # History
 
  - trunk/HEAD
+ - 4.4.9 (2026.10.1)
+   * Use Nova as the default theme on all platforms with Firefox 157 and later.
+   * Define the toolbar button as it should be placed to the navigation toolbar by default if possible.
+   * Fix unreadable text color of the options page with the combination: Nova theme and the dark mode.
  - 4.4.8 (2026.9.29)
    * Prevent tree breakage after moving of a tree which is internally processed as "move multiple tabs to the end of tabs".
    * Prevent needless scroll of the pinned tabs container after reloading of TST itself.
