@@ -383,6 +383,7 @@ tab-item-substance.split-substances-container .background {
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
   border-radius: var(--tab-border-radius);
+  box-shadow: var(--toolbox-background-color) 0 0 0.5em;
   opacity: 1;
 
   :root:not(.rtl).inverted &,
