@@ -59,9 +59,9 @@
  * theme enabled, instead choosing to fall back to system colors and
  * transparencies in order to look more native.
  */
-:root[color-scheme="system-color"]/*@media not ((forced-colors) or (-moz-native-theme))*/ {
+:root:not([color-scheme="system-color"])/*@media not ((forced-colors) or (-moz-native-theme))*/ {
   &:not(.lwtheme-applied)/*:root:not([lwtheme])*/ {
-    &:where([customtitlebar]) {
+    &/*:where([customtitlebar])*/ {
       --toolbox-background-color-inactive: light-dark(rgb(235, 235, 239), rgb(31, 30, 37));
     }
   }
