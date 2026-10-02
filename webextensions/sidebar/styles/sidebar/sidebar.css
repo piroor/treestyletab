@@ -150,7 +150,7 @@ tab-item[type="group"] {
 
   .caption {
     background: var(--tab-surface);
-    border: 1px solid var(--tab-border);
+    border: 1px solid var(--tab-border-color);
     border-radius: 0.5em;
     height: 100%;
     max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size))) +
@@ -193,9 +193,9 @@ tab-item-substance.bundled-active {
 tab-item[data-next-group-color] {
   .background {
     --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
-    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    --tab-border-color: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
     background: var(--tab-surface);
-    border: 2px solid var(--tab-border);
+    border: 2px solid var(--tab-border-color);
     border-radius: 0.3em;
   }
 }

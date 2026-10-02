@@ -46,7 +46,7 @@
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-text-active: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
-  --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
+  --tab-border-color: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
   --tab-active-border: var(--browser-bg-active-for-header-image, transparent);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-mixed)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
@@ -303,8 +303,8 @@ tab-item[data-next-group-color] {
   .background,
   tab-item-substance:hover .background {
     --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
-    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
-    border: 1px solid var(--tab-border);
+    --tab-border-color: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    border: 1px solid var(--tab-border-color);
     opacity: 1 !important;
   }
 }

@@ -230,7 +230,7 @@ tab-item[type="group"],
 tab-item[type="group"].subtree-collapsed {
   .caption {
     --tab-surface: var(--tab-group-color) !important;
-    --tab-border: var(--tab-group-color) !important;
+    --tab-border-color: var(--tab-group-color) !important;
     --tab-text: var(--tab-group-color-text) !important;
 
     border-radius: calc(var(--tab-size) / 2);
@@ -263,7 +263,7 @@ tab-item[type="group"].subtree-collapsed {
 
   tab-item-substance:hover .caption {
     --tab-surface: var(--tab-group-color-hover) !important;
-    --tab-border: var(--tab-group-color-hover) !important;
+    --tab-border-color: var(--tab-group-color-hover) !important;
     --tab-text: var(--tab-group-color-text) !important;
   }
 }
@@ -334,8 +334,8 @@ tab-item[data-next-group-color] {
   .background,
   tab-item-substance:hover .background {
     --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
-    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
-    border: 1px solid var(--tab-border);
+    --tab-border-color: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    border: 1px solid var(--tab-border-color);
     opacity: 1 !important;
   }
 }

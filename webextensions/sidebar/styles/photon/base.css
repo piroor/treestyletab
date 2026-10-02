@@ -11,7 +11,7 @@
 tab-item-substance,
 .after-tabs button,
 .after-tabs [role="button"] {
-  border: 1px solid var(--tab-border);
+  border: 1px solid var(--tab-border-color);
   border-width: 1px 0;
   padding-block: var(--tab-vertical-padding);
   padding-inline: 0.25em;
@@ -51,8 +51,8 @@ tab-item[type="group"] {
 tab-item[data-next-group-color] {
   .caption {
     --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
-    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
-    border: 1px solid var(--tab-border);
+    --tab-border-color: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    border: 1px solid var(--tab-border-color);
   }
 }
 
@@ -113,7 +113,7 @@ tab-item.pinned tab-item-substance {
 }
 
 :root.have-pinned-tabs #pinned-tabs-container {
-  border-block-end: 1px solid var(--tab-border);
+  border-block-end: 1px solid var(--tab-border-color);
 }
 
 
@@ -127,7 +127,7 @@ tab-item.pinned tab-item-substance {
 }
 .overflow-indicator.end {
   background-position: 0 0.3em;
-  border-block-end: 1px solid var(--tab-border);
+  border-block-end: 1px solid var(--tab-border-color);
 }
 :root:not(.rtl).regular .overflow-indicator.start,
 :root:not(.rtl).regular .overflow-indicator.end,
@@ -250,7 +250,7 @@ tab-item[data-child-ids].subtree-collapsed tab-item-substance.highlighted.some-d
 
 /* split view separator */
 tab-item.split-view .split-tab-separator {
-  border-left: 1px solid var(--tab-border);
+  border-left: 1px solid var(--tab-border-color);
   height: 100%;
   margin-inline-end: -1px;
   width: 0px;

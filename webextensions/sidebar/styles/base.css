@@ -1281,7 +1281,7 @@ tab-item[type="group"] {
   }
 
   .caption {
-    border: 1px solid var(--tab-border);
+    border: 1px solid var(--tab-border-color);
     height: calc(var(--tab-size) * 0.7);
     background-color: var(--tab-surface);
     background-image: var(--tab-surface-bgimage);
@@ -1296,7 +1296,7 @@ tab-item[type="group"] {
   .caption,
   tab-item-substance:hover .caption {
     --tab-surface: light-dark(var(--tab-group-color), var(--tab-group-color-invert)) !important;
-    --tab-border: light-dark(var(--tab-group-color), var(--tab-group-color-invert)) !important;
+    --tab-border-color: light-dark(var(--tab-group-color), var(--tab-group-color-invert)) !important;
     --tab-text: light-dark(var(--tab-group-color-pale), var(--tab-group-label-text-dark)) !important;
   }
 
@@ -1358,7 +1358,7 @@ tab-item[type="group-collapsed-members-counter"] {
   tab-item-substance,
   tab-item-substance:hover {
     --tab-surface: transparent !important;
-    --tab-border: transparent !important;
+    --tab-border-color: transparent !important;
     --tab-text: light-dark(var(--tab-group-color), var(--tab-group-color-pale)) !important;
   }
 
@@ -1641,7 +1641,7 @@ iframe#subpanel {
 }
 
 #subpanel-header {
-  border-block-start: 1px solid var(--tab-border);
+  border-block-start: 1px solid var(--tab-border-color);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1656,7 +1656,7 @@ iframe#subpanel {
   }
 
   #subpanel-container:not(.collapsed) & {
-    border-block-end: 1px solid var(--tab-border);
+    border-block-end: 1px solid var(--tab-border-color);
   }
 }
 

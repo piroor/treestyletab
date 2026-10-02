@@ -15,7 +15,7 @@
   --tab-text-active: HighlightText;
   --tab-text-hover: ButtonText;
   --tab-text-inverted: AccentColorText;
-  --tab-border: GrayText; /* it should be between ButtonText and ButtonFace. */
+  --tab-border-color: GrayText; /* it should be between ButtonText and ButtonFace. */
   --tab-dropmarker: ButtonText;
 }
 
@@ -69,7 +69,7 @@ tab-item:not(.collapsed) tab-item-substance:hover,
 
 tab-item-substance.active {
   --throbber-color: HighlightText;
-  --tab-border: Highlight;
+  --tab-border-color: Highlight;
   --tab-surface: var(--tab-surface-active);
   --tab-text: var(--tab-text-active);
   --tab-text-inverted: var(--tab-surface-active);
@@ -92,7 +92,7 @@ tab-item[type="group"] {
 }
 
 .newtab-button-box {
-  border-color: var(--tab-border);
+  border-color: var(--tab-border-color);
   border-style: solid;
   border-width: 1px;
 }
