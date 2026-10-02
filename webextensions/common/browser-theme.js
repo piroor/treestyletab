@@ -305,9 +305,6 @@ export async function generateThemeDeclarations(theme) {
     extraColors.push(`--browser-selected-tab-text: ${theme.colors.tab_text}`);
     extraColors.push(`--tab-selected-textcolor: ${theme.colors.tab_text}`);
   }
-  if (theme.colors.icons_attention) {
-    extraColors.push(`--browser-icons-attention: ${theme.colors.icons_attention}`);
-  }
   extraColors.push(generateThemeRules(theme));
   return `
     :root {
