@@ -174,14 +174,11 @@ tab-item:hover tab-item-substance.split-substances-container .background:not(.ba
   background: transparent;
 }
 
-tab-item-substance.active,
-tab-item-substance.active:hover,
-tab-item-substance.bundled-active,
-tab-item-substance.bundled-active:hover,
+tab-item-substance.active:is(:hover, :not(:hover)),
+tab-item-substance.bundled-active:is(:hover, :not(:hover)),
 tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
-tab-item.split-view:hover tab-item-substance.split-substances-container,
-:root.mutiple-highlighted tab-item-substance.highlighted,
-:root.mutiple-highlighted tab-item-substance.highlighted:hover {
+tab-item.split-view:is(:hover, :not(:hover)), tab-item-substance.split-substances-container,
+:root.mutiple-highlighted tab-item-substance.highlighted:is(:hover, :not(:hover)) {
   --tab-surface: var(--tab-surface-active);
   --tab-text: var(--browser-selected-tab-text, var(--tab-text-color-selected, var(--toolbox-text-color)));
 }
