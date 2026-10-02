@@ -135,8 +135,10 @@ tab-item-substance,
 .after-tabs button,
 .after-tabs [role="button"],
 #subpanel-selector-anchor {
+  --tab-text-shadow: var(--browser-textshadow-for-header-image, none);
   border: 1px solid transparent;
   border-width: 1px 0;
+  text-shadow: var(--tab-text-shadow); /* Firefox does not apply text-shadow to the native vertical tabs in the sidebar, but we apply this for better readability */
   position: relative;
 }
 
@@ -166,7 +168,6 @@ tab-item-substance {
 }
 tab-item:hover tab-item-substance.split-substances-container .background:not(.base),
 .after-tabs button,
-.after-tabs [role="button"],
 #dummy-tab-color-box {
   background: var(--tab-surface);
 }

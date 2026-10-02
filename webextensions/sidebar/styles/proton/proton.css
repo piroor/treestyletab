@@ -199,16 +199,10 @@ tab-item-substance,
   --tab-surface: var(--tab-surface-regular);
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: var(--browser-textshadow-for-header-image, none);
-}
-tab-item-substance,
-.after-tabs button,
-.after-tabs [role="button"],
-#subpanel-container,
-#dummy-tab-color-box {
   background: transparent;
   color: var(--tab-text);
   line-height: 1;
-  text-shadow: var(--tab-text-shadow);
+  text-shadow: var(--tab-text-shadow); /* Firefox does not apply text-shadow to the native vertical tabs in the sidebar, but we apply this for better readability */
 }
 
 tab-item-substance.active,

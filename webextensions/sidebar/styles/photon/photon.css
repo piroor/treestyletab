@@ -103,7 +103,7 @@ tab-item-substance,
 #dummy-tab-color-box {
   background: var(--tab-surface);
   color: var(--tab-text);
-  text-shadow: var(--tab-text-shadow);
+  text-shadow: var(--tab-text-shadow); /* Firefox does not apply text-shadow to the native vertical tabs in the sidebar, but we apply this for better readability */
 }
 
 tab-item * {
