@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/browser/themes/shared/tabbrowser/tab.tokens.css */
+/* https://searchfox.org/firefox-main/rev/073470574580ca3c5d05feddc3fd7b98408e80fc/browser/themes/shared/tabbrowser/tab.tokens.css */
 
 @layer
   base-ui-colors,
@@ -22,16 +22,10 @@
     --tab-border-color-selected: var(--toolbarbutton-outline-color-selected);
     --tab-border-radius: var(--toolbarbutton-border-radius);
     --tab-box-shadow-selected: var(--box-shadow-level-1);
-    --tab-close-button-background-color: var(--button-background-color-ghost);
-    --tab-close-button-background-color-hover: var(--toolbarbutton-background-color-hover);
-    --tab-close-button-background-color-active: var(--toolbarbutton-background-color-active);
     --tab-close-button-border-color: var(--tab-border-color);
     --tab-close-button-border-color-hover: var(--tab-border-color);
     --tab-close-button-border-color-active: var(--tab-border-color);
     --tab-close-button-padding: 6px;
-    --tab-close-button-text-color: var(--tab-text-color);
-    --tab-close-button-text-color-hover: var(--tab-text-color);
-    --tab-close-button-text-color-active: var(--tab-text-color);
     --tab-container-margin-inline-pinned-expanded: var(--space-small);
     --tab-group-blue: light-dark(var(--color-blue-50), var(--color-blue-10));
     --tab-group-blue-hover: light-dark(var(--color-blue-60), var(--color-blue-20));
@@ -110,8 +104,6 @@
       --tab-background-color: var(--button-background-color);
       --tab-background-color-hover: var(--button-background-color-hover);
       --tab-background-color-selected: SelectedItem;
-      --tab-close-button-text-color-hover: var(--button-text-color-hover);
-      --tab-close-button-text-color-active: var(--button-text-color-active);
       --tab-text-color: var(--button-text-color);
       --tab-text-color-hover: var(--button-text-color-hover);
       --tab-text-color-selected: SelectedItemText;

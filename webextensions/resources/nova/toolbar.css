@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/toolkit/themes/shared/design-system/src/toolbar.css */
+/* https://searchfox.org/firefox-main/rev/073470574580ca3c5d05feddc3fd7b98408e80fc/toolkit/themes/shared/design-system/src/toolbar.css */
 
 @layer tokens-foundation {
   /* These tokens are declared inside of tokens-foundation layer so that the
@@ -27,13 +27,9 @@
     --toolbar-background-color: var(--color-white-alpha-40);
     --toolbar-text-color: var(--browser-toolbar-text-color /* TST specific: use the value defined by the theme loaded as an inline stylesheet prior to this static sheet! */, var(--lwt-text-color, inherit));
 
-    --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
-    --toolbarbutton-icon-fill-attention-text-light: var(--color-gray-20);
-    --toolbarbutton-icon-fill-attention-text-dark: var(--color-gray-90);
-    --toolbarbutton-icon-fill-attention-text: light-dark(
-      var(--toolbarbutton-icon-fill-attention-text-light),
-      var(--toolbarbutton-icon-fill-attention-text-dark)
-    );
+    /* Upstream now wraps this in `@media not -moz-pref("browser.nova.enabled")`: since Nova is always
+     * active here, the block never applies, so it is dropped entirely and the Nova-specific values from
+     * tokens-shared.css's tokens-foundation-nova layer take over instead. */
 
     --toolbox-background-color: var(--lwt-accent-color);
     --toolbox-background-color-inactive: var(--lwt-accent-color-inactive, var(--lwt-accent-color));

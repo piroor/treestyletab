@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/toolkit/themes/shared/design-system/dist/tokens-shared.css */
+/* https://searchfox.org/firefox-main/rev/073470574580ca3c5d05feddc3fd7b98408e80fc/toolkit/themes/shared/design-system/dist/tokens-shared.css */
 
 @layer tokens-foundation {
   :root {
@@ -72,7 +72,7 @@
     --button-background-color-toolbar: var(--toolbarbutton-background-color);
     --button-background-color-toolbar-hover: var(--toolbarbutton-background-color-hover);
     --button-background-color-toolbar-active: var(--toolbarbutton-background-color-active);
-    --button-background-color-toolbar-disabled: var(--toolbarbutton-background-color);
+    --button-background-color-toolbar-disabled: var(--toolbarbutton-background-color-disabled);
     --button-background-color-toolbar-selected: var(--button-background-color-ghost-active);
     --button-badge-background-color: var(--color-accent-attention);
     --button-badge-size: 6px;
@@ -450,6 +450,8 @@
     --panel-separator-padding-block: 4px;
     --panel-separator-padding-inline: 8px;
     --panel-text-color: light-dark(var(--color-black), rgb(251, 251, 254));
+    --panel-text-color-dimmed: var(--panel-text-color);
+    --panel-text-color-dimmed-further: var(--panel-text-color);
     --panel-width: initial;
 
     /** popup **/
@@ -519,6 +521,7 @@
     --toolbarbutton-background-color: transparent;
     --toolbarbutton-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
     --toolbarbutton-background-color-active: color-mix(in srgb, currentColor 30%, transparent);
+    --toolbarbutton-background-color-disabled: var(--toolbarbutton-background-color);
     --toolbarbutton-badge-background-color: light-dark(var(--color-red-60), var(--color-red-40));
     --toolbarbutton-badge-font-size: 10px;
     --toolbarbutton-badge-max-width: 20px;
@@ -527,6 +530,8 @@
     --toolbarbutton-badge-padding-inline: 2px;
     --toolbarbutton-border-radius: var(--button-border-radius);
     --toolbarbutton-icon-fill: light-dark(var(--color-gray-70), var(--color-gray-0));
+    --toolbarbutton-icon-fill-hover: var(--toolbarbutton-icon-fill);
+    --toolbarbutton-icon-fill-active: var(--toolbarbutton-icon-fill);
     --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
     --toolbarbutton-icon-fill-attention-text: light-dark(var(--color-gray-20), var(--color-gray-90));
     --toolbarbutton-opacity-disabled: var(--button-opacity-disabled);
@@ -650,8 +655,6 @@
       --button-background-color-destructive-active: var(--button-background-color-primary-active);
       --button-background-color-destructive-disabled: var(--button-background-color-primary-disabled);
       --button-background-color-ghost: ButtonFace;
-      --button-background-color-ghost-hover: var(--button-background-color-hover);
-      --button-background-color-ghost-active: var(--button-background-color-active);
       --button-background-color-menu: Menu;
       --button-background-color-menu-hover: -moz-menuhover;
       --button-background-color-menu-active: var(--button-background-color-menu-hover);
@@ -660,7 +663,6 @@
       --button-background-color-primary-hover: SelectedItem;
       --button-background-color-primary-active: var(--button-background-color-primary-hover);
       --button-background-color-primary-disabled: var(--button-text-color-disabled);
-      --button-background-color-toolbar-disabled: var(--button-background-color-disabled);
       --button-border-color: var(--border-color-interactive);
       --button-border-color-hover: var(--border-color-interactive-hover);
       --button-border-color-active: var(--border-color-interactive-active);
@@ -740,6 +742,10 @@
       --toolbarbutton-background-color: var(--button-background-color);
       --toolbarbutton-background-color-hover: var(--button-background-color-ghost-hover);
       --toolbarbutton-background-color-active: var(--button-background-color-ghost-active);
+      --toolbarbutton-background-color-disabled: var(--button-background-color-disabled);
+      --toolbarbutton-icon-fill: var(--button-text-color);
+      --toolbarbutton-icon-fill-hover: var(--button-text-color-ghost-hover);
+      --toolbarbutton-icon-fill-active: var(--button-text-color-ghost-active);
       --toolbarbutton-outline-color: ButtonText;
       --toolbarbutton-outline-color-hover: SelectedItem;
       --toolbarbutton-outline-color-active: ButtonText;
@@ -778,14 +784,10 @@
     --button-background-color-disabled: var(--button-background-color);
     /* TODO Bug 1821203 - Gray use needs to be consolidated */
     --button-background-color: transparent;
-    --button-background-color-hover: light-dark(var(--color-violet-desaturated-20), var(--color-violet-desaturated-50));
-    --button-background-color-active: light-dark(var(--color-violet-desaturated-30), var(--color-violet-desaturated-40));
     --button-background-color-destructive: light-dark(var(--color-red-50), var(--color-red-30));
     --button-background-color-destructive-hover: light-dark(var(--color-red-60), var(--color-red-20));
     --button-background-color-destructive-active: light-dark(var(--color-red-70), var(--color-red-10));
     --button-background-color-ghost: var(--button-background-color);
-    --button-background-color-ghost-hover: var(--button-background-color-hover);
-    --button-background-color-ghost-active: var(--button-background-color-active);
     --button-background-color-ghost-selected: var(--button-background-color-selected);
     --button-background-color-muted: light-dark(var(--color-gray-20), var(--color-gray-55));
     --button-background-color-muted-hover: light-dark(var(--color-gray-30), var(--color-gray-45));
@@ -824,6 +826,7 @@
     --button-text-color-destructive-selected: light-dark(var(--button-text-color-destructive), var(--button-text-color-destructive-active));
     --button-text-color-ghost-hover: var(--button-text-color-ghost);
     --button-text-color-ghost-active: var(--button-text-color-ghost);
+    --button-text-color-ghost-selected: var(--button-text-color-ghost-active);
     --button-text-color-menu-hover: light-dark(var(--button-text-color-ghost-hover), var(--button-text-color-hover));
     --button-text-color-menu-active: light-dark(var(--button-text-color-ghost-active), var(--button-text-color-active));
     --button-text-color-menu-disabled: light-dark(var(--button-text-color-ghost-disabled), var(--button-text-color-disabled));
@@ -1117,6 +1120,7 @@
       --button-text-color-destructive-disabled: var(--button-text-color-primary);
       --button-text-color-destructive-selected: var(--button-text-color-destructive-active);
       --button-text-color-ghost-hover: var(--button-text-color-ghost-active);
+      --button-text-color-ghost-selected: var(--button-text-color-selected);
       --button-text-color-menu-hover: -moz-menuhovertext;
       --button-text-color-menu-disabled: var(--button-text-color-disabled);
       --button-text-color-menu-selected: var(--button-text-color-primary-selected);

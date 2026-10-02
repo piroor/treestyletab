@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/browser/themes/shared/tabbrowser/tabs.css */
+/* https://searchfox.org/firefox-main/rev/073470574580ca3c5d05feddc3fd7b98408e80fc/browser/themes/shared/tabbrowser/tabs.css */
 
 :root {
   &[color-scheme="system-color"]/*@media (-moz-native-theme)*/ {

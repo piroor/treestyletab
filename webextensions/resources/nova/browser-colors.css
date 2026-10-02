@@ -1,11 +1,9 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* https://searchfox.org/firefox-main/rev/e3285238626d45d2ec7ee8941fc1c49615730ba5/browser/themes/shared/browser-colors.css */
+/* https://searchfox.org/firefox-main/rev/073470574580ca3c5d05feddc3fd7b98408e80fc/browser/themes/shared/browser-colors.css */
 
 :root {
-  --warning-icon-bgcolor: light-dark(#ffa436, #ffbd4f);
-
   --content-area-shadow: var(--card-box-shadow);
   --chrome-content-separator-color: var(--card-border-color);
 
@@ -34,23 +32,14 @@
     }
   }
 
-  /**
-   * These colors are for when an AMO LWT is installed, we force blue/cyan for
-   * the link/focus colors. We probably don't want to change this to purple for
-   * Nova but there could be a case for using --color-accent-primary instead.
-   * Any change will affect contrasts for LWTs but using --color-accent-primary
-   * would allow the user to change the color at least.
-   */
   &.lwtheme-applied/*[lwtheme]:not([theme-in-app])*/ {
-    --link-color: light-dark(var(--color-blue-60), var(--color-cyan-30));
-    --link-color-hover: light-dark(var(--color-blue-70), var(--color-cyan-20));
-    --link-color-active: light-dark(var(--color-blue-80), var(--color-cyan-10));
     --tabs-navbar-separator-color: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
-    --color-accent-attention: light-dark(#2ac3a2, #54ffbd);
 
-    @media not (prefers-contrast) {
-      --focus-outline-color: light-dark(#0061e0, #00ddff);
-    }
+    /* Upstream now wraps the rest of this block (link-color/-hover/-active, color-accent-attention,
+     * focus-outline-color -- originally documented as: "These colors are for when an AMO LWT is
+     * installed, we force blue/cyan for the link/focus colors.") in
+     * `@media not -moz-pref("browser.nova.enabled")`: since Nova is always active here, that block never
+     * applies, so it is dropped entirely and the Nova-specific values take over instead. */
   }
 }
 
