@@ -285,8 +285,8 @@ export async function generateThemeDeclarations(theme) {
     extraColors.push(`--lwt-accent-color: ${theme.colors.accentcolor || theme.colors.frame}`);
   if (theme.colors.textcolor || theme.colors.tab_background_text)
     extraColors.push(`--lwt-text-color: ${theme.colors.tab_background_text || theme.colors.textcolor}`);
-  if (theme.colors.toolbar_text)
-    extraColors.push(`--browser-toolbar-text-color: ${theme.colors.toolbar_text}`);
+  if (theme.colors.toolbar_text || theme.colors.bookmark_text)
+    extraColors.push(`--browser-toolbar-text-color: ${theme.colors.toolbar_text || theme.colors.bookmark_text}`);
   if (theme.colors.toolbar)
     extraColors.push(`--browser-toolbar-background-color: ${theme.colors.toolbar}`);
   if (theme.colors.tab_line) {
