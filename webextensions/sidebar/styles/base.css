@@ -62,8 +62,10 @@
   --button-hover-opacity: 1;
   --button-active-opacity: 1;
 
-  --tab-highlighted-highlight: white;
-  --tab-highlighted-glow: Highlight;
+  --tab-highlighted-highlight-default: white;
+  --tab-highlighted-highlight: var(--browser-icons-attention, var(--color-accent-attention, var(--tab-highlighted-highlight-default)));
+  --tab-highlighted-glow-default: Highlight;
+  --tab-highlighted-glow: var(--browser-icons-attention, var(--color-accent-attention, var(--tab-highlighted-glow-default)));
   --tab-highlighted-base: transparent;
 
   /* Default color for "No Decoration" */

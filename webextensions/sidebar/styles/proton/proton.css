@@ -58,7 +58,7 @@
     var(--browser-bg-darker, var(--dark-frame))
   );
 
-  --tab-highlighted-glow: light-dark(
+  --tab-highlighted-glow-default: light-dark(
     rgb(42, 195, 162), /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#927 */
     rgb(84, 255, 189) /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#931 */
   );

@@ -53,8 +53,8 @@
     --throbber-shadow-color: var(--dropmarker-border-color);
     --tab-text-shadow: 0 1px var(--shadow-color);
 
-    --tab-highlighted-highlight: white;
-    --tab-highlighted-glow: var(--dropmarker-border-color);
+    --tab-highlighted-highlight-default: white;
+    --tab-highlighted-glow-default: var(--dropmarker-border-color);
     --tab-highlighted-base: var(--bg-color);
 
     --multiselected-color: var(--tab-surface-active-gradient);
