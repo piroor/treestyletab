@@ -352,6 +352,7 @@ tab-item-substance.split-substances-container .background {
 :root.mutiple-highlighted tab-item-substance.highlighted {
   .background:not(.base),
   &:hover .background:not(.base) {
+    border-radius: var(--tab-border-radius);
     outline: var(--tab-border);
     outline-color: var(--focus-outline-color);
     outline-offset: var(--tab-outline-offset);
