@@ -280,6 +280,7 @@ tab-item[type="group"].subtree-collapsed {
 }
 
 tab-item-substance:is(.active, .bundled-active) .background:not(.base),
+tab-item:hover tab-item-substance:not(.split-view-sub:not(.highlighted)) .background:not(.base),
 tab-item:is(:hover, .has-active-substance) tab-item-substance.split-substances-container .background:not(.base),
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
