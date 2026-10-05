@@ -24,7 +24,7 @@
   ";
   --toolbox-background-size: /*auto*/
     var(--browser-window-width)
-    calc(100% + var(--browser-sidebar-y-offset));
+    calc(var(--browser-sidebar-height) + var(--browser-sidebar-y-offset));
 
   &/*@media -moz-pref("browser.nova.enabled")*/ {
     --toolbox-background-image: var(--toolbox-background-gradient);
@@ -48,7 +48,7 @@
       var(--lwt-background-alignment);
     --toolbox-background-size: /*auto*/
       var(--browser-window-width)
-      calc(100% + var(--browser-sidebar-y-offset)),
+      calc(var(--browser-sidebar-height) + var(--browser-sidebar-y-offset)),
       var(--lwt-background-size);
   }
 

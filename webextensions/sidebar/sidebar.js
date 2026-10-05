@@ -924,6 +924,7 @@ async function updateTabbarDimensionsForTabBGImages(win) {
   const style = document.documentElement.style;
   style.setProperty('--browser-window-width', `${win.width}px`);
   style.setProperty('--browser-sidebar-width', `${window.innerWidth}px`);
+  style.setProperty('--browser-sidebar-height', `${window.innerHeight}px`);
   style.setProperty('--browser-sidebar-x-offset', `${window.mozInnerScreenX - win.left}px`);
   style.setProperty('--browser-sidebar-y-offset', `${window.mozInnerScreenY - win.top}px`);
 
