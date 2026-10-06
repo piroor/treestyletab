@@ -1335,7 +1335,7 @@ async function onDetached(tabId, detachInfo) {
   }
 }
 
-async function onWindowCreated(win) {
+function onWindowCreated(win) {
   const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
   trackedWindow.incognito = win.incognito;
 }
@@ -1372,7 +1372,7 @@ browser.windows.onFocusChanged.addListener(windowId => {
 });
 
 
-async function onGroupCreated(group) {
+function onGroupCreated(group) {
   log('onGroupCreated ', group);
 
   const trackedGroup = TabGroup.track(group);

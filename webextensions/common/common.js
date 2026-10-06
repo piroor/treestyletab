@@ -192,8 +192,6 @@ export const configs = new Configs({
     return 'proton';
   })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon',
-  iconColor:   'auto',
-  indentLine:  'auto',
 
   shiftTabsForScrollbarDistance:    '0.5em',
   shiftTabsForScrollbarOnlyOnHover: false,
@@ -494,8 +492,8 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocusDelay:                  500,
   avoidDiscardedTabToBeActivatedIfPossible:               false,
   avoidDiscardedTabToBeActivatedExceptGroupTabs:          true,
-  provressiveHighlightingStep:                            Number.MAX_SAFE_INTEGER,
-  progressievHighlightingInterval:                        100,
+  progressiveHighlightingStep:                            Number.MAX_SAFE_INTEGER,
+  progressiveHighlightingInterval:                        100,
   generatedTreeItemElementsPoolLifetimeMsec:              5 * 1000,
   nativeTabGroupModificationDetectionTimeoutAfterTabMove: 500,
   expandNativeTabGroupByMemberTreeExpansion:              true,

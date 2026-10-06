@@ -234,7 +234,8 @@ export async function attachTabTo(child, parent, options = {}) {
       if (!child.$TST)
         return;
       const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
-      child.$TST.updatingOpenerTabIds.splice(index, 1);
+      if (index !== -1)
+        child.$TST.updatingOpenerTabIds.splice(index, 1);
     });
   }
 
@@ -834,7 +835,8 @@ export async function detachAllChildren(
           if (!child.$TST)
             return;
           const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == newParentId);
-          child.$TST.updatingOpenerTabIds.splice(index, 1);
+          if (index !== -1)
+            child.$TST.updatingOpenerTabIds.splice(index, 1);
         });
       }
       else if (child.openerTabId) {

@@ -234,12 +234,6 @@ async function updatePanelUrl(theme) {
     theme = await browser.theme.getCurrent();
   if (browser.sidebarAction)
     browser.sidebarAction.setPanel({ panel: url.href });
-/*
-  const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
-  url.searchParams.set('style', configs.style);
-  if (browser.sidebarAction)
-    browser.sidebarAction.setPanel({ panel: url.href });
-*/
 }
 
 function destroy() {

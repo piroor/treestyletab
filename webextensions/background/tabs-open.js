@@ -46,8 +46,6 @@ import * as NativeTabGroups from './native-tab-groups.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
-//export const onForbiddenURLRequested = new EventListenerManager();
-
 function log(...args) {
   internalLogger('background/tabs-open', ...args);
 }

@@ -81,9 +81,9 @@ export function createErrorHandler(...handlers) {
       if (!configs.debug)
         throw newError;
       if (error == newError)
-        console.log('Unhandled Error: ', error, stackTrace);
+        console.error('Unhandled Error: ', error, stackTrace);
       else
-        console.log('Unhandled Error: ', error, newError, stackTrace);
+        console.error('Unhandled Error: ', error, newError, stackTrace);
     }
   };
 }
@@ -117,9 +117,9 @@ export function createErrorSuppressor(...handlers) {
       if (!configs.debug)
         return;
       if (error == newError)
-        console.log('Unhandled Error: ', error, stackTrace);
+        console.error('Unhandled Error: ', error, stackTrace);
       else
-        console.log('Unhandled Error: ', error, newError, stackTrace);
+        console.error('Unhandled Error: ', error, newError, stackTrace);
     }
   };
 }
