@@ -108,6 +108,8 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
   promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
   scrollbarMode // migrated to user stylesheet
+  provressiveHighlightingStep // migrated to progressiveHighlightingStep
+  progressievHighlightingInterval // migrated to progressiveHighlightingInterval
   sidebarPositionRighsideNotificationShown // migrated to sidebarPositionInvertedNotificationShown
   sidebarScrollbarPosition // migrated to user stylesheet
   simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"

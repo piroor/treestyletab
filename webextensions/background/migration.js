@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 36;
+const kCONFIGS_VERSION = 37;
 const kFEATURES_VERSION = 9;
 
 let migrating = false;
@@ -402,6 +402,16 @@ export function migrateConfigs() {
       }
       if (configs.inheritContextualIdentityToNewTabMode != Constants.kCONTEXTUAL_IDENTITY_SELECT_FOR_EACH)
         configs.inheritContextualIdentityToNewTabModeLastNonSelectForEach = configs.inheritContextualIdentityToNewTabMode;
+
+    case 36:
+      if (configs.provressiveHighlightingStep !== null) {
+        configs.progressiveHighlightingStep = configs.provressiveHighlightingStep;
+        configs.provressiveHighlightingStep = null;
+      }
+      if (configs.progressievHighlightingInterval !== null) {
+        configs.progressiveHighlightingInterval = configs.progressievHighlightingInterval;
+        configs.progressievHighlightingInterval = null;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 
