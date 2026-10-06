@@ -1124,7 +1124,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   ) ? tab : null;
 
   if (!TabsStore.ensureLivingItem(tab))
-    return;
+    return [];
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;

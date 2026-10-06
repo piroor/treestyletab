@@ -88,11 +88,11 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
         if (!granted)
           return;
         log('Tabs.onRemoving: granted to close ', dumpTab(tab));
-        handleRemovingPostProcess(postProcessParams)
+        await handleRemovingPostProcess(postProcessParams)
       });
       // First we always need to detach children from the closing parent.
       // They will be processed again after confirmation.
-      Tree.detachAllChildren(tab, {
+      await Tree.detachAllChildren(tab, {
         newParent,
         behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
         dontExpand:       true,
