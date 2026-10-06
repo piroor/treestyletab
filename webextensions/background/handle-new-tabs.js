@@ -214,7 +214,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   return true;
 });
 
-async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = {}) {
+function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = {}) {
   const cache = {};
   const result = TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,

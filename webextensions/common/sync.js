@@ -26,9 +26,6 @@ function log(...args) {
 }
 
 export const onMessage = new EventListenerManager();
-//export const onNewDevice = new EventListenerManager();
-//export const onUpdatedDevice = new EventListenerManager();
-//export const onObsoleteDevice = new EventListenerManager();
 
 const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
 

@@ -271,7 +271,7 @@ async function clearForWindowInternal(windowId) {
   });
 }
 
-async function reserveToExpireOldEntries() {
+function reserveToExpireOldEntries() {
   if (reserveToExpireOldEntries.reservedExpiration)
     clearTimeout(reserveToExpireOldEntries.reservedExpiration);
   reserveToExpireOldEntries.reservedExpiration = setTimeout(() => {

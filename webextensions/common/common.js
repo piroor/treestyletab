@@ -108,6 +108,8 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
   promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
   scrollbarMode // migrated to user stylesheet
+  provressiveHighlightingStep // migrated to progressiveHighlightingStep
+  progressievHighlightingInterval // migrated to progressiveHighlightingInterval
   sidebarPositionRighsideNotificationShown // migrated to sidebarPositionInvertedNotificationShown
   sidebarScrollbarPosition // migrated to user stylesheet
   simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
@@ -192,8 +194,6 @@ export const configs = new Configs({
     return 'proton';
   })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon',
-  iconColor:   'auto',
-  indentLine:  'auto',
 
   shiftTabsForScrollbarDistance:    '0.5em',
   shiftTabsForScrollbarOnlyOnHover: false,
@@ -494,8 +494,8 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocusDelay:                  500,
   avoidDiscardedTabToBeActivatedIfPossible:               false,
   avoidDiscardedTabToBeActivatedExceptGroupTabs:          true,
-  provressiveHighlightingStep:                            Number.MAX_SAFE_INTEGER,
-  progressievHighlightingInterval:                        100,
+  progressiveHighlightingStep:                            Number.MAX_SAFE_INTEGER,
+  progressiveHighlightingInterval:                        100,
   generatedTreeItemElementsPoolLifetimeMsec:              5 * 1000,
   nativeTabGroupModificationDetectionTimeoutAfterTabMove: 500,
   expandNativeTabGroupByMemberTreeExpansion:              true,

@@ -17,7 +17,6 @@ import * as TreeBehavior from '/common/tree-behavior.js';
 
 import { Tab, TabGroup, TreeItem } from '/common/TreeItem.js';
 
-//import * as SplitView from './split-view.js';
 import * as Tree from './tree.js';
 
 function log(...args) {
