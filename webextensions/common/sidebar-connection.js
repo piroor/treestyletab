@@ -247,7 +247,7 @@ if (Constants.IS_BACKGROUND) {
           catch(_error) {
           }
         }
-      });
+      }).catch(_error => {});
     };
     const receiver = message => {
       if (Array.isArray(message))
