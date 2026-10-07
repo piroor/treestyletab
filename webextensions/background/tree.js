@@ -770,6 +770,8 @@ export async function detachAllChildren(
   // === Phase 3: Side effects and post-processing ===
   for (const child of notIgnoredChildren) {
     const oldParent = oldParentMap.get(child.id);
+    if (!child.$TST)
+      continue;
 
     // TSTAPI detach broadcast
     if (oldParent && TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
@@ -861,7 +863,8 @@ export async function detachAllChildren(
       }
       else {
         await moveTabSubtreeAfter(child, previousTab, options);
-        previousTab = child.$TST.lastDescendant || child;
+        if (child.$TST)
+          previousTab = child.$TST.lastDescendant || child;
       }
     }
   }

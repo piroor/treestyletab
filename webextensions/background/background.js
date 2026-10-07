@@ -799,7 +799,8 @@ Tree.onAttached.addListener(async (tab, attachInfo) => {
 });
 
 Tree.onDetached.addListener((tab, detachInfo) => {
-  reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
+  if (tab.$TST)
+    reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
   reserveToUpdateChildren(detachInfo.oldParentTab);
 });
 
@@ -879,7 +880,7 @@ browser.permissions.onAdded?.addListener(addedPermissions => {
 
   updateIconForBrowserTheme();
 
-  if ('verticalTabs' in browser.browserSettings &&
+  if (browser.browserSettings && 'verticalTabs' in browser.browserSettings &&
       !updateIconForBrowserTheme.$listeningBrowserSettings) {
     updateIconForBrowserTheme.$listeningBrowserSettings = true;
     browser.browserSettings.verticalTabs.onChange.addListener(_details => updateIconForBrowserTheme());
