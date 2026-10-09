@@ -417,6 +417,8 @@ export function unprepareIndexesForWindow(windowId) {
   groupTabsInWindow.delete(windowId);
   toBeExpandedTabsInWindow.delete(windowId);
   subtreeCollapsableTabsInWindow.delete(windowId);
+  draggingTabsInWindow.delete(windowId);
+  duplicatingTabsInWindow.delete(windowId);
   toBeGroupedTabsInWindow.delete(windowId);
   nativelyGroupedTabsInWindow.delete(windowId);
   splitViewTabsInWindow.delete(windowId);
