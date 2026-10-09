@@ -188,7 +188,12 @@ function getMaxTreeLevel(windowId, options = {}) {
   const tabs = options.onlyVisible ?
     Tab.getVisibleTabs(windowId, { ordered: false }) :
     Tab.getTabs(windowId, { ordered: false }) ;
-  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0)));
+  let maxLevel = 0;
+  for (const tab of tabs) {
+    const level = parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0);
+    if (level > maxLevel)
+      maxLevel = level;
+  }
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
   return maxLevel;

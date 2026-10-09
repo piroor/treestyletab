@@ -606,11 +606,12 @@ export function detachTab(child, options = {}) {
 export function getWholeTree(rootTabs) {
   if (!Array.isArray(rootTabs))
     rootTabs = [rootTabs];
-  const wholeTree = [...rootTabs];
+  const wholeTree = new Set(rootTabs);
   for (const rootTab of rootTabs) {
-    wholeTree.push(...rootTab.$TST.descendants);
+    for (const descendant of rootTab.$TST.descendants)
+      wholeTree.add(descendant);
   }
-  return TreeItem.sort([...new Set(wholeTree)]);
+  return TreeItem.sort([...wholeTree]);
 }
 
 export async function detachTabsFromTree(tabs, options = {}) {
@@ -770,6 +771,8 @@ export async function detachAllChildren(
   // === Phase 3: Side effects and post-processing ===
   for (const child of notIgnoredChildren) {
     const oldParent = oldParentMap.get(child.id);
+    if (!child.$TST)
+      continue;
 
     // TSTAPI detach broadcast
     if (oldParent && TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
@@ -862,7 +865,8 @@ export async function detachAllChildren(
       }
       else {
         await moveTabSubtreeAfter(child, previousTab, options);
-        previousTab = child.$TST.lastDescendant || child;
+        if (child.$TST)
+          previousTab = child.$TST.lastDescendant || child;
       }
     }
   }
