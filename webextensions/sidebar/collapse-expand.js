@@ -89,6 +89,8 @@ export async function setCollapsed(tab, info = {}) {
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       await onReadyToExpand.dispatch(tab);
+      if (!tab.$TST) // tab may have been removed during async dispatch
+        return;
     }
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.addVisibleTab(tab);
