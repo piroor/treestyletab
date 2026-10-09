@@ -92,13 +92,19 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       });
       // First we always need to detach children from the closing parent.
       // They will be processed again after confirmation.
-      await Tree.detachAllChildren(tab, {
-        newParent,
-        behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
-        dontExpand:       true,
-        dontUpdateIndent: true,
-        broadcast:        true
-      });
+      try {
+        await Tree.detachAllChildren(tab, {
+          newParent,
+          behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+          dontExpand:       true,
+          dontUpdateIndent: true,
+          broadcast:        true
+        });
+      }
+      catch(error) {
+        // The closing tab must be detached below even if detaching children failed.
+        console.error(error);
+      }
     }
     else {
       await handleRemovingPostProcess(postProcessParams)
