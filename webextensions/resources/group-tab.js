@@ -37,6 +37,7 @@ window.addEventListener('DOMContentLoaded', async function prepare(_event, retry
   let gTemporaryAggressiveCheck;
   let gBrowserThemeDefinition;
   let gUserStyleRules;
+  let gAnimationEnabled = true; // matches the default value of the "animation" config
 
   // Firefox sometimes clears the document title set at here, so we need to re-set it later.
   document.title = getTitle();
@@ -258,6 +259,22 @@ window.addEventListener('DOMContentLoaded', async function prepare(_event, retry
 
     window.addEventListener('resize', reflow);
 
+    // #tabs is scrollable only horizontally, so we need to redirect
+    // the vertical wheel rotation to the horizontal scroll manually.
+    // See also: https://github.com/piroor/treestyletab/issues/4000
+    const tabsContainer = document.getElementById('tabs');
+    tabsContainer.addEventListener('wheel', event => {
+      if (event.ctrlKey || // Ctrl-WheelScroll produces zoom-in/out, so it must not be hijacked.
+          event.deltaY == 0 ||
+          event.deltaX != 0) // Someone's already scrolling horizontally (e.g. with a trackpad), so just let it through.
+        return;
+      event.preventDefault();
+      tabsContainer.scrollBy({
+        left:     event.deltaY,
+        behavior: gAnimationEnabled ? 'smooth' : 'auto',
+      });
+    }, { passive: false });
+
     gTitle.textContent = gTitleField.value = getTitle();
 
     gTemporaryCheck.checked = isTemporary();
@@ -278,7 +295,7 @@ window.addEventListener('DOMContentLoaded', async function prepare(_event, retry
     window.updateTree  = window.updateTree || updateTree;
 
     const messageKeys = l10n.collectUsedKeys(document.documentElement);
-    const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules, messages] = await Promise.all([
+    const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules, messages, animationEnabled] = await Promise.all([
       CrossContextMessaging.sendMessage({
         type: 'treestyletab:get-theme-declarations'
       }),
@@ -301,6 +318,9 @@ window.addEventListener('DOMContentLoaded', async function prepare(_event, retry
         type: 'get-localized-messages',
         keys: messageKeys,
       }),
+      CrossContextMessaging.sendMessage({
+        type: 'treestyletab:should-apply-animation',
+      }),
     ]);
 
     l10n.updateDocument(messages);
@@ -317,6 +337,7 @@ window.addEventListener('DOMContentLoaded', async function prepare(_event, retry
     gUserStyleRules.textContent = userStyleRules;
 
     document.documentElement.classList.toggle('rtl', configs.rtl);
+    gAnimationEnabled = animationEnabled;
 
     updateTree.enabled = configs.renderTreeInGroupTabs;
     updateTree();

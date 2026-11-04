@@ -14,6 +14,7 @@ import {
   configs,
   loadUserStyleRules,
   doProgressively,
+  shouldApplyAnimation,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -605,6 +606,9 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SET_CONFIG_VALUE:
       return Promise.resolve(configs[message.key] = message.value);
+
+    case Constants.kCOMMAND_SHOULD_APPLY_ANIMATION:
+      return Promise.resolve(shouldApplyAnimation());
 
     case Constants.kCOMMAND_GET_USER_STYLE_RULES:
       return Promise.resolve(loadUserStyleRules());

@@ -15,6 +15,7 @@ export const kCOMMAND_GET_THEME_DECLARATIONS         = 'treestyletab:get-theme-d
 export const kCOMMAND_GET_CONTEXTUAL_IDENTITIES_COLOR_INFO = 'treestyletab:get-contextual-identities-color-info';
 export const kCOMMAND_GET_CONFIG_VALUE               = 'treestyletab:get-config-value';
 export const kCOMMAND_SET_CONFIG_VALUE               = 'treestyletab:set-config-value';
+export const kCOMMAND_SHOULD_APPLY_ANIMATION         = 'treestyletab:should-apply-animation';
 export const kCOMMAND_GET_USER_STYLE_RULES           = 'treestyletab:get-user-style-rules';
 export const kCOMMAND_GET_DEVICE_PIXEL_RATIO         = 'treestyletab:get-device-pixel-ratio';
 export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
