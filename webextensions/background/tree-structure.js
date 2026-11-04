@@ -133,7 +133,10 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         }
         if (tabsOffset > -1) {
           const structureRestoreTabs = tabs.slice(tabsOffset, tabsOffset + structure.length);
-          await Tree.applyTreeStructureToTabs(structureRestoreTabs, structure);
+          await Tree.applyTreeStructureToTabs(structureRestoreTabs, structure, {
+            // Restoring the last saved state, so persistent relations of tabs are already saved.
+            skipPersistentRelationsUpdate: true,
+          });
           for (const tab of structureRestoreTabs) {
             tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
           }

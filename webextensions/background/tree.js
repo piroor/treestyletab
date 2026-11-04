@@ -67,6 +67,10 @@ export const onAttached     = new EventListenerManager();
 export const onDetached     = new EventListenerManager();
 export const onSubtreeCollapsedStateChanging = new EventListenerManager();
 export const onSubtreeCollapsedStateChanged  = new EventListenerManager();
+// Dispatched with (tabs, { oldParents }) when applyTreeStructureToTabs() changes
+// parents of tabs. It doesn't dispatch onDetached for performance and to avoid
+// side effects, so this is the only way to know such changes.
+export const onRelationsChangedByApplyingStructure = new EventListenerManager();
 
 
 const mUnattachableTabIds = new Set();
@@ -1694,7 +1698,10 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
         }
         await Promise.all(newTabs.map(tab => tab.$TST.opened));
         await applyTreeStructureToTabs(newTabs, structure, {
-          broadcast: true
+          broadcast:                      true,
+          // Session values of tabs moved across windows can be lost.
+          // See also: https://github.com/piroor/treestyletab/issues/3918
+          forcePersistentRelationsUpdate: isAcrossWindows && !duplicate,
         });
         if (duplicate) {
           // The "duplicating" state is added with delay if the source tab is discarded.
@@ -1858,6 +1865,8 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   tabs = tabs.slice(0, treeStructure.length);
   treeStructure = treeStructure.slice(0, tabs.length);
 
+  const oldParentById = new Map(tabs.map(tab => [tab.id, tab.$TST.parent]));
+
   // 1. Parse treeStructure and apply via attach/detach
   const collapsedMap = {}; // { tabId: boolean }
   let tabsInTree = [];
@@ -1905,6 +1914,18 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
         syncOpenerTabIdToParentIfNeeded(tab);
     }
     MetricsData.add('applyTreeStructureToTabs: sync openerTabId');
+  }
+
+  if (!options.skipPersistentRelationsUpdate) {
+    const changedTabs = tabs.filter(tab => (
+      tab.$TST &&
+      (options.forcePersistentRelationsUpdate ||
+       tab.$TST.parent != oldParentById.get(tab.id))
+    ));
+    if (changedTabs.length > 0) {
+      const oldParents = new Set(mapAndFilter(changedTabs, tab => oldParentById.get(tab.id) || undefined));
+      onRelationsChangedByApplyingStructure.dispatch(changedTabs, { oldParents: [...oldParents] });
+    }
   }
 
   // 4. TSTAPI broadcast (maintain existing behavior)

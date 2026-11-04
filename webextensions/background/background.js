@@ -197,6 +197,7 @@ export async function init() {
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
+  resyncPersistentTreeRelationsOnce();
 
   Sync.init();
 
@@ -797,6 +798,44 @@ Tree.onDetached.addListener((tab, detachInfo) => {
     reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
   reserveToUpdateChildren(detachInfo.oldParentTab);
 });
+
+Tree.onRelationsChangedByApplyingStructure.addListener((tabs, { oldParents }) => {
+  const tabsToUpdateAncestors = new Set();
+  const tabsToUpdateChildren = new Set(oldParents);
+  for (const tab of tabs) {
+    if (!tab.$TST)
+      continue;
+    tabsToUpdateAncestors.add(tab);
+    for (const descendant of tab.$TST.descendants) {
+      tabsToUpdateAncestors.add(descendant);
+    }
+    tabsToUpdateChildren.add(tab);
+    if (tab.$TST.parent)
+      tabsToUpdateChildren.add(tab.$TST.parent);
+  }
+  reserveToUpdateAncestors([...tabsToUpdateAncestors]);
+  reserveToUpdateChildren([...tabsToUpdateChildren]);
+});
+
+// Tree relations of tabs changed by applyTreeStructureToTabs() were not saved
+// to the session from 4.2.12 to 4.4.9, so we need to save them once based on
+// the current tree. Entirely flat windows are skipped, because remaining old
+// relations can be the only clue to recover trees broken by
+// https://github.com/piroor/treestyletab/issues/3993
+function resyncPersistentTreeRelationsOnce() {
+  if (configs.persistentTreeRelationsResyncedFor4_2_12To4_4_9)
+    return;
+  for (const win of TabsStore.windows.values()) {
+    const tabs = Tab.getAllTabs(win.id);
+    if (!tabs.some(tab => tab.$TST.parent))
+      continue;
+    for (const tab of tabs) {
+      updateAncestors(tab);
+      updateChildren(tab);
+    }
+  }
+  configs.persistentTreeRelationsResyncedFor4_2_12To4_4_9 = true;
+}
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 

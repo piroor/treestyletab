@@ -27,6 +27,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   loggingConnectionMessages
   loggingQueries
   migratedBookmarkUrls
+  persistentTreeRelationsResyncedFor4_2_12To4_4_9
   requestingPermissions
   requestingPermissionsNatively
   syncAvailableNotified
@@ -673,6 +674,10 @@ export const configs = new Configs({
   ...(Object.fromEntries(Array.from(obsoleteConfigs, key => [key, null]))),
 
   configsVersion: 0,
+
+  // Tree relations saved to the session by 4.2.12-4.4.9 can be outdated,
+  // so they are resynced once. See background/background.js.
+  persistentTreeRelationsResyncedFor4_2_12To4_4_9: false,
 
   testKey: 0 // for tests/utils.js
 }, {
