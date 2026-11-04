@@ -1266,7 +1266,7 @@ export function updateAccessKey(element) {
   range.insertNode(accessKeyNode);
   range.detach();
 }
-export function evaluateXPath(expression, context, type) {
+function evaluateXPath(expression, context, type) {
   if (!type)
     type = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
   try {
@@ -1356,6 +1356,8 @@ export function isMacOS() {
   return configs.enableMacOSBehaviors || /^Mac/i.test(navigator.platform);
 }
 
+/*
 export function isWindows() {
   return configs.enableWindowsBehaviors || /^Win/i.test(navigator.platform);
 }
+*/

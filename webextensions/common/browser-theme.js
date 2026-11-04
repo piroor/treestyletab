@@ -18,7 +18,7 @@ import * as Constants from './constants.js';
 //    (Firefox 153 and later, used by the "Firefox themes" like "Dusk")
 // This converts them to CSS values we can handle.
 // https://searchfox.org/mozilla-central/source/toolkit/components/extensions/schemas/theme.json
-export function normalizeThemeColor(color) {
+function normalizeThemeColor(color) {
   if (!Array.isArray(color))
     return color;
   const [red, green, blue, alpha] = color;

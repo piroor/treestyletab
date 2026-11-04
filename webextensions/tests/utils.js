@@ -13,7 +13,7 @@ import { is /*, ok, ng*/ } from './assert.js';
 
 import * as Constants from '/common/constants.js';
 //import * as Tree from '/background/tree.js';
-import { Tab, TreeItem } from '/common/TreeItem.js';
+import { Tab } from '/common/TreeItem.js';
 
 export async function prepareTabsInWindow(definition, windowId, expectedStructure) {
   let tabs = await createTabs(definition, { windowId });
@@ -33,7 +33,7 @@ export async function prepareTabsInWindow(definition, windowId, expectedStructur
   return tabs;
 }
 
-export async function createTab(params = {}) {
+async function createTab(params = {}) {
   return browser.tabs.create(params);
 }
 
@@ -150,26 +150,6 @@ export function treeStructure(tabs) {
     return `${tab.id}`;
   };
   return tabs.slice(0).sort((a, b) => a.index - b.index).map(outputNestedRelation);
-}
-
-export async function tabsOrder(tabs) {
-  if (Array.isArray(tabs)) {
-    tabs = await browser.runtime.sendMessage({
-      type:   Constants.kCOMMAND_PULL_TABS,
-      tabIds: tabs.map(tab => tab.id || tab)
-    });
-    return TreeItem.sort(tabs).map(tab => tab.id);
-  }
-
-  if (typeof tabs == 'object') {
-    const refreshedTabsArray = await browser.runtime.sendMessage({
-      type:   Constants.kCOMMAND_PULL_TABS,
-      tabIds: Object.values(tabs).map(tab => tab.id)
-    });
-    return TreeItem.sort(refreshedTabsArray).map(tab => tab.id);
-  }
-
-  throw new Error('Invalid tab collection: ', tabs);
 }
 
 export async function setConfigs(values) {

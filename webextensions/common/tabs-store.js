@@ -44,7 +44,9 @@ export function clear() {
 }
 
 // need to be exported for debugging
+/** @public */
 export const queryLogs = [];
+
 const MAX_LOGS = 100000;
 
 const MATCHING_ATTRIBUTES = `

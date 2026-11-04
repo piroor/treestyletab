@@ -120,7 +120,7 @@ export function detach(child, options = {}) {
 // Merge multiple snapshots into one.
 // For children entries with the same parent, last-write-wins.
 // Tabs that appear in a children list are removed from detached.
-export function mergeSnapshots(snapshots) {
+function mergeSnapshots(snapshots) {
   const mergedChildren = {};
   const mergedDetached = new Set();
 
