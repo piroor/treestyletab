@@ -819,20 +819,18 @@ Tree.onRelationsChangedByApplyingStructure.addListener((tabs, { oldParents }) =>
 
 // Tree relations of tabs changed by applyTreeStructureToTabs() were not saved
 // to the session from 4.2.12 to 4.4.9, so we need to save them once based on
-// the current tree. Entirely flat windows are skipped, because remaining old
-// relations can be the only clue to recover trees broken by
+// the current tree. Relations are saved only for tabs which have parent or
+// children, because remaining old relations of other tabs can be the only
+// clue to recover trees broken by
 // https://github.com/piroor/treestyletab/issues/3993
 function resyncPersistentTreeRelationsOnce() {
   if (configs.persistentTreeRelationsResyncedFor4_2_12To4_4_9)
     return;
-  for (const win of TabsStore.windows.values()) {
-    const tabs = Tab.getAllTabs(win.id);
-    if (!tabs.some(tab => tab.$TST.parent))
-      continue;
-    for (const tab of tabs) {
+  for (const tab of Tab.getAllTabs(null, { iterator: true })) {
+    if (tab.$TST.parent)
       updateAncestors(tab);
+    if (tab.$TST.hasChild)
       updateChildren(tab);
-    }
   }
   configs.persistentTreeRelationsResyncedFor4_2_12To4_4_9 = true;
 }
