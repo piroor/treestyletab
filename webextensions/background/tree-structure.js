@@ -207,41 +207,60 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     const tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
     reserveToAttachTabFromRestoredInfo.tasks = [];
     const bulk = tasks.length > 1;
-    // Phase 0: resolve all unique IDs before collecting info
-    await Tab.waitUntilTracked(tasks.map(task => task.tab.id));
-    // Phase 1: collect restored info for all tabs in parallel
-    const restoredInfos = await Promise.all(tasks.map((task, index) =>
-      collectRestoredTabInfo(task.tab, {
-        ...task.options,
-        canCollapse: task.options.canCollapse || bulk,
-      }).catch(error => {
-        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, stack(error.stack));
-        return false;
-      })
-    ));
-    const restoredInfoById = new Map(restoredInfos.map(info => [info.tab.id, info]));
-    // Phase 2: apply tree structure sequentially
-    // Wrap in TreeTransaction to batch all kCOMMAND_APPLY_TREE_TRANSACTION
-    // messages into a single sidebar message.
     const attachedResults = [];
-    await TreeTransaction.run(async () => {
-      for (const info of restoredInfos) {
-        if (info.done)
-          continue;
-        try {
-          attachedResults.push(info ? await applyRestoredTabInfo(info, restoredInfoById) : false);
+    // Any error must not prevent resolving the promise, because callers
+    // (e.g. loadTreeStructure()) wait for it.
+    try {
+      // Phase 0: resolve all unique IDs before collecting info
+      await Tab.waitUntilTracked(tasks.map(task => task.tab.id));
+      // Phase 1: collect restored info for all tabs in parallel
+      // Infos can be null (already restored) or false (failed, e.g. the tab is closed while processing).
+      const restoredInfos = await Promise.all(tasks.map((task, index) =>
+        collectRestoredTabInfo(task.tab, {
+          ...task.options,
+          canCollapse: task.options.canCollapse || bulk,
+        }).catch(error => {
+          console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, stack(error.stack));
+          return false;
+        })
+      ));
+      const restoredInfoById = new Map(
+        restoredInfos
+          .filter(info => !!info)
+          .map(info => [info.tab.id, info])
+      );
+      // Phase 2: apply tree structure sequentially
+      // Wrap in TreeTransaction to batch all kCOMMAND_APPLY_TREE_TRANSACTION
+      // messages into a single sidebar message.
+      await TreeTransaction.run(async () => {
+        for (const info of restoredInfos) {
+          if (!info) {
+            attachedResults.push(false);
+            continue;
+          }
+          if (info.done)
+            continue;
+          try {
+            attachedResults.push(await applyRestoredTabInfo(info, restoredInfoById));
+          }
+          catch(error) {
+            console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error applying info, ${error}`, stack(error.stack));
+            attachedResults.push(false);
+          }
         }
-        catch(error) {
-          console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error applying info, ${error}`, stack(error.stack));
-          attachedResults.push(false);
-        }
-      }
-    });
-    if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
-      reserveToAttachTabFromRestoredInfo.onDone(attachedResults.flat().every(attached => !!attached));
-    delete reserveToAttachTabFromRestoredInfo.onDone;
-    delete reserveToAttachTabFromRestoredInfo.promisedDone;
-    Tab.dumpAll();
+      });
+    }
+    catch(error) {
+      console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error, ${error}`, stack(error.stack));
+      attachedResults.push(false);
+    }
+    finally {
+      if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
+        reserveToAttachTabFromRestoredInfo.onDone(attachedResults.flat().every(attached => !!attached));
+      delete reserveToAttachTabFromRestoredInfo.onDone;
+      delete reserveToAttachTabFromRestoredInfo.promisedDone;
+      Tab.dumpAll();
+    }
   }, 100);
   return reserveToAttachTabFromRestoredInfo.promisedDone;
 }
