@@ -614,6 +614,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     initAccesskeys();
     initLogsButton();
     initDuplicatedTabDetection();
+    initTreeStructureRecovery();
     initLinks();
     initTheme();
   }
@@ -710,6 +711,39 @@ function initDuplicatedTabDetection() {
     if (event.key != 'Enter')
       return;
     testDuplicatedTabDetection();
+  });
+}
+
+function initTreeStructureRecovery() {
+  const button = document.getElementById('tryRecoverTreeStructureButton');
+  const result = document.getElementById('tryRecoverTreeStructureResult');
+  const run = async () => {
+    if (button.disabled)
+      return;
+    button.disabled = true;
+    result.textContent = '';
+    try {
+      const count = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_TRY_RECOVER_TREE_STRUCTURE });
+      result.textContent = count > 0 ?
+        browser.i18n.getMessage('config_tryRecoverTreeStructure_resultMessage', [count]) :
+        browser.i18n.getMessage('config_tryRecoverTreeStructure_nothingToRecover');
+    }
+    catch(error) {
+      console.error(error);
+    }
+    finally {
+      button.disabled = false;
+    }
+  };
+  button.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    run();
+  });
+  button.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    run();
   });
 }
 

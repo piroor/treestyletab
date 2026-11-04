@@ -883,6 +883,15 @@
   "config_scrollLines_label_before": { "message": "Scroll up or down " },
   "config_scrollLines_label_after":  { "message": "lines via \"Scroll Tabs Up/Down by Lines\" shortcut commands" },
 
+  "config_tryRecoverTreeStructure_caption": { "message": "Tree Structure Recovery" },
+  "config_tryRecoverTreeStructure_description": { "message": "If tree structure is unexpectedly lost on restarting the browser, it may be recovered from remaining information." },
+  "config_tryRecoverTreeStructure_label": { "message": "Try to recover tree structure" },
+  "config_tryRecoverTreeStructure_resultMessage": { "message": "Tree structure of $COUNT$ tab(s) has been recovered.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }},
+  "config_tryRecoverTreeStructure_nothingToRecover": { "message": "No recoverable tree structure information was found." },
+
   "config_userStyleRules_label": { "message": "User Style Sheet (extra style rules for contents provided by Tree Style Tab, ex. the sidebar)" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },

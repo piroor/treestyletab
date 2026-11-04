@@ -879,6 +879,15 @@
   "config_scrollLines_label_before": { "message": "キーボードショートカットの「タブの一覧を数行上/下にスクロール」で" },
   "config_scrollLines_label_after":  { "message": "行分スクロールする" },
 
+  "config_tryRecoverTreeStructure_caption": { "message": "ツリー構造の復元" },
+  "config_tryRecoverTreeStructure_description": { "message": "ブラウザーの再起動時にツリー構造が意図せず失われてしまった場合、残存している情報からツリー構造を復元できる可能性があります。" },
+  "config_tryRecoverTreeStructure_label": { "message": "ツリー構造の復元を試みる" },
+  "config_tryRecoverTreeStructure_resultMessage": { "message": "$COUNT$個のタブのツリー構造を復元しました",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }},
+  "config_tryRecoverTreeStructure_nothingToRecover": { "message": "復元可能なツリー構造の情報は見つかりませんでした" },
+
   "config_userStyleRules_label": { "message": "ユーザースタイルシート（サイドバーなど、ツリー型タブが提供するページ用の追加のスタイル指定）" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },

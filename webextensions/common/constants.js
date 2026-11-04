@@ -97,6 +97,7 @@ export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
 export const kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY = 'treestyletab:autodetect-duplicated-tab-detection-delay';
 export const kCOMMAND_TEST_DUPLICATED_TAB_DETECTION             = 'treestyletab:test-duplicated-tab-detection';
+export const kCOMMAND_TRY_RECOVER_TREE_STRUCTURE                = 'treestyletab:try-recover-tree-structure';
 export const kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED = 'treestyletab:wait-until-successors-updated';
 export const kCOMMAND_GET_SIDEBAR_POSITION          = 'treestyletab:get-sidebar-position';
 export const kCOMMAND_GET_ABOVE_TAB                 = 'treestyletab:get-above-tab';

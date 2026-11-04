@@ -272,9 +272,66 @@ reserveToAttachTabFromRestoredInfo.tasks   = [];
 reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 
+// Rebuilds trees from relations saved to the session per tab, for cases that
+// tree structure is unexpectedly lost on restart, e.g.
+// https://github.com/piroor/treestyletab/issues/3993
+// Only root tabs having a saved ancestor in the same window are processed, to
+// keep the current tree as is and to avoid attaching tabs to their opener.
+// This returns the number of tabs attached to a parent.
+async function tryRecoverTreeStructure() {
+  const rootTabs = [];
+  for (const win of TabsStore.windows.values()) {
+    for (const tab of Tab.getAllTabs(win.id)) {
+      if (!tab.pinned &&
+          !tab.$TST.parent)
+        rootTabs.push(tab);
+    }
+  }
+  const savedAncestors = await Promise.all(rootTabs.map(tab =>
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ANCESTORS).catch(ApiTabs.createErrorHandler())
+  ));
+  const recoverableTabs = rootTabs.filter((tab, index) => (
+    TabsStore.ensureLivingItem(tab) &&
+    (savedAncestors[index] || []).some(id => {
+      const ancestor = Tab.getByUniqueId(id);
+      return (
+        ancestor &&
+        ancestor != tab &&
+        !ancestor.pinned &&
+        ancestor.windowId == tab.windowId
+      );
+    })
+  ));
+  log('tryRecoverTreeStructure: recoverable tabs: ', () => recoverableTabs.map(dumpTab));
+  if (recoverableTabs.length == 0)
+    return 0;
+
+  for (const tab of recoverableTabs) {
+    reserveToAttachTabFromRestoredInfo(tab, {
+      keepCurrentTree:       true,
+      canCollapse:           true,
+      ignoreAlreadyRestored: true,
+    });
+  }
+  await reserveToAttachTabFromRestoredInfo.promisedDone;
+  return recoverableTabs.filter(tab => TabsStore.ensureLivingItem(tab) && tab.$TST.parent).length;
+}
+
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message?.type)
+    return;
+
+  switch (message.type) {
+    case Constants.kCOMMAND_TRY_RECOVER_TREE_STRUCTURE:
+      return tryRecoverTreeStructure();
+  }
+});
+
+
 async function collectRestoredTabInfo(tab, options = {}) {
   log('collectRestoredTabInfo ', tab, options);
-  if (tab.$TST.temporaryMetadata.has('treeStructureAlreadyRestoredFromSessionData')) {
+  if (!options.ignoreAlreadyRestored &&
+      tab.$TST.temporaryMetadata.has('treeStructureAlreadyRestoredFromSessionData')) {
     log(' => already restored ', tab.id);
     return null;
   }
