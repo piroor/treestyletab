@@ -31,6 +31,7 @@ let mFileURLResolver = null;
 
 /* This need to be exported for experiments modules to provide file access features.
    Provider must be a function resolving file pathes. */
+/** @public */
 export async function registerFileURLResolver(resolver) {
   mFileURLResolver = resolver;
 }
@@ -95,6 +96,7 @@ let mSelectionClipboardProvider = null;
     isAvailable(): returns boolean which indicates the selection clipboard is available or not.
     getTextData(): returns a string from the selection clipboard.
 */
+/** @public */
 export function registerSelectionClipboardProvider(provider) {
   mSelectionClipboardProvider = provider;
 }

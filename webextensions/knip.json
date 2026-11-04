@@ -5,7 +5,17 @@
     "sidebar/index.js",
     "common/handle-accel-key.js",
     "options/init.js",
-    "tests/runner.js"
+    "tests/runner.js",
+    "resources/group-tab.js",
+    "resources/dialog/AutoGroupNewTabsDialog.js",
+    "resources/dialog/BookmarkTabsDialog.js",
+    "resources/dialog/ConfirmToCloseTabsDialog.js",
+    "resources/dialog/EditContextualIdentityDialog.js",
+    "resources/dialog/ShareQRCodeDialog.js",
+    "resources/module/logs.js",
+    "resources/module/manage-containers.js",
+    "resources/module/protocol-handler.js",
+    "resources/module/startup.js"
   ],
   "project": [
     "background/**/*.js",
@@ -13,7 +23,13 @@
     "common/**/*.js",
     "options/**/*.js",
     "tests/**/*.js",
-    "resources/**/*.js",
-    "extlib/**/*.js"
+    "resources/**/*.js"
+  ],
+  "ignoreDependencies": [
+    "codemirror",
+    "codemirror-colorpicker",
+    "dompurify",
+    "morphdom",
+    "@prantlf/jsonlint"
   ]
 }

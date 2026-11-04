@@ -447,6 +447,7 @@ export async function init() {
 let mSharingService = null;
 
 // This need to be exported for experiments modules to provide sharing features
+/** @public */
 export function registerSharingService(service) {
   mSharingService = service;
 }

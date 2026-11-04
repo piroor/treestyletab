@@ -55,6 +55,7 @@ const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp'
 let mExternalProvider = null;
 
 // This need to be exported for experiments modules to provide sharing features
+/** @public */
 export function registerExternalProvider(provider) {
   mExternalProvider = provider;
 }
