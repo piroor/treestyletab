@@ -758,6 +758,18 @@ async function onNewTabTracked(tab, info) {
       changedProps[key] = value;
     }
 
+    // Firefox clears openerTabId of tabs moved across windows, and it omits
+    // the property from the tab object instead of reporting a blank value.
+    // We need to forget the expired opener silently, otherwise we wrongly
+    // treat openerTabId as already synced to the tree.
+    if (info.trigger == 'tabs.onAttached' &&
+        !('openerTabId' in renewedTab) &&
+        tab.openerTabId &&
+        tab.$TST.updatingOpenerTabIds.length == 0) {
+      log(`openerTabId of ${tab.id} has been cleared by Firefox while moving across windows: ${tab.openerTabId}`);
+      tab.openerTabId = undefined;
+    }
+
     // When the active tab is duplicated, Firefox creates a duplicated tab
     // with its `openerTabId` filled with the ID of the source tab.
     // It is the `initialOpenerTabId`.

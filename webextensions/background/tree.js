@@ -1671,6 +1671,8 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
         for (const tab of movedTabs) {
           tab.$TST.temporaryMetadata.delete('movingAcrossWindows');
           tab.windowId = destinationWindowId;
+          // Firefox clears openerTabId of tabs moved across windows.
+          tab.openerTabId = undefined;
         }
         log('moved across windows: ', movedTabIds);
       }
@@ -1896,6 +1898,15 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
   MetricsData.add('applyTreeStructureToTabs: apply');
 
+  if (!options.dontSyncParentToOpenerTab &&
+      configs.syncParentTabAndOpenerTab) {
+    for (const tab of tabs) {
+      if (tab.$TST)
+        syncOpenerTabIdToParentIfNeeded(tab);
+    }
+    MetricsData.add('applyTreeStructureToTabs: sync openerTabId');
+  }
+
   // 4. TSTAPI broadcast (maintain existing behavior)
   for (const tab of tabs) {
     if (tab.$TST.parent) {
@@ -1930,6 +1941,39 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   }
 
   MetricsData.add('applyTreeStructureToTabs: broadcast');
+}
+
+// Other addons (session managers, etc.) see the tree only via openerTabId,
+// so it must match to the tree. This calls the API only for mismatched tabs,
+// because applyTreeStructureToTabs() is used for massive tabs.
+function syncOpenerTabIdToParentIfNeeded(tab) {
+  const parent = tab.$TST.parent;
+  if (parent) {
+    if (tab.openerTabId == parent.id)
+      return;
+    const parentId = parent.id;
+    log(`openerTabId of ${tab.id} is changed by TST!: ${tab.openerTabId} (original) => ${parentId} (changed by TST)`);
+    tab.openerTabId = parentId;
+    tab.$TST.updatingOpenerTabIds.push(parentId);
+    browser.tabs.update(tab.id, { openerTabId: parentId })
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    wait(200).then(() => {
+      if (!tab.$TST)
+        return;
+      const index = tab.$TST.updatingOpenerTabIds.findIndex(id => id == parentId);
+      if (index !== -1)
+        tab.$TST.updatingOpenerTabIds.splice(index, 1);
+    });
+    return;
+  }
+
+  if (!tab.openerTabId ||
+      tab.openerTabId == tab.id)
+    return;
+  log(`openerTabId of ${tab.id} is cleared by TST!: ${tab.openerTabId} (original)`);
+  tab.openerTabId = tab.id;
+  browser.tabs.update(tab.id, { openerTabId: tab.id }) // set self id instead of null, because it requires any valid tab id...
+    .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 
