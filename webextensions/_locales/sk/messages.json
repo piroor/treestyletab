@@ -872,6 +872,15 @@
   "config_scrollLines_label_before": { "message": "Posunúť nahor alebo nadol " },
   "config_scrollLines_label_after":  { "message": "riadkov pomocou príkazov skratiek \"Posunúť karty nahor/nadol po riadkoch\"" },
 
+  "config_tryRecoverTreeStructure_caption": { "message": "Obnovenie stromovej štruktúry" },
+  "config_tryRecoverTreeStructure_description": { "message": "Ak sa stromová štruktúra pri reštarte prehliadača neočakávane stratila, možno ju bude možné obnoviť zo zostávajúcich informácií." },
+  "config_tryRecoverTreeStructure_label": { "message": "Pokúsiť sa obnoviť stromovú štruktúru" },
+  "config_tryRecoverTreeStructure_resultMessage": { "message": "Stromová štruktúra bola obnovená pre karty: $COUNT$.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }},
+  "config_tryRecoverTreeStructure_nothingToRecover": { "message": "Nenašli sa žiadne informácie o stromovej štruktúre, ktoré by bolo možné obnoviť." },
+
   "config_userStyleRules_label": { "message": "Vlastný štýl (ďalšie štýlové pravidlá pre obsah poskytovaný Tree Style Tab, napr. bočný panel)" },
   "config_userStyleRules_description_before": { "message": "Pre ďalšie možnosti si pozrite " },
   "config_userStyleRules_description_link_label": { "message": "úryvky kódu na wiki TST" },

@@ -812,6 +812,15 @@
   "config_scrollLines_label_before": { "message": "Прокручивать вверх или вниз на " },
   "config_scrollLines_label_after":  { "message": "строк командами \"Листать вкладки вверх/вниз построчно\" " },
 
+  "config_tryRecoverTreeStructure_caption": { "message": "Восстановление структуры дерева" },
+  "config_tryRecoverTreeStructure_description": { "message": "Если при перезапуске браузера структура дерева была непредвиденно утеряна, её, возможно, удастся восстановить из оставшихся данных." },
+  "config_tryRecoverTreeStructure_label": { "message": "Попытаться восстановить структуру дерева" },
+  "config_tryRecoverTreeStructure_resultMessage": { "message": "Структура дерева восстановлена для вкладок: $COUNT$.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }},
+  "config_tryRecoverTreeStructure_nothingToRecover": { "message": "Данные о структуре дерева, пригодные для восстановления, не найдены." },
+
   "config_userStyleRules_label": { "message": "Пользовательские стили (дополнительные правила стилизации для элементов Tree Style Tab, например боковой панели)" },
   "config_userStyleRules_description_before": { "message": "Смотрите " },
   "config_userStyleRules_description_link_label": { "message": "примеры кода и описания на TST-вики" },

@@ -1937,6 +1937,27 @@
   "config_scrollLines_label_after": {
     "message": "行"
   },
+  "config_tryRecoverTreeStructure_caption": {
+    "message": "恢复标签树结构"
+  },
+  "config_tryRecoverTreeStructure_description": {
+    "message": "如果重启浏览器时标签树结构意外丢失，或许可以根据残留的信息恢复标签树结构。"
+  },
+  "config_tryRecoverTreeStructure_label": {
+    "message": "尝试恢复标签树结构"
+  },
+  "config_tryRecoverTreeStructure_resultMessage": {
+    "message": "已恢复 $COUNT$ 个标签页的标签树结构。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "10"
+      }
+    }
+  },
+  "config_tryRecoverTreeStructure_nothingToRecover": {
+    "message": "未找到可用于恢复的标签树结构信息。"
+  },
   "config_userStyleRules_label": {
     "message": "User Style Sheet (Tree Style Tab 侧栏相关内容的额外样式规则)"
   },

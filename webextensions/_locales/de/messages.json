@@ -813,6 +813,15 @@
   "config_scrollLines_label_before": { "message": "Bewege " },
   "config_scrollLines_label_after":  { "message": "Zeilen auf oder ab beim \"Zeilenweise hoch oder runter scrollen\" Befehl" },
 
+  "config_tryRecoverTreeStructure_caption": { "message": "Wiederherstellung der Baumstruktur" },
+  "config_tryRecoverTreeStructure_description": { "message": "Wenn die Baumstruktur beim Neustart des Browsers unerwartet verloren gegangen ist, kann sie möglicherweise aus den noch vorhandenen Informationen wiederhergestellt werden." },
+  "config_tryRecoverTreeStructure_label": { "message": "Wiederherstellung der Baumstruktur versuchen" },
+  "config_tryRecoverTreeStructure_resultMessage": { "message": "Die Baumstruktur von $COUNT$ Tab(s) wurde wiederhergestellt.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }},
+  "config_tryRecoverTreeStructure_nothingToRecover": { "message": "Es wurden keine wiederherstellbaren Informationen zur Baumstruktur gefunden." },
+
   "config_userStyleRules_label": { "message": "User Style Sheet (Zusätzliche Stilregeln für Inhalte von Tree Style Tab, z.B. die Seitenleiste)" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
   "config_userStyleRules_description_link_label": { "message": "Codebeispiele im TST-Wiki" },

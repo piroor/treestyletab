@@ -2451,6 +2451,24 @@
     "message": "regels omhoog of omlaag via de sneltoetsen",
     "hash": "67959cbebad54fb34409aa96c9d1c9b3"
   },
+  "config_tryRecoverTreeStructure_caption": {
+    "message": "Boomstructuur herstellen"
+  },
+  "config_tryRecoverTreeStructure_description": {
+    "message": "Als de boomstructuur bij het herstarten van de browser onverwacht verloren is gegaan, kan deze mogelijk worden hersteld uit de resterende informatie."
+  },
+  "config_tryRecoverTreeStructure_label": {
+    "message": "Proberen de boomstructuur te herstellen"
+  },
+  "config_tryRecoverTreeStructure_resultMessage": {
+    "message": "De boomstructuur van $COUNT$ tabblad(en) is hersteld.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }
+  },
+  "config_tryRecoverTreeStructure_nothingToRecover": {
+    "message": "Er is geen herstelbare informatie over de boomstructuur gevonden."
+  },
   "config_userStyleRules_label": {
     "message": "Gebruikersstijlblad (aanvullende stijlregels voor de inhoud van TST, bijvoorbeeld de zijbalk)",
     "hash": "8b84f7621ebb8d106561e6a3c1507df0"

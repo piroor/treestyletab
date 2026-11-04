@@ -707,6 +707,15 @@
   
     "config_scrollLines_label_before": { "message": "Scroll up or down " },
     "config_scrollLines_label_after":  { "message": "lines via \"Scroll Tabs Up/Down by Lines\" shortcut commands" },
+
+    "config_tryRecoverTreeStructure_caption": { "message": "還原樹狀結構" },
+    "config_tryRecoverTreeStructure_description": { "message": "若重新啟動瀏覽器時樹狀結構意外遺失，或許可以從殘留的資訊還原樹狀結構。" },
+    "config_tryRecoverTreeStructure_label": { "message": "嘗試還原樹狀結構" },
+    "config_tryRecoverTreeStructure_resultMessage": { "message": "已還原 $COUNT$ 個分頁的樹狀結構。",
+      "placeholders": {
+        "count": { "content": "$1", "example": "10" }
+      }},
+    "config_tryRecoverTreeStructure_nothingToRecover": { "message": "找不到可用於還原的樹狀結構資訊。" },
   
     "config_userStyleRules_label": { "message": "User Style Sheet (額外的側邊欄樣式規則)" },
     "config_userStyleRules_description_before": { "message": "亦可參照" },

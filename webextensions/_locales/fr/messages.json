@@ -1265,6 +1265,24 @@
     "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
+  "config_tryRecoverTreeStructure_caption": {
+    "message": "Récupération de la structure arborescente"
+  },
+  "config_tryRecoverTreeStructure_description": {
+    "message": "Si la structure arborescente a été perdue de manière inattendue au redémarrage du navigateur, elle pourra peut-être être récupérée à partir des informations restantes."
+  },
+  "config_tryRecoverTreeStructure_label": {
+    "message": "Essayer de récupérer la structure arborescente"
+  },
+  "config_tryRecoverTreeStructure_resultMessage": {
+    "message": "La structure arborescente de $COUNT$ onglet(s) a été récupérée.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }
+  },
+  "config_tryRecoverTreeStructure_nothingToRecover": {
+    "message": "Aucune information récupérable sur la structure arborescente n'a été trouvée."
+  },
   "config_userStyleRules_label": {
     "message": "User Style Sheet (Règles d'apparence supplémentaires pour les contenus du panneau)",
     "hash": "8802e1f6f7cf2ff4db4e8d0aaf9bc73e"

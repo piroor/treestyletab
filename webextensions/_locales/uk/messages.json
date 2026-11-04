@@ -1204,6 +1204,24 @@
     "message": "Розташування нової закладки за замовчуванням",
     "hash": "35b1d41b979660bc99afeac6b7d2280c"
   },
+  "config_tryRecoverTreeStructure_caption": {
+    "message": "Відновлення структури дерева"
+  },
+  "config_tryRecoverTreeStructure_description": {
+    "message": "Якщо під час перезапуску браузера структуру дерева було несподівано втрачено, її, можливо, вдасться відновити із залишкових даних."
+  },
+  "config_tryRecoverTreeStructure_label": {
+    "message": "Спробувати відновити структуру дерева"
+  },
+  "config_tryRecoverTreeStructure_resultMessage": {
+    "message": "Структуру дерева відновлено для вкладок: $COUNT$.",
+    "placeholders": {
+      "count": { "content": "$1", "example": "10" }
+    }
+  },
+  "config_tryRecoverTreeStructure_nothingToRecover": {
+    "message": "Не знайдено даних про структуру дерева, придатних для відновлення."
+  },
   "config_userStyleRules_label": {
     "message": "User Style Sheet (Додаткові правила стилю бічної панелі)",
     "hash": "8b84f7621ebb8d106561e6a3c1507df0"
