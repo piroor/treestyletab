@@ -157,12 +157,26 @@ export function init(scrollPosition) {
   wait(1000).then(() => {
     onNormalTabsOverflow.removeListener(onInitialOverflow);
     onVirtualScrollViewportUpdated.removeListener(onInitialUpdate);
-    if (restoreScrollPosition.scrollPosition != -1 &&
-        mScrollingInternallyCount > 0)
-      mScrollingInternallyCount--;
+    if (restoreScrollPosition.scrollPosition == -1) // already restored
+      return;
     restoreScrollPosition.scrollPosition = -1;
+    if (mScrollingInternallyCount > 0)
+      mScrollingInternallyCount--;
     log('timeout: give up to restore scroll position');
+    rerenderVirtualScrollViewportWithActualScrollPosition();
   });
+}
+
+// While restoring, the virtual scroll viewport is rendered based on the
+// position to be restored, not the actual one. So we need to re-render it
+// based on the actual position after the restoration is finished (or given
+// up), otherwise rendered items may be out of the visible area and the
+// tab bar looks blank until something triggers re-rendering.
+// See also: https://github.com/piroor/treestyletab/issues/3998
+function rerenderVirtualScrollViewportWithActualScrollPosition() {
+  mNormalScrollBox.$scrollTopMax = mNormalScrollBox.scrollTopMax;
+  mNormalScrollBox.$scrollTop    = Math.min(mNormalScrollBox.$scrollTopMax, mNormalScrollBox.scrollTop);
+  reserveToRenderVirtualScrollViewport({ trigger: 'scrollPositionRestored', force: true });
 }
 
 function startObserveOverflowStateChange() {
@@ -194,6 +208,9 @@ function onInitialUpdate() {
     restoreScrollPosition();
 }
 function restoreScrollPosition() {
+  if (restoreScrollPosition.scrollPosition == -1) // already given up by timeout while retrying
+    return;
+
   if (restoreScrollPosition.retryCount < 10 &&
       restoreScrollPosition.scrollPosition > mNormalScrollBox.$scrollTopMax) {
     restoreScrollPosition.retryCount++;
@@ -207,12 +224,11 @@ function restoreScrollPosition() {
         restoreScrollPosition.scrollPosition
       );
   restoreScrollPosition.scrollPosition = -1;
-  if (mScrollingInternallyCount > 0) {
-    window.requestAnimationFrame(() => {
-      if (mScrollingInternallyCount > 0)
-        mScrollingInternallyCount--;
-    });
-  }
+  window.requestAnimationFrame(() => {
+    if (mScrollingInternallyCount > 0)
+      mScrollingInternallyCount--;
+    rerenderVirtualScrollViewportWithActualScrollPosition();
+  });
 }
 restoreScrollPosition.retryCount = 0;
 restoreScrollPosition.scrollPosition = -1;
