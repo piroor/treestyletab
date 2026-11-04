@@ -12,10 +12,12 @@ import {
   configs,
   wait,
   countMatched,
-  dumpTab
+  dumpTab,
+  shouldApplyAnimation,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -610,3 +612,54 @@ CrossContextMessaging.onMessage((message, _sender) => {
       break;
   }
 });
+
+
+// Group tab pages fetch a snapshot of these configs/style rules/animation
+// preference/contextual identity colors only once, at their initialization.
+// Instead of pushing every change to all open group tab pages, we just
+// invalidate them: a discarded group tab will naturally get the fresh
+// snapshot when it is loaded again, so we only need to explicitly discard
+// group tabs which are already loaded and not active, and reload the
+// currently active one immediately because it is visible to the user.
+const kGROUP_TAB_WATCHED_CONFIG_KEYS = new Set([
+  'renderTreeInGroupTabs',
+  'showAutoGroupOptionHint',
+  'showAutoGroupOptionHintWithOpener',
+  'rtl',
+]);
+
+let mReservedInvalidateGroupTabs = null;
+
+function invalidateGroupTabs() {
+  if (mReservedInvalidateGroupTabs)
+    clearTimeout(mReservedInvalidateGroupTabs);
+  mReservedInvalidateGroupTabs = setTimeout(() => {
+    mReservedInvalidateGroupTabs = null;
+    invalidateGroupTabsNow();
+  }, 250);
+}
+
+function invalidateGroupTabsNow() {
+  for (const groupTab of Tab.getGroupTabs(null, { iterator: true })) {
+    if (groupTab.discarded)
+      continue;
+    if (groupTab.active ||
+        typeof browser.tabs.discard != 'function') { // no way to discard, so just reload instead.
+      browser.tabs.reload(groupTab.id)
+        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      continue;
+    }
+    browser.tabs.discard(groupTab.id)
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }
+}
+
+configs.$addObserver(key => {
+  if (kGROUP_TAB_WATCHED_CONFIG_KEYS.has(key) ||
+      /^chunkedUserStyleRules\d+$/.test(key))
+    invalidateGroupTabs();
+});
+
+shouldApplyAnimation.onChanged.addListener(invalidateGroupTabs);
+
+ContextualIdentities.onUpdated.addListener(invalidateGroupTabs);
