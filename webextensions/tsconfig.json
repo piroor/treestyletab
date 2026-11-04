@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "allowJs": true,
+    "noEmit": true,
     "paths": {
       "/common/*": ["./common/*"],
       "/background/*": ["./background/*"],
