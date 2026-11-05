@@ -594,8 +594,8 @@ export function detachTab(child, options = {}) {
       !options.dontSyncParentToOpenerTab &&
       configs.syncParentTabAndOpenerTab) {
     log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, stack());
-    child.openerTabId = child.id;
-    browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
+    child.openerTabId = Constants.kPARENT_ID_CLEARED_BY_TST;
+    browser.tabs.update(child.id, { openerTabId: browser.tabs.TAB_ID_NONE })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
   child.$TST.invalidateCache();
@@ -848,8 +848,8 @@ export async function detachAllChildren(
       }
       else if (child.openerTabId) {
         log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, stack());
-        child.openerTabId = child.id;
-        browser.tabs.update(child.id, { openerTabId: child.id })
+        child.openerTabId = Constants.kPARENT_ID_CLEARED_BY_TST;
+        browser.tabs.update(child.id, { openerTabId: browser.tabs.TAB_ID_NONE })
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
     }
@@ -1989,11 +1989,11 @@ function syncOpenerTabIdToParentIfNeeded(tab) {
   }
 
   if (!tab.openerTabId ||
-      tab.openerTabId == tab.id)
+      tab.openerTabId == Constants.kPARENT_ID_CLEARED_BY_TST)
     return;
   log(`openerTabId of ${tab.id} is cleared by TST!: ${tab.openerTabId} (original)`);
-  tab.openerTabId = tab.id;
-  browser.tabs.update(tab.id, { openerTabId: tab.id }) // set self id instead of null, because it requires any valid tab id...
+  tab.openerTabId = Constants.kPARENT_ID_CLEARED_BY_TST;
+  browser.tabs.update(tab.id, { openerTabId: browser.tabs.TAB_ID_NONE })
     .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 

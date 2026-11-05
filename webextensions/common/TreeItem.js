@@ -2304,7 +2304,7 @@ export class Tab extends TreeItem {
   //===================================================================
 
   get openerTab() {
-    if (this.raw?.openerTabId == this.id)
+    if (this.raw?.openerTabId == Constants.kPARENT_ID_CLEARED_BY_TST)
       return null;
 
     if (!this.raw?.openerTabId)

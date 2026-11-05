@@ -335,6 +335,11 @@ export const kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL   = 0;
 export const kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT = 1;
 export const kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM     = -1;
 
+// A special value of the locally cached openerTabId, which means that the opener
+// was explicitly cleared by TST itself (with browser.tabs.TAB_ID_NONE).
+// It is never sent to the browser.
+export const kPARENT_ID_CLEARED_BY_TST = -2;
+
 export const kPARENT_TAB_OPERATION_CONTEXT_CLOSE = 1;
 export const kPARENT_TAB_OPERATION_CONTEXT_MOVE  = 2;
 

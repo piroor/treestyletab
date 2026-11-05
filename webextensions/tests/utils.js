@@ -143,7 +143,7 @@ export function treeStructure(tabs) {
   const outputNestedRelation = (tab) => {
     if (!tab)
       return '?';
-    if (tab.openerTabId && tab.openerTabId != tab.id)
+    if (tab.openerTabId && tab.openerTabId != Constants.kPARENT_ID_CLEARED_BY_TST)
       return `${outputNestedRelation(tabsById[tab.openerTabId])} => ${tab.id}`;
     else if (tab.$TST && tab.$TST.parentId && tab.$TST.parentId != tab.id)
       return `${outputNestedRelation(tabsById[tab.$TST.parentId])} => ${tab.id}`;
