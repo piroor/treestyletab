@@ -10,6 +10,7 @@ import {
   dumpTab,
   configs,
   isFirefoxViewTab,
+  wait,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -583,6 +584,15 @@ Tab.onAttached.addListener(async (tab, attachInfo = {}) => {
   log('Tabs.onAttached ', dumpTab(tab), attachInfo);
 
   log('descendants of attached tab: ', () => attachInfo.descendants.map(dumpTab));
+  // Descendants moved across windows at once may be not tracked in the destination
+  // window yet. Tree.moveTabs() ignores such tabs and they are wrongly attached
+  // to this tab directly, so wait until they are ready.
+  // See also https://github.com/piroor/treestyletab/issues/4001
+  const startTime = Date.now();
+  while (Date.now() - startTime < 3000 &&
+         attachInfo.descendants.some(descendant => !TabsStore.ensureLivingItem(descendant) || descendant.windowId != tab.windowId)) {
+    await wait(50);
+  }
   const movedTabs = await Tree.moveTabs(attachInfo.descendants, {
     destinationWindowId: tab.windowId,
     insertAfter:         tab

@@ -32,6 +32,7 @@ import {
   toLines,
   configs,
   stack,
+  wait,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -1134,7 +1135,29 @@ async function onMoved(tabId, moveInfo) {
   }
 }
 
+// Tabs moved across windows at once are processed concurrently, but a child must be
+// processed after its opener (parent) to be attached to it correctly.
+// See also https://github.com/piroor/treestyletab/issues/4001
+const mPromisedAttachedTabs = new Map();
+
 async function onAttached(tabId, attachInfo) {
+  let onProcessed;
+  const promisedProcessed = new Promise(resolve => { onProcessed = resolve; });
+  mPromisedAttachedTabs.set(tabId, promisedProcessed);
+  try {
+    await onAttachedInternal(tabId, attachInfo, onProcessed);
+  }
+  finally {
+    onProcessed();
+    if (mPromisedAttachedTabs.get(tabId) == promisedProcessed)
+      mPromisedAttachedTabs.delete(tabId);
+  }
+}
+
+// onTracked is called as soon as the tab is tracked in the destination window.
+// Children wait only for it, not for the end of whole processing, because the
+// processing of a parent can wait for its children (Tab.onAttached for ENTIRE_TREE).
+async function onAttachedInternal(tabId, attachInfo, onTracked) {
   if (mPromisedStarted)
     await mPromisedStarted;
 
@@ -1216,7 +1239,13 @@ async function onAttached(tabId, attachInfo) {
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const win = TabsStore.windows.get(attachInfo.newWindowId);
+    const promisedOpenerProcessed = tab.openerTabId != tabId && mPromisedAttachedTabs.get(tab.openerTabId);
+    if (promisedOpenerProcessed) {
+      log(`tabs.onAttached: waiting for the opener ${tab.openerTabId} of the tab ${tabId} to be processed`);
+      await Promise.race([promisedOpenerProcessed, wait(3000)]);
+    }
     await onNewTabTracked(tab, { trigger: 'tabs.onAttached' });
+    onTracked();
     const byInternalOperation = win.toBeAttachedTabs.has(tab.id);
     if (byInternalOperation)
       win.toBeAttachedTabs.delete(tab.id);
