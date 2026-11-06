@@ -768,6 +768,19 @@ async function onNewTabTracked(tab, info) {
         tab.$TST.updatingOpenerTabIds.length == 0) {
       log(`openerTabId of ${tab.id} has been cleared by Firefox while moving across windows: ${tab.openerTabId}`);
       tab.openerTabId = undefined;
+      // Other addons (session managers, etc.) see the tree only via openerTabId,
+      // so restore it based on the tree which is kept in memory. A parent and
+      // children can be moved one by one, so process both sides here and
+      // skip relations across windows (the API rejects them).
+      if (configs.syncParentTabAndOpenerTab) {
+        const parent = tab.$TST.parent;
+        if (parent?.windowId == tab.windowId)
+          Tree.syncOpenerTabIdToParentIfNeeded(tab);
+        for (const child of tab.$TST.children) {
+          if (child.windowId == tab.windowId)
+            Tree.syncOpenerTabIdToParentIfNeeded(child);
+        }
+      }
     }
 
     // When the active tab is duplicated, Firefox creates a duplicated tab

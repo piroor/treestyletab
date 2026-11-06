@@ -1967,7 +1967,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 // Other addons (session managers, etc.) see the tree only via openerTabId,
 // so it must match to the tree. This calls the API only for mismatched tabs,
 // because applyTreeStructureToTabs() is used for massive tabs.
-function syncOpenerTabIdToParentIfNeeded(tab) {
+export function syncOpenerTabIdToParentIfNeeded(tab) {
   const parent = tab.$TST.parent;
   if (parent) {
     if (tab.openerTabId == parent.id)
