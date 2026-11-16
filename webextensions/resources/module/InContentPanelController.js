@@ -116,7 +116,7 @@ export default class InContentPanelController {
             // H.5.
             browser.tabs.sendMessage(sender.tab.id, {
               type: `treestyletab:${this.type}:destroy`,
-            });
+            }).catch(_error => null); // the IMPL can be already unloaded
           }
           break;
 
@@ -427,17 +427,24 @@ export default class InContentPanelController {
         // S.5. Sends a follow-up message.
         this.log(`sendMessage (${this.type}) (${message.type}${retrying ? ', retrying' : ''}, with proimsed properties): trying to wait until promised properties are resolved`);
         promisedMessage.then(async resolvedMessage => {
-          const response = await browser.tabs.sendMessage(playgroundTabId, {
-            timestamp,
-            ...message,
-            ...(resolvedMessage || {}),
-            ...this.inSidebarUI.getColors(),
-            widthInOuterWorld: rawTab.width,
-            fixedOffsetTop:    configs.inContentUIOffsetTop,
-            animation:         shouldApplyAnimation(),
-            logging:           this.value(this.shouldLog),
-          });
-          this.log(`sendMessage (${this.type}) (${message.type}${retrying ? ', retrying' : ''}, with previewURL): message was sent again, response = `,   response);
+          try {
+            const response = await browser.tabs.sendMessage(playgroundTabId, {
+              timestamp,
+              ...message,
+              ...(resolvedMessage || {}),
+              ...this.inSidebarUI.getColors(),
+              widthInOuterWorld: rawTab.width,
+              fixedOffsetTop:    configs.inContentUIOffsetTop,
+              animation:         shouldApplyAnimation(),
+              logging:           this.value(this.shouldLog),
+            });
+            this.log(`sendMessage (${this.type}) (${message.type}${retrying ? ', retrying' : ''}, with previewURL): message was sent again, response = `,   response);
+          }
+          catch(error) {
+            // The panel is possibly already gone with the IMPL, so we don't need
+            // to fall back to the in-sidebar UI.
+            this.log(`sendMessage (${this.type}) (${message.type}${retrying ? ', retrying' : ''}, with previewURL): failed to send message again `, error);
+          }
         });
       }
     }

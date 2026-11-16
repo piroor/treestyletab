@@ -23,6 +23,7 @@ function log(...args) {
 export const onMessage = new EventListenerManager();
 
 let mConnectionPort = null;
+let mDisconnected = false;
 let mHeartbeatTimer = null;
 
 export function connect() {
@@ -35,6 +36,13 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
   mConnectionPort.onDisconnect.addListener(() => {
     log(`Disconnected accidentally: try to reconnect.`);
+    // Messages sent until the page is reloaded must be dropped, because
+    // posting to a disconnected port throws an error. This page will
+    // receive the latest state from the background after reloaded.
+    mDisconnected = true;
+    if (mHeartbeatTimer)
+      clearInterval(mHeartbeatTimer);
+    mHeartbeatTimer = null;
     window.location.reload();
   });
   if (mHeartbeatTimer)
@@ -83,7 +91,8 @@ export function sendMessage(message) {
   // flow is inefficient, boxing the single message into an array and using
   // iterators to process the list unnecessarily.
   if (message.type == Constants.kCONNECTION_HEARTBEAT) {
-    mConnectionPort.postMessage(message);
+    if (!mDisconnected)
+      mConnectionPort.postMessage(message);
     return;
   }
 
@@ -93,6 +102,8 @@ export function sendMessage(message) {
       mOnFrame = null;
       const messages = mReservedMessages;
       mReservedMessages = [];
+      if (mDisconnected)
+        return;
       mConnectionPort.postMessage(messages);
       if (configs.debug) {
         const types = mapAndFilterUniq(messages,
