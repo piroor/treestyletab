@@ -1229,6 +1229,31 @@ export function sanitizeForHTMLText(text) {
     .replace(/'/g, '&apos;');
 }
 
+// Converts a CSS string token (ex. a value got via getPropertyValue()) to a JS string.
+// It must not be parsed as JSON, because CSS strings can contain escaped newlines
+// (line continuation) and hex escapes which are invalid in JSON.
+// See also: https://www.w3.org/TR/css-syntax-3/#consume-string-token
+export function unquoteCSSString(value) {
+  value = String(value || '').trim();
+  const quote = value.charAt(0);
+  if ((quote != '"' && quote != "'") ||
+      value.length < 2 ||
+      value.charAt(value.length - 1) != quote)
+    return value;
+  return value.slice(1, -1).replace(
+    /\\(?:(\r\n|[\n\r\f])|([0-9a-fA-F]{1,6})(?:\r\n|[ \t\n\r\f])?|([\s\S])|$)/g,
+    (_matched, _newline, hex, char) => {
+      if (hex) {
+        const codePoint = parseInt(hex, 16);
+        return (codePoint == 0 || (codePoint >= 0xD800 && codePoint <= 0xDFFF) || codePoint > 0x10FFFF) ?
+          '�' :
+          String.fromCodePoint(codePoint);
+      }
+      return char || '';
+    }
+  );
+}
+
 export function sanitizeForRegExpSource(source) { // https://stackoverflow.com/questions/6300183/sanitize-string-of-regex-characters-before-regexp-build
   return source.replace(/[#-.]|[[-^]|[?|{}]/g, '\\$&');
 }

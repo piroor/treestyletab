@@ -20,6 +20,7 @@ import {
   isRightside,
   notify,
   waitUntilStartupOperationsUnblocked,
+  unquoteCSSString,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -943,7 +944,7 @@ function updateTabDimensionsForTabBGImages(tab) {
   const style = bg.style;
 
   const definition = window.getComputedStyle(bg, null).getPropertyValue('--browser-bg-position-definition');
-  style.setProperty('--browser-bg-position', JSON.parse(definition));
+  style.setProperty('--browser-bg-position', unquoteCSSString(definition));
 
   const rect = bg.getClientRects()[0];
   style.setProperty('--element-x-offset', `${Math.round(rect.left)}px`);
