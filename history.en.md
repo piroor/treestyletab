@@ -1,6 +1,16 @@
 # History
 
  - trunk/HEAD
+ - 4.4.10 (2026.11.18)
+   * Introduce a tree structure recovery command for lost tree structure which were accidentally lost and flattened. It is available under the "Advanced" section of the options page.
+   * Fix incompatibility with other tab management addons like Tab Session Manager around trees moved across windows.
+   * Better compatibility with other tab managemtnt addons which use `openerTabId` of tabs.
+   * Restore tree structure correctly even if one or more tabs are closed during restoration.
+   * Render tabs correctly after the sidebar panel is reloaded.
+   * Scroll group tabs contents horizontally by regular wheel scrolling.
+   * Better styling of sticky tabs in inactive windows on the Nova theme.
+   * Apply color scheme of the active theme to the Nova theme more aggressively.
+   * Brush up codes, fix minor unhandled errors, and reduce leaks. ([#3985](https://github.com/piroor/treestyletab/pull/3985), [#3986](https://github.com/piroor/treestyletab/pull/3986), [#3987](https://github.com/piroor/treestyletab/pull/3987) and [#3988](https://github.com/piroor/treestyletab/pull/3988) by [Peuj](https://github.com/Peuj), thanks!)
  - 4.4.9 (2026.10.1)
    * Use Nova as the default theme on all platforms with Firefox 157 and later.
    * Define the toolbar button as it should be placed to the navigation toolbar by default if possible.
